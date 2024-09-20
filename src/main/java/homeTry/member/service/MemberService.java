@@ -23,7 +23,7 @@ public class MemberService {
     public void login(MemberDTO memberDTO) throws RuntimeException {
         try {
             if (memberRepository.countByEmailAndPassword(new Email(memberDTO.email()), new Password(memberDTO.password())) < 1)
-            { throw new BadRequestException("아이디 또는 비밀번호가 올바르지 않습니다."); }
+            { throw new UserNotFoundException("아이디 또는 비밀번호가 올바르지 않습니다."); }
 
             if (memberRepository.countByEmailAndPassword(new Email(memberDTO.email()), new Password(memberDTO.password())) > 1)
             { throw new InternalServerException("DB 무결성 오류"); }
