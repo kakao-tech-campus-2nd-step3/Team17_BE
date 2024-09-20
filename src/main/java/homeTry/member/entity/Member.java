@@ -33,7 +33,7 @@ public class Member {
     private String nickname;
 
     @Column(nullable = true)
-    private String accessToken;
+    private String kakaoAccessToken;
 
     @Column(nullable = false)
     private LocalDateTime registeredAt;
@@ -53,10 +53,10 @@ public class Member {
     public String getEmail() { return email; }
     public String getPassword() { return password;}
     public String getNickname() { return nickname; }
-    public String getAccessToken() { return accessToken;}
+    public String getKakaoAccessToken() { return kakaoAccessToken;}
     public LocalDateTime getRegisteredAt() { return registeredAt; }
 
-    public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
+    public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
 
 
     private void validateEmail(String email) {
