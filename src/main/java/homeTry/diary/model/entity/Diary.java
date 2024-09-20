@@ -18,8 +18,8 @@ public class Diary {
     private LocalDateTime createAt;
 
     @Embedded
-    @Column(nullable = false)
-    private Memo memo;
+    @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
+    private Memo memo; 
 
     @Column(nullable = false)
     private String memberEmail;
