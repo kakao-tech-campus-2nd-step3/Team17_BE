@@ -40,3 +40,5 @@ out/
 .DS_Store
 
 ### 추가적으로 Git ignore 할 파일이 생길 시 이곳에 추가해주세요 ###
+### Secret Key ###
+src/main/resources/application-secret.properties
