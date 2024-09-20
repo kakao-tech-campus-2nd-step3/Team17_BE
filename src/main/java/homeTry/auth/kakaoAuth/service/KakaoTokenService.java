@@ -27,9 +27,6 @@ public class KakaoTokenService {
     @Value("${kakao-user-info-url}")
     private String userInfoUrl;
 
-    @Value("${kakao-order-URL}")
-    private String orderUrl;
-
     @Value("${kakao-redirect-uri}")
     private String kakaoRedirectUri;
 
