@@ -2,7 +2,6 @@ package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.repository.ExerciseListRepository;
 import homeTry.exerciseList.model.entity.ExerciseList;
-import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.exerciseList.dto.ExerciseListRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +17,7 @@ public class ExerciseListService {
 
     @Transactional
     public void createExercise(ExerciseListRequest request) {
-        ExerciseName exerciseName = request.toExerciseName();
-
-        ExerciseList exerciseList = new ExerciseList(exerciseName, false, false);
+        ExerciseList exerciseList = new ExerciseList(request.exerciseName());
         exerciseListRepository.save(exerciseList);
     }
 

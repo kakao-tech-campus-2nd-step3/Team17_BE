@@ -37,10 +37,10 @@ public class ExerciseList {
     protected ExerciseList() {
     }
 
-    public ExerciseList(ExerciseName exerciseName, boolean isDeprecated, boolean isActive) {
-        this.exerciseName = exerciseName;
-        this.isDeprecated = isDeprecated;
-        this.isActive = isActive;
+    public ExerciseList(String exerciseName) {
+        this.exerciseName = new ExerciseName(exerciseName);
+        this.isDeprecated = false;
+        this.isActive = false;
         this.exerciseTime = Duration.ZERO;
     }
 
