@@ -23,30 +23,27 @@ public class ExerciseListService {
 
     @Transactional
     public void deleteExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
+        ExerciseList exerciseList = validateExerciseExists(exerciseId);
         exerciseList.markAsDeprecated(); // isDeprecated 값을 true로 설정
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
     public void startExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
+        ExerciseList exerciseList = validateExerciseExists(exerciseId);
         exerciseList.startExercise();
     }
 
     @Transactional
     public void stopExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
+        ExerciseList exerciseList = validateExerciseExists(exerciseId);
         exerciseList.stopExercise();
         exerciseListRepository.save(exerciseList);
     }
 
-    // 멤버 권한 확인 추가될 예정
-    private ExerciseList validateOwnership(Long exerciseId) {
-        ExerciseList exerciseList = exerciseListRepository.findById(exerciseId)
+    private ExerciseList validateExerciseExists(Long exerciseId) {
+        return exerciseListRepository.findById(exerciseId)
             .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
-
-        return exerciseList;
     }
 
 }
