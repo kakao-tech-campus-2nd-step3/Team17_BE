@@ -31,7 +31,6 @@ public class ExerciseListService {
     public void startExercise(Long exerciseId) {
         ExerciseList exerciseList = validateOwnership(exerciseId);
         exerciseList.startExercise();
-        exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
