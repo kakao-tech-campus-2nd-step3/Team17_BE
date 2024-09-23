@@ -1,8 +1,6 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.repository.ExerciseListRepository;
-import homeTry.exerciseList.model.vo.ActiveStatus;
-import homeTry.exerciseList.model.vo.DeprecatedStatus;
 import homeTry.exerciseList.model.entity.ExerciseList;
 import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.exerciseList.dto.ExerciseListRequest;
@@ -21,10 +19,8 @@ public class ExerciseListService {
     @Transactional
     public void createExercise(ExerciseListRequest request) {
         ExerciseName exerciseName = request.toExerciseName();
-        DeprecatedStatus deprecatedStatus = new DeprecatedStatus(false);
-        ActiveStatus activeStatus = new ActiveStatus(false);
 
-        ExerciseList exerciseList = new ExerciseList(exerciseName, deprecatedStatus, activeStatus);
+        ExerciseList exerciseList = new ExerciseList(exerciseName, false, false);
         exerciseListRepository.save(exerciseList);
     }
 
