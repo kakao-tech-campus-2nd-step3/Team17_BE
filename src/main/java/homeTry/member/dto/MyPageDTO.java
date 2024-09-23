@@ -1,4 +1,4 @@
-package homeTry.dto;
+package homeTry.member.dto;
 
 import java.time.Duration;
 
