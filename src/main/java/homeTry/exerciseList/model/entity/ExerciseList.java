@@ -28,8 +28,8 @@ public class ExerciseList {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime; // 운동 시작 시간
 
-    @Column(name = "deprecated", nullable = false)
-    private boolean deprecated;
+    @Column(name = "is_deprecated", nullable = false)
+    private boolean isDeprecated;
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
@@ -37,9 +37,9 @@ public class ExerciseList {
     protected ExerciseList() {
     }
 
-    public ExerciseList(ExerciseName exerciseName, boolean deprecated, boolean isActive) {
+    public ExerciseList(ExerciseName exerciseName, boolean isDeprecated, boolean isActive) {
         this.exerciseName = exerciseName;
-        this.deprecated = deprecated;
+        this.isDeprecated = isDeprecated;
         this.isActive = isActive;
         this.exerciseTime = Duration.ZERO;
     }
@@ -61,7 +61,7 @@ public class ExerciseList {
     }
 
     public boolean isDeprecated() {
-        return deprecated;
+        return isDeprecated;
     }
 
     public boolean isActive() {
