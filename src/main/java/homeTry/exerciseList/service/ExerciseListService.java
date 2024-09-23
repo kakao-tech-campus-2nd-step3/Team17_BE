@@ -24,7 +24,8 @@ public class ExerciseListService {
     @Transactional
     public void deleteExercise(Long exerciseId) {
         ExerciseList exerciseList = validateOwnership(exerciseId);
-        exerciseListRepository.delete(exerciseList);
+        exerciseList.markAsDeprecated(); // isDeprecated 값을 true로 설정
+        exerciseListRepository.save(exerciseList);
     }
 
     @Transactional

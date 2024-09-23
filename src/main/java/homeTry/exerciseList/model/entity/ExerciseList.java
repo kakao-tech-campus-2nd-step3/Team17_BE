@@ -68,6 +68,10 @@ public class ExerciseList {
         return isActive;
     }
 
+    public void markAsDeprecated() {
+        this.isDeprecated = true;
+    }
+
     public void startExercise() {
         if (!this.isActive) {
             this.startTime = LocalDateTime.now();
