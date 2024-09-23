@@ -1,4 +1,4 @@
-package homeTry.dto;
+package homeTry.member.dto;
 
 import homeTry.member.model.entity.Member;
 import java.time.LocalDateTime;
