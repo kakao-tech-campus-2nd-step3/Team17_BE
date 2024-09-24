@@ -2,9 +2,9 @@ package homeTry.auth.kakaoAuth.service;
 
 import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.serverException.InternalServerException;
-import homeTry.dto.kakaoAPI.KakaoMemberInfoDTO;
-import homeTry.dto.MemberDTO;
-import homeTry.dto.kakaoAPI.TokenResponseDTO;
+import homeTry.auth.kakaoAuth.dto.KakaoMemberInfoDTO;
+import homeTry.member.dto.MemberDTO;
+import homeTry.auth.kakaoAuth.dto.TokenResponseDTO;
 import java.net.URI;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
