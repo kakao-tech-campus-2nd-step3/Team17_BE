@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import homeTry.diary.model.vo.Memo;
+import homeTry.member.model.vo.Email;
 
 @Entity
 @Table(name = "diary")
@@ -22,12 +23,14 @@ public class Diary {
     private Memo memo; 
 
     @Column(nullable = false)
-    private String memberEmail;
+    private Email memberEmail;
 
-    public Diary(LocalDateTime createAt, Memo memo, String memberEmail) {
+    protected Diary() {}
+
+    public Diary(LocalDateTime createAt, String memo, String memberEmail) {
         this.createAt = createAt;
-        this.memo = memo;
-        this.memberEmail = memberEmail;
+        this.memo = new Memo(memo);
+        this.memberEmail = new Email(memberEmail);
     }
 
     public Long getId() {
@@ -42,7 +45,7 @@ public class Diary {
         return memo;
     }
 
-    public String getMemberEmail() {
+    public Email getMemberEmail() {
         return memberEmail;
     }
 }

@@ -27,7 +27,7 @@ public class DiaryService {
         
         diaryRepository.save(
                 new Diary(LocalDateTime.now(),
-                        diaryRequest.getMemo(),
+                        diaryRequest.memo(),
                         email));
     }
 
