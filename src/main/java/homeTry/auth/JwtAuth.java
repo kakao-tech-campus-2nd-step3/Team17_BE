@@ -1,6 +1,6 @@
 package homeTry.auth;
 
-import homeTry.dto.MemberDTO;
+import homeTry.member.dto.MemberDTO;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

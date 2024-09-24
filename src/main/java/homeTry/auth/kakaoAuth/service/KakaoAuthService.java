@@ -1,6 +1,6 @@
 package homeTry.auth.kakaoAuth.service;
 
-import homeTry.dto.MemberDTO;
+import homeTry.member.dto.MemberDTO;
 import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.clientException.UserNotFoundException;
 import homeTry.exception.serverException.InternalServerException;

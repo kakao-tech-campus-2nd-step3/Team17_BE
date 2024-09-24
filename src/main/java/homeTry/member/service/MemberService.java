@@ -3,7 +3,7 @@ package homeTry.member.service;
 import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.clientException.UserNotFoundException;
 import homeTry.exception.serverException.InternalServerException;
-import homeTry.dto.MemberDTO;
+import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Password;
