@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExerciseListRepository extends JpaRepository<ExerciseList, Long> {
 
-    List<ExerciseList> findByDateTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
+    List<ExerciseList> findByStartTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
 
 }

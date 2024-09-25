@@ -59,7 +59,7 @@ public class ExerciseListService {
             .atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> weeklyExercises = exerciseListRepository.findByDateTimeBetween(
+        List<ExerciseList> weeklyExercises = exerciseListRepository.findByStartTimeBetween(
             startOfWeek, endOfWeek);
 
         return sumExerciseTime(weeklyExercises);
@@ -71,7 +71,7 @@ public class ExerciseListService {
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusDays(1)
             .withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> monthlyExercises = exerciseListRepository.findByDateTimeBetween(
+        List<ExerciseList> monthlyExercises = exerciseListRepository.findByStartTimeBetween(
             startOfMonth, endOfMonth);
 
         return sumExerciseTime(monthlyExercises);
