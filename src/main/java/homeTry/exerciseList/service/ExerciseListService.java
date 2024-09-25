@@ -1,11 +1,11 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.repository.ExerciseListRepository;
-import homeTry.exerciseList.model.vo.ActiveStatus;
-import homeTry.exerciseList.model.vo.DeprecatedStatus;
 import homeTry.exerciseList.model.entity.ExerciseList;
-import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.exerciseList.dto.ExerciseListRequest;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,40 +20,67 @@ public class ExerciseListService {
 
     @Transactional
     public void createExercise(ExerciseListRequest request) {
-        ExerciseName exerciseName = request.toExerciseName();
-        DeprecatedStatus deprecatedStatus = new DeprecatedStatus(false);
-        ActiveStatus activeStatus = new ActiveStatus(false);
-
-        ExerciseList exerciseList = new ExerciseList(exerciseName, deprecatedStatus, activeStatus);
+        ExerciseList exerciseList = new ExerciseList(request.exerciseName());
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
     public void deleteExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
-        exerciseListRepository.delete(exerciseList);
+        ExerciseList exerciseList = getExerciseListById(exerciseId);
+        exerciseList.markAsDeprecated(); // isDeprecated 값을 true로 설정
+        exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
     public void startExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
+        ExerciseList exerciseList = getExerciseListById(exerciseId);
         exerciseList.startExercise();
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
     public void stopExercise(Long exerciseId) {
-        ExerciseList exerciseList = validateOwnership(exerciseId);
+        ExerciseList exerciseList = getExerciseListById(exerciseId);
         exerciseList.stopExercise();
         exerciseListRepository.save(exerciseList);
     }
 
-    // 멤버 권한 확인 추가될 예정
-    private ExerciseList validateOwnership(Long exerciseId) {
-        ExerciseList exerciseList = exerciseListRepository.findById(exerciseId)
+    private ExerciseList getExerciseListById(Long exerciseId) {
+        return exerciseListRepository.findById(exerciseId)
             .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
+    }
 
-        return exerciseList;
+    @Transactional
+    public Duration getWeeklyTotalExercise(String memberEmail) {
+        // 이번 주의 시작과 끝 계산
+        LocalDateTime startOfWeek = LocalDateTime.now()
+            .minusDays(LocalDateTime.now().getDayOfWeek().getValue() - 1) // 그 주 월요일로
+            .toLocalDate()
+            .atStartOfDay();
+        LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
+
+        List<ExerciseList> weeklyExercises = exerciseListRepository.findExercisesWithinPeriod(
+            startOfWeek, endOfWeek);
+
+        return sumExerciseTime(weeklyExercises);
+    }
+
+    public Duration getMonthlyTotalExercise(String memberEmail) {
+        // 이번 달의 시작과 끝 계산
+        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).toLocalDate().atStartOfDay();
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusDays(1)
+            .withHour(23).withMinute(59).withSecond(59);
+
+        List<ExerciseList> monthlyExercises = exerciseListRepository.findExercisesWithinPeriod(
+            startOfMonth, endOfMonth);
+
+        return sumExerciseTime(monthlyExercises);
+    }
+
+    private Duration sumExerciseTime(List<ExerciseList> exercises) {
+        return exercises.stream()
+            .map(ExerciseList::getExerciseTime)
+            .reduce(Duration.ZERO, Duration::plus);
     }
 
 }
