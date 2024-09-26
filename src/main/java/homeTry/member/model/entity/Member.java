@@ -6,18 +6,12 @@ import homeTry.member.model.vo.Password;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Embedded
     @Column(nullable = false, unique = true)
     private Email email;
 
@@ -44,7 +38,6 @@ public class Member {
         this.registrationDate = registrationDate;
     }
 
-    public Long getId() { return id; }
     public String getEmail() { return email.email(); }
     public String getPassword() { return password.password(); }
     public String getNickname() { return nickname.nickname(); }
@@ -52,4 +45,5 @@ public class Member {
     public LocalDateTime getRegistrationDate() {return registrationDate;}
 
     public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
+    public void changeNickname(Nickname nickname) { this.nickname = nickname; }
 }
