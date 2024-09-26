@@ -1,7 +1,9 @@
 package homeTry.member.model.vo;
 
+import jakarta.persistence.Embeddable;
 import java.util.regex.Pattern;
 
+@Embeddable
 public record Email( String email ) {
 
     public Email {
