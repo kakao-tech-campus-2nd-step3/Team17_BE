@@ -52,4 +52,5 @@ public class Member {
     public LocalDateTime getRegistrationDate() {return registrationDate;}
 
     public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
+    public void changeNickname(Nickname nickname) { this.nickname = nickname; }
 }

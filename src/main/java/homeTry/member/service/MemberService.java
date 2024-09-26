@@ -3,9 +3,11 @@ package homeTry.member.service;
 import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.clientException.UserNotFoundException;
 import homeTry.exception.serverException.InternalServerException;
+import homeTry.member.dto.ChangeNicknameDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
+import homeTry.member.model.vo.Nickname;
 import homeTry.member.model.vo.Password;
 import homeTry.member.repository.MemberRepository;
 import java.time.LocalDateTime;
@@ -77,9 +79,7 @@ public class MemberService {
     @Transactional
     public void setMemeberAccessToken(String email, String kakaoAccessToken) throws RuntimeException {
         try{
-            Member member = memberRepository.findByEmail(new Email(email)).orElseThrow(()
-                    -> new BadRequestException(email + "을(를) 가지는 유저를 찾을 수 없습니다."));
-
+            Member member = findMemberByEmail(new Email(email));
             member.setKakaoAccessToken(kakaoAccessToken);
         } catch (BadRequestException e) {
             throw e;
@@ -91,8 +91,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public String getMemberAccessToken(String email) throws RuntimeException {
         try{
-            Member member = memberRepository.findByEmail(new Email(email)).orElseThrow(()
-                    -> new BadRequestException(email + "을(를) 가지는 유저를 찾을 수 없습니다."));
+            Member member = findMemberByEmail(new Email(email));
             return member.getKakaoAccessToken();
         } catch (BadRequestException e) {
             throw e;
@@ -101,4 +100,21 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public void changeNickname(String email, ChangeNicknameDTO changeNicknameDTO)
+            throws RuntimeException {
+        try{
+            Member member = findMemberByEmail(new Email(email));
+            member.changeNickname(new Nickname(changeNicknameDTO.name()));
+        } catch (BadRequestException | IllegalArgumentException e){
+            throw new BadRequestException(e.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerException(e.getMessage());
+        }
+    }
+
+    private Member findMemberByEmail(Email email) throws BadRequestException {
+        return memberRepository.findByEmail(email).orElseThrow(()
+                -> new BadRequestException(email + "을(를) 가지는 유저를 찾을 수 없습니다."));
+    }
 }
