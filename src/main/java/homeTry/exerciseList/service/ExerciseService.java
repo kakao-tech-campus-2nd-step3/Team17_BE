@@ -1,8 +1,8 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.repository.ExerciseListRepository;
-import homeTry.exerciseList.model.entity.ExerciseList;
-import homeTry.exerciseList.dto.ExerciseListRequest;
+import homeTry.exerciseList.repository.ExerciseRepository;
+import homeTry.exerciseList.model.entity.Exercise;
+import homeTry.exerciseList.dto.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
@@ -14,50 +14,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ExerciseListService {
+public class ExerciseService {
 
-    private final ExerciseListRepository exerciseListRepository;
+    private final ExerciseRepository exerciseRepository;
     private final MemberRepository memberRepository;
 
-    public ExerciseListService(ExerciseListRepository exerciseListRepository,
+    public ExerciseService(ExerciseRepository exerciseRepository,
         MemberRepository memberRepository) {
-        this.exerciseListRepository = exerciseListRepository;
+        this.exerciseRepository = exerciseRepository;
         this.memberRepository = memberRepository;
     }
 
     @Transactional
-    public void createExercise(ExerciseListRequest request, MemberDTO memberDTO) {
+    public void createExercise(ExerciseRequest request, MemberDTO memberDTO) {
 
         Member member = memberRepository.findByEmail(new Email(memberDTO.email()))
             .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 사용자를 찾을 수 없습니다."));
 
-        ExerciseList exerciseList = new ExerciseList(request.exerciseName(), member);
-        exerciseListRepository.save(exerciseList);
+        Exercise exercise = new Exercise(request.exerciseName(), member);
+        exerciseRepository.save(exercise);
     }
 
     @Transactional
     public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
-        ExerciseList exerciseList = getExerciseListById(exerciseId);
-        exerciseList.markAsDeprecated(); // isDeprecated 값을 true로 설정
-        exerciseListRepository.save(exerciseList);
+        Exercise exercise = getExerciseListById(exerciseId);
+        exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정
+        exerciseRepository.save(exercise);
     }
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        ExerciseList exerciseList = getExerciseListById(exerciseId);
-        exerciseList.startExercise();
-        exerciseListRepository.save(exerciseList);
+        Exercise exercise = getExerciseListById(exerciseId);
+        exercise.startExercise();
+        exerciseRepository.save(exercise);
     }
 
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
-        ExerciseList exerciseList = getExerciseListById(exerciseId);
-        exerciseList.stopExercise();
-        exerciseListRepository.save(exerciseList);
+        Exercise exercise = getExerciseListById(exerciseId);
+        exercise.stopExercise();
+        exerciseRepository.save(exercise);
     }
 
-    private ExerciseList getExerciseListById(Long exerciseId) {
-        return exerciseListRepository.findById(exerciseId)
+    private Exercise getExerciseListById(Long exerciseId) {
+        return exerciseRepository.findById(exerciseId)
             .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
     }
 
@@ -70,7 +70,7 @@ public class ExerciseListService {
             .atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> weeklyExercises = exerciseListRepository.findByStartTimeBetween(
+        List<Exercise> weeklyExercises = exerciseRepository.findByStartTimeBetween(
             startOfWeek, endOfWeek);
 
         return sumExerciseTime(weeklyExercises);
@@ -83,15 +83,15 @@ public class ExerciseListService {
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusDays(1)
             .withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> monthlyExercises = exerciseListRepository.findByStartTimeBetween(
+        List<Exercise> monthlyExercises = exerciseRepository.findByStartTimeBetween(
             startOfMonth, endOfMonth);
 
         return sumExerciseTime(monthlyExercises);
     }
 
-    private Duration sumExerciseTime(List<ExerciseList> exercises) {
+    private Duration sumExerciseTime(List<Exercise> exercises) {
         return exercises.stream()
-            .map(ExerciseList::getExerciseTime)
+            .map(Exercise::getExerciseTime)
             .reduce(Duration.ZERO, Duration::plus);
     }
 

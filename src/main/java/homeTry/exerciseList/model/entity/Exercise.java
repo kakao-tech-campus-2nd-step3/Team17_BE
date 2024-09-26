@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
-public class ExerciseList {
+public class Exercise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +41,10 @@ public class ExerciseList {
     @JoinColumn(name = "member_email", referencedColumnName = "email", nullable = false)
     private Member member;
 
-    protected ExerciseList() {
+    protected Exercise() {
     }
 
-    public ExerciseList(String exerciseName, Member member) {
+    public Exercise(String exerciseName, Member member) {
         this.exerciseName = new ExerciseName(exerciseName);
         this.isDeprecated = false;
         this.isActive = false;

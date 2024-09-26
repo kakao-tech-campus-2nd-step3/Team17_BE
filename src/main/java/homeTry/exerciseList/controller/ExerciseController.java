@@ -1,8 +1,8 @@
 package homeTry.exerciseList.controller;
 
 import homeTry.annotation.LoginMember;
-import homeTry.exerciseList.service.ExerciseListService;
-import homeTry.exerciseList.dto.ExerciseListRequest;
+import homeTry.exerciseList.service.ExerciseService;
+import homeTry.exerciseList.dto.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/exercise")
-public class ExerciseListController {
+public class ExerciseController {
 
-    private final ExerciseListService exerciseListService;
+    private final ExerciseService exerciseService;
 
-    public ExerciseListController(ExerciseListService exerciseListService) {
-        this.exerciseListService = exerciseListService;
+    public ExerciseController(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> createExercise(@RequestBody ExerciseListRequest request,
+    public ResponseEntity<Void> createExercise(@RequestBody ExerciseRequest request,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseListService.createExercise(request, memberDTO);  // 운동 생성
+        exerciseService.createExercise(request, memberDTO);  // 운동 생성
         return new ResponseEntity<>(HttpStatus.CREATED);  // 상태 코드 201
     }
 
@@ -36,7 +36,7 @@ public class ExerciseListController {
     public ResponseEntity<Void> deleteExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseListService.deleteExercise(exerciseId, memberDTO);  // 운동 삭제
+        exerciseService.deleteExercise(exerciseId, memberDTO);  // 운동 삭제
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 상태 코드 204
     }
 
@@ -44,7 +44,7 @@ public class ExerciseListController {
     public ResponseEntity<Void> startExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseListService.startExercise(exerciseId, memberDTO);
+        exerciseService.startExercise(exerciseId, memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
@@ -52,7 +52,7 @@ public class ExerciseListController {
     public ResponseEntity<Void> stopExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseListService.stopExercise(exerciseId, memberDTO);
+        exerciseService.stopExercise(exerciseId, memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
