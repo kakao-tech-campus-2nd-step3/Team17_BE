@@ -3,8 +3,9 @@ package homeTry.diary.model.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import homeTry.diary.model.vo.Memo;
+import homeTry.member.model.vo.Email;
 
 @Entity
 @Table(name = "diary")
@@ -15,26 +16,28 @@ public class Diary {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime createAt;
+    private LocalDate createAt;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
     private Memo memo; 
 
     @Column(nullable = false)
-    private String memberEmail;
+    private Email memberEmail;
 
-    public Diary(LocalDateTime createAt, Memo memo, String memberEmail) {
+    protected Diary() {}
+
+    public Diary(LocalDate createAt, String memo, String memberEmail) {
         this.createAt = createAt;
-        this.memo = memo;
-        this.memberEmail = memberEmail;
+        this.memo = new Memo(memo);
+        this.memberEmail = new Email(memberEmail);
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalDateTime getCreateAt() {
+    public LocalDate getCreateAt() {
         return createAt;
     }
 
@@ -42,7 +45,7 @@ public class Diary {
         return memo;
     }
 
-    public String getMemberEmail() {
+    public Email getMemberEmail() {
         return memberEmail;
     }
 }
