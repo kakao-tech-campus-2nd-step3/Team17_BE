@@ -8,12 +8,19 @@ import java.util.Objects;
 @Embeddable
 public class Memo {
     
-    private final String value;
+    private String value;
+
+    protected Memo() {}
 
     public Memo(String value) {
-        //constraints
+        validateMemo(value);
         this.value = value;
     }
+
+    private void validateMemo(String value) {
+        if (value != null && value.isBlank())
+            throw new IllegalArgumentException();
+    } 
 
     @Override
     public boolean equals(Object o) {
@@ -30,9 +37,7 @@ public class Memo {
 
     @Override
     public String toString() {
-        return "Memo{" +
-                "value='" + value + '\'' +
-                '}';
+        return value;
     }
 }
 
