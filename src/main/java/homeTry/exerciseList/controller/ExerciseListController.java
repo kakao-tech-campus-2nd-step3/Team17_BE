@@ -40,7 +40,7 @@ public class ExerciseListController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 상태 코드 204
     }
 
-    @PutMapping("/{exerciseId}/start")
+    @PostMapping("/{exerciseId}")
     public ResponseEntity<Void> startExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
@@ -48,7 +48,7 @@ public class ExerciseListController {
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
-    @PutMapping("/{exerciseId}/stop")
+    @PutMapping("/{exerciseId}")
     public ResponseEntity<Void> stopExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
