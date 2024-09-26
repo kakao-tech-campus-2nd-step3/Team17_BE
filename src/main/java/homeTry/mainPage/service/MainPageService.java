@@ -17,10 +17,11 @@ public class MainPageService {
         this.diaryService = diaryService;
     }
     
-    public MainPageResponse getMainPage(MainPageRequest mainPageRequest) {
+    public MainPageResponse getMainPage(MainPageRequest mainPageRequest, String email) {
 
-        Duration totaltime = Duration.ZERO;
-        DiaryDto diary = diaryService.getDiaryByDate(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day());
+        Duration totaltime = Duration.ZERO; //temp
+
+        DiaryDto diary = diaryService.getDiaryByDate(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day(), email);
         return new MainPageResponse(totaltime, diary);
     }
 }
