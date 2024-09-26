@@ -3,6 +3,7 @@ package homeTry.mainPage.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,7 +12,6 @@ import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
 import homeTry.mainPage.service.MainPageService;
 import homeTry.member.dto.MemberDTO;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api")
