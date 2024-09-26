@@ -1,11 +1,8 @@
 package homeTry.diary.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.NoSuchElementException;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import homeTry.diary.dto.DiaryDto;
