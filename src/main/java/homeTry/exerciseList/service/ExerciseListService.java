@@ -61,7 +61,7 @@ public class ExerciseListService {
             .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Duration getWeeklyTotalExercise(String memberEmail) {
         // 이번 주의 시작과 끝 계산
         LocalDateTime startOfWeek = LocalDateTime.now()
@@ -76,6 +76,7 @@ public class ExerciseListService {
         return sumExerciseTime(weeklyExercises);
     }
 
+    @Transactional(readOnly = true)
     public Duration getMonthlyTotalExercise(String memberEmail) {
         // 이번 달의 시작과 끝 계산
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).toLocalDate().atStartOfDay();
