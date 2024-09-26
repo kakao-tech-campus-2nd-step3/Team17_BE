@@ -3,10 +3,8 @@ package homeTry.diary.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
 import java.util.NoSuchElementException;
 
-import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 
 import homeTry.diary.dto.DiaryDto;
