@@ -37,9 +37,7 @@ public class Memo {
 
     @Override
     public String toString() {
-        return "Memo{" +
-                "value='" + value + '\'' +
-                '}';
+        return value;
     }
 }
 

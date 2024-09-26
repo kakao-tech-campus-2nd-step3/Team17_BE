@@ -1,10 +1,15 @@
 package homeTry.diary.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
 import java.util.NoSuchElementException;
 
+import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 
+import homeTry.diary.dto.DiaryDto;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
@@ -17,6 +22,17 @@ public class DiaryService {
 
     public DiaryService(DiaryRepository diaryRepository) {
         this.diaryRepository = diaryRepository;
+    }
+
+    public DiaryDto getDiaryByDate(int year, int month, int day) {
+
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.MAX);
+
+        Diary diary = diaryRepository.findByDate(startOfDay, endOfDay)
+            .orElseThrow(() -> new NoSuchElementException());
+        
+        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMemberEmail().toString());
     }
 
     @Transactional
