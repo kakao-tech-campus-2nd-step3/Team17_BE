@@ -1,6 +1,7 @@
 package homeTry.exerciseList.model.entity;
 
 import homeTry.exerciseList.model.vo.ExerciseName;
+import homeTry.member.model.entity.Member;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -8,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -34,14 +37,19 @@ public class ExerciseList {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @ManyToOne
+    @JoinColumn(name = "member_email", referencedColumnName = "email", nullable = false)
+    private Member member;
+
     protected ExerciseList() {
     }
 
-    public ExerciseList(String exerciseName) {
+    public ExerciseList(String exerciseName, Member member) {
         this.exerciseName = new ExerciseName(exerciseName);
         this.isDeprecated = false;
         this.isActive = false;
         this.exerciseTime = Duration.ZERO;
+        this.member = member;
     }
 
     public Long getExerciseId() {
@@ -66,6 +74,10 @@ public class ExerciseList {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public void markAsDeprecated() {

@@ -3,6 +3,10 @@ package homeTry.exerciseList.service;
 import homeTry.exerciseList.repository.ExerciseListRepository;
 import homeTry.exerciseList.model.entity.ExerciseList;
 import homeTry.exerciseList.dto.ExerciseListRequest;
+import homeTry.member.dto.MemberDTO;
+import homeTry.member.model.entity.Member;
+import homeTry.member.model.vo.Email;
+import homeTry.member.repository.MemberRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,33 +17,40 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExerciseListService {
 
     private final ExerciseListRepository exerciseListRepository;
+    private final MemberRepository memberRepository;
 
-    public ExerciseListService(ExerciseListRepository exerciseListRepository) {
+    public ExerciseListService(ExerciseListRepository exerciseListRepository,
+        MemberRepository memberRepository) {
         this.exerciseListRepository = exerciseListRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional
-    public void createExercise(ExerciseListRequest request) {
-        ExerciseList exerciseList = new ExerciseList(request.exerciseName());
+    public void createExercise(ExerciseListRequest request, MemberDTO memberDTO) {
+
+        Member member = memberRepository.findByEmail(new Email(memberDTO.email()))
+            .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 사용자를 찾을 수 없습니다."));
+
+        ExerciseList exerciseList = new ExerciseList(request.exerciseName(), member);
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
-    public void deleteExercise(Long exerciseId) {
+    public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
         ExerciseList exerciseList = getExerciseListById(exerciseId);
         exerciseList.markAsDeprecated(); // isDeprecated 값을 true로 설정
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
-    public void startExercise(Long exerciseId) {
+    public void startExercise(Long exerciseId, MemberDTO memberDTO) {
         ExerciseList exerciseList = getExerciseListById(exerciseId);
         exerciseList.startExercise();
         exerciseListRepository.save(exerciseList);
     }
 
     @Transactional
-    public void stopExercise(Long exerciseId) {
+    public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
         ExerciseList exerciseList = getExerciseListById(exerciseId);
         exerciseList.stopExercise();
         exerciseListRepository.save(exerciseList);
@@ -59,7 +70,7 @@ public class ExerciseListService {
             .atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> weeklyExercises = exerciseListRepository.findExercisesWithinPeriod(
+        List<ExerciseList> weeklyExercises = exerciseListRepository.findByStartTimeBetween(
             startOfWeek, endOfWeek);
 
         return sumExerciseTime(weeklyExercises);
@@ -71,7 +82,7 @@ public class ExerciseListService {
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusDays(1)
             .withHour(23).withMinute(59).withSecond(59);
 
-        List<ExerciseList> monthlyExercises = exerciseListRepository.findExercisesWithinPeriod(
+        List<ExerciseList> monthlyExercises = exerciseListRepository.findByStartTimeBetween(
             startOfMonth, endOfMonth);
 
         return sumExerciseTime(monthlyExercises);
