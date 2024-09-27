@@ -1,6 +1,6 @@
 package homeTry.diary.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -25,23 +25,20 @@ public class DiaryService {
 
     public DiaryDto getDiaryByDate(int year, int month, int day, String memberEmail) {
 
-        LocalDate targetDay = LocalDate.of(year, month, day);
+        LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0); // 시작 시간
+        LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
-        Diary diary = diaryRepository.findByDateAndMemberEmail(targetDay, new Email(memberEmail))
+        Diary diary = diaryRepository.findByDateRangeAndMemberEmail(startOfDay, endOfDay, new Email(memberEmail))
             .orElseThrow(() ->new IllegalStateException("존재하지 않는 일기입니다."));
         
         return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMemberEmail().toString());
-    }
+     }
 
     @Transactional
     public void createDiary(DiaryRequest diaryRequest, String memberEmail) {
         
-        if (diaryRepository.findByDateAndMemberEmail(LocalDate.now(), new Email(memberEmail)).isPresent()) {
-            throw new IllegalStateException("오늘은 이미 일기를 작성했습니다.");
-        }
-
         diaryRepository.save(
-                new Diary(LocalDate.now(),
+                new Diary(LocalDateTime.now(),
                         diaryRequest.memo(),
                         memberEmail));
     }
