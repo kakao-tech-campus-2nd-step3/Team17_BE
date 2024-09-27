@@ -76,6 +76,26 @@ public class MemberService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Member getMemberEntity(String email) throws RuntimeException {
+        try {
+            Email memberEmail = new Email(email);
+            if (memberRepository.countByEmail(memberEmail) == 1) {
+                return memberRepository.findByEmail(memberEmail).get();
+            }
+            if (memberRepository.countByEmail(memberEmail) > 1) {
+                throw new InternalServerException(email + " -> 데이터 무결성 위반");
+            }
+            throw new UserNotFoundException(email + "을(를) 가지는 유저를 찾을 수 없습니다.");
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InternalServerException(e.getMessage());
+        }
+    }
+
     @Transactional
     public void setMemeberAccessToken(String email, String kakaoAccessToken) throws RuntimeException {
         try{
