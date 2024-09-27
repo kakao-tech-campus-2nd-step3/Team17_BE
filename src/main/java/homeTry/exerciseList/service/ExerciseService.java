@@ -1,6 +1,9 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
+import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
+import homeTry.exerciseList.exception.ExerciseNotStartedException;
+import homeTry.exerciseList.exception.NoExercisePermissionException;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
 import homeTry.exerciseList.repository.ExerciseRepository;
@@ -36,7 +39,7 @@ public class ExerciseService {
 
     @Transactional
     public void createExercise(ExerciseRequest request, MemberDTO memberDTO) {
-        Member foundMember = memberService.getMemberEntity(memberDTO.email());
+        Member foundMember = memberService.getMemberEntity(memberDTO.id());
         Exercise exercise = new Exercise(request.exerciseName(), foundMember);
         exerciseRepository.save(exercise);
     }
@@ -44,6 +47,9 @@ public class ExerciseService {
     @Transactional
     public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        if (!exercise.getMember().getId().equals(memberDTO.id())) {
+            throw new NoExercisePermissionException();
+        }
         exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정
         exerciseRepository.save(exercise);
     }
@@ -51,6 +57,9 @@ public class ExerciseService {
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        if (exercise.getCurrentExerciseTime().getStartTime() != null) {
+            throw new ExerciseAlreadyStartedException();
+        }
         exercise.startExercise();
         exerciseTimeRepository.save(exercise.getCurrentExerciseTime());
     }
@@ -58,14 +67,17 @@ public class ExerciseService {
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        if (exercise.getCurrentExerciseTime().getStartTime() == null) {
+            throw new ExerciseNotStartedException();
+        }
         exercise.stopExercise();
         exerciseTimeRepository.save(exercise.getCurrentExerciseTime());
     }
 
     private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
-        Member foundMember = memberService.getMemberEntity(memberDTO.email());
+        Member foundMember = memberService.getMember(memberDTO.id());
         return exerciseRepository.findByIdAndMemberId(exerciseId, foundMember.getId())
-            .orElseThrow(() -> new ExerciseNotFoundException());
+            .orElseThrow(ExerciseNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
