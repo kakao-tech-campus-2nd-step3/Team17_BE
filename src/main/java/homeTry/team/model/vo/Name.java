@@ -1,24 +1,26 @@
-package homeTry.group.model.vo;
+package homeTry.team.model.vo;
 
 import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
 @Embeddable
-public class Password {
+public class Name {
 
     private String value;
 
-    protected Password () {}
+    protected Name() {
+    }
 
-    public Password(String value) {
-        validatePassword(value);
+    public Name(String value) {
+        validateName(value);
         this.value = value;
     }
 
-    private void validatePassword(String value) {
+    private void validateName(String value) {
         if(value == null || value.isBlank())
-            throw new IllegalArgumentException("password 값은 필수입니다");
+            throw new IllegalArgumentException("이름값은 필수입니다");
+
     }
 
     public String getValue() {
@@ -30,11 +32,11 @@ public class Password {
         if (this == object)
             return true;
 
-        if (!(object instanceof Password))
+        if (!(object instanceof Name))
             return false;
 
-        Password password = (Password) object;
-        return Objects.equals(this.value, password.getValue());
+        Name name = (Name) object;
+        return Objects.equals(this.value, name.getValue());
     }
 
     @Override
