@@ -73,7 +73,7 @@ public class KakaoTokenService {
             KakaoMemberInfoDTO.KakaoAccount kakaoAccount = Objects.requireNonNull(userInfo).kakaoAccount();
             KakaoMemberInfoDTO.KakaoAccount.Profile profile = kakaoAccount.profile();
 
-            return new MemberDTO(kakaoAccount.email(), "default",  profile.nickname());
+            return new MemberDTO(0L, kakaoAccount.email(), "default",  profile.nickname());
         } catch (BadRequestException | InternalServerException e){
             throw e;
         } catch (Exception e) {

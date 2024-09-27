@@ -4,6 +4,7 @@ import homeTry.member.model.entity.Member;
 import java.time.LocalDateTime;
 
 public record MemberDTO(
+        Long id,
         String email,
         String password,
         String nickname
@@ -14,7 +15,7 @@ public record MemberDTO(
     }
 
     public static MemberDTO convertToMemberDTO(Member member){
-        return new MemberDTO(member.getEmail(), member.getPassword(), member.getNickname());
+        return new MemberDTO(member.getId(), member.getEmail(), member.getPassword(), member.getNickname());
     }
 
 }
