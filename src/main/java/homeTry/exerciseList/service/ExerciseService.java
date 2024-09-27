@@ -1,5 +1,6 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
 import homeTry.exerciseList.repository.ExerciseRepository;
@@ -7,6 +8,7 @@ import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.dto.ExerciseRequest;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
 import homeTry.member.dto.MemberDTO;
+import homeTry.member.model.entity.Member;
 import homeTry.member.service.MemberService;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -34,8 +36,8 @@ public class ExerciseService {
 
     @Transactional
     public void createExercise(ExerciseRequest request, MemberDTO memberDTO) {
-        MemberDTO foundMember = memberService.getMember(memberDTO.email());
-        Exercise exercise = new Exercise(request.exerciseName(), foundMember.convertToMember());
+        Member foundMember = memberService.getMemberEntity(memberDTO.email());
+        Exercise exercise = new Exercise(request.exerciseName(), foundMember);
         exerciseRepository.save(exercise);
     }
 
@@ -61,8 +63,8 @@ public class ExerciseService {
     }
 
     private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
-        MemberDTO foundMember = memberService.getMember(memberDTO.email());
-        return exerciseRepository.findByIdAndMemberId(exerciseId, foundMember.id())
+        Member foundMember = memberService.getMemberEntity(memberDTO.email());
+        return exerciseRepository.findByIdAndMemberId(exerciseId, foundMember.getId())
             .orElseThrow(() -> new ExerciseNotFoundException());
     }
 
