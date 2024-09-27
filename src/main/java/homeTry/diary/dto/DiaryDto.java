@@ -1,10 +1,10 @@
 package homeTry.diary.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record DiaryDto(
     Long id,
-    LocalDate createAt,
+    LocalDateTime createAt,
     String memo,
     String email
 ) {
