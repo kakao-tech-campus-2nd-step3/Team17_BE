@@ -51,8 +51,8 @@ public class ExerciseTime {
         this.startTime = startTime;
     }
 
-    public void resetExerciseTime(Duration exerciseTime) {
-        this.exerciseTime = exerciseTime;
+    public void resetExerciseTime() {
+        this.exerciseTime = Duration.ZERO;
     }
 
 }

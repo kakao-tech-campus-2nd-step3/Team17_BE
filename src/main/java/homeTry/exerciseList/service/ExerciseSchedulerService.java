@@ -51,7 +51,7 @@ public class ExerciseSchedulerService {
 
     private void resetExerciseTime(ExerciseTime exerciseTime) {
         // exercise_time을 0으로 초기화
-        exerciseTime.resetExerciseTime(Duration.ZERO);
+        exerciseTime.resetExerciseTime();
         exerciseTimeRepository.save(exerciseTime);
     }
 
