@@ -1,7 +1,6 @@
 package homeTry.exerciseList.repository;
 
 import homeTry.exerciseList.model.entity.ExerciseHistory;
-import homeTry.member.model.vo.Email;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
