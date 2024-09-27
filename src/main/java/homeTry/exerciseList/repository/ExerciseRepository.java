@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
-    Optional<Exercise> findByIdAndMemberEmail(Long exerciseId, Email memberEmail);
+    Optional<Exercise> findByIdAndMemberId(Long exerciseId, Long memberId);
 
 }
