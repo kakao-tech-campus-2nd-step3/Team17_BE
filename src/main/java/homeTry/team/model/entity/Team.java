@@ -14,12 +14,11 @@ public class Team {
     private Name teamName;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "team_description"))
+    @AttributeOverride(name = "value", column = @Column(name = "team_description", nullable = false))
     private Description teamDescription;
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "chief_email", nullable = false))
-    private Email chiefEmail;
+    @Column( nullable = false)
+    private Long leaderId;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "max_participants", nullable = false))
@@ -30,16 +29,16 @@ public class Team {
     private Participant currentParticipants;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "password", nullable = false))
+    @AttributeOverride(name = "value", column = @Column(name = "password"))
     private Password password;
 
     protected Team() {
     }
 
-    public Team(String teamName, String teamDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
+    public Team(String teamName, String teamDescription, long leaderId, long maxParticipants, long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
-        this.chiefEmail = new Email(chiefEmail);
+        this.leaderId= leaderId;
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);
         this.password = new Password(password);
@@ -57,8 +56,8 @@ public class Team {
         return teamDescription;
     }
 
-    public Email getChiefEmail() {
-        return chiefEmail;
+    public Long getLeaderId () {
+        return leaderId;
     }
 
     public Participant getMaxParticipants() {
@@ -73,10 +72,10 @@ public class Team {
         return password;
     }
 
-    public void updateTeam(String teamName, String teamDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
+    public void updateTeam(String teamName, String teamDescription, long leaderId, long maxParticipants, long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
-        this.chiefEmail = new Email(chiefEmail);
+        this.leaderId = leaderId;
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);
         this.password = new Password(password);

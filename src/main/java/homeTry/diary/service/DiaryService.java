@@ -30,14 +30,14 @@ public class DiaryService {
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
         Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberEmail))
-            .orElseThrow(() ->new IllegalStateException("존재하지 않는 일기입니다."));
-        
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일기입니다."));
+
         return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMember().getEmail().toString());
-     }
+    }
 
     @Transactional
     public void createDiary(DiaryRequest diaryRequest, String memberEmail) {
-        
+
         diaryRepository.save(
                 new Diary(LocalDateTime.now(),
                         diaryRequest.memo(),
@@ -45,12 +45,12 @@ public class DiaryService {
     }
 
     @Transactional
-    public void deleteDiary(Long diaryId){
+    public void deleteDiary(Long diaryId) {
 
-        if(diaryRepository.findById(diaryId).isEmpty()) {
+        if (diaryRepository.findById(diaryId).isEmpty()) {
             throw new NoSuchElementException();
         } else {
-          diaryRepository.deleteById(diaryId);
+            diaryRepository.deleteById(diaryId);
         }
     }
 }
