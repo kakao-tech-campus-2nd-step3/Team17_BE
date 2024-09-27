@@ -22,7 +22,7 @@ public class MemberService {
     public MemberService(MemberRepository memberRepository) { this.memberRepository = memberRepository; }
 
     @Transactional(readOnly = true)
-    public void login(MemberDTO memberDTO) throws RuntimeException {
+    public Long login(MemberDTO memberDTO) throws RuntimeException {
         try {
             if (memberRepository.countByEmailAndPassword(new Email(memberDTO.email()), new Password(memberDTO.password())) < 1)
             { throw new UserNotFoundException("아이디 또는 비밀번호가 올바르지 않습니다."); }
@@ -31,7 +31,9 @@ public class MemberService {
             { throw new InternalServerException("DB 무결성 오류"); }
 
             // 로그인 성공
-
+            return memberRepository.findByEmailAndPassword(new Email(memberDTO.email()), new Password(memberDTO.password()))
+                    .get()
+                    .getId();
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {
@@ -40,10 +42,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void register(MemberDTO memberDTO) throws RuntimeException {
+    public Long register(MemberDTO memberDTO) throws RuntimeException {
         try {
             Member member = memberDTO.convertToMember(LocalDateTime.now()); //가입 날짜 정의
-            memberRepository.save(member);
+            return memberRepository.save(member).getId();
         } catch (DataIntegrityViolationException e) {
             throw new BadRequestException("이미 있는 이메일입니다.");
         } catch (IllegalArgumentException e) {
@@ -56,37 +58,24 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberDTO getMember(String email) throws RuntimeException {
+    public MemberDTO getMember(Long id) throws RuntimeException {
         try {
-            Email memberEmail = new Email(email);
-            if (memberRepository.countByEmail(memberEmail) == 1) {
-                return MemberDTO.convertToMemberDTO(memberRepository.findByEmail(memberEmail).get());
-            }
-            if (memberRepository.countByEmail(memberEmail) > 1) {
-                throw new InternalServerException(email + " -> 데이터 무결성 위반");
-            }
-            throw new UserNotFoundException(email + "을(를) 가지는 유저를 찾을 수 없습니다.");
+            return MemberDTO.convertToMemberDTO(memberRepository.findById(id).orElseThrow(()
+                    -> new UserNotFoundException("유저를 찾을 수 없습니다.")));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage());
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
-
         }
     }
 
     @Transactional(readOnly = true)
-    public Member getMemberEntity(String email) throws RuntimeException {
+    public Member getMemberEntity(Long id) throws RuntimeException {
         try {
-            Email memberEmail = new Email(email);
-            if (memberRepository.countByEmail(memberEmail) == 1) {
-                return memberRepository.findByEmail(memberEmail).get();
-            }
-            if (memberRepository.countByEmail(memberEmail) > 1) {
-                throw new InternalServerException(email + " -> 데이터 무결성 위반");
-            }
-            throw new UserNotFoundException(email + "을(를) 가지는 유저를 찾을 수 없습니다.");
+            return memberRepository.findById(id).orElseThrow(()
+                    -> new UserNotFoundException("유저를 찾을 수 없습니다."));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage());
         } catch (BadRequestException e) {
@@ -97,9 +86,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void setMemeberAccessToken(String email, String kakaoAccessToken) throws RuntimeException {
+    public void setMemeberAccessToken(Long id, String kakaoAccessToken) throws RuntimeException {
         try{
-            Member member = findMemberByEmail(new Email(email));
+            Member member = getMemberEntity(id);
             member.setKakaoAccessToken(kakaoAccessToken);
         } catch (BadRequestException e) {
             throw e;
@@ -108,33 +97,16 @@ public class MemberService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public String getMemberAccessToken(String email) throws RuntimeException {
-        try{
-            Member member = findMemberByEmail(new Email(email));
-            return member.getKakaoAccessToken();
-        } catch (BadRequestException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
-        }
-    }
-
     @Transactional
-    public void changeNickname(String email, ChangeNicknameDTO changeNicknameDTO)
+    public void changeNickname(Long id, ChangeNicknameDTO changeNicknameDTO)
             throws RuntimeException {
         try{
-            Member member = findMemberByEmail(new Email(email));
+            Member member = getMemberEntity(id);
             member.changeNickname(new Nickname(changeNicknameDTO.name()));
         } catch (BadRequestException | IllegalArgumentException e){
             throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
         }
-    }
-
-    private Member findMemberByEmail(Email email) throws BadRequestException {
-        return memberRepository.findByEmail(email).orElseThrow(()
-                -> new BadRequestException(email + "을(를) 가지는 유저를 찾을 수 없습니다."));
     }
 }

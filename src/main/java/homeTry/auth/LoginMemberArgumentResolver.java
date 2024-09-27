@@ -31,8 +31,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         try{
             String token = webRequest.getHeader("Authorization").substring(7);
-            String email = jwtAuth.extractEmail(token);
-            return memberService.getMember(email);
+            Long id = jwtAuth.extractId(token);
+            return memberService.getMember(id);
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException("회원이 아닙니다.");
         } catch (NullPointerException e){

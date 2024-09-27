@@ -23,13 +23,13 @@ public class KakaoAuthService {
         MemberDTO memberDTO = kakaoTokenService.getMemberInfo(accessToken);
 
         try{
-            memberService.login(memberDTO); // -> UserNotFoundException을 던질 수 있음
-            memberService.setMemeberAccessToken(memberDTO.email(), accessToken);
+            Long id = memberService.login(memberDTO); // -> UserNotFoundException을 던질 수 있음
+            memberService.setMemeberAccessToken(id, accessToken);
 
             return memberDTO;
         } catch (UserNotFoundException e) { //유저를 못 찾으면 회원가입
-            memberService.register(memberDTO);
-            memberService.setMemeberAccessToken(memberDTO.email(), accessToken);
+            Long id = memberService.register(memberDTO);
+            memberService.setMemeberAccessToken(id, accessToken);
 
             return memberDTO;
         } catch (InternalServerException | BadRequestException e){

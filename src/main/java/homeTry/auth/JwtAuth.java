@@ -26,16 +26,17 @@ public class JwtAuth {
         jwtParser = Jwts.parser().setSigningKey(secret);
     }
 
-    public String extractEmail(String token) {
-        return jwtParser
+    public Long extractId(String token) {
+        return Long.valueOf(jwtParser
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject());
     }
 
     public String generateToken(MemberDTO memberDTO) {
         return Jwts.builder()
-                .setSubject(memberDTO.email())
+                .setSubject(memberDTO.id().toString())
+                .claim("email", memberDTO.email())
                 .claim("nickname", memberDTO.nickname())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_MILLIS))
