@@ -1,5 +1,6 @@
 package homeTry.auth.kakaoAuth.service;
 
+import homeTry.auth.kakaoAuth.config.KakaoAuthConfig;
 import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.serverException.InternalServerException;
 import homeTry.auth.kakaoAuth.dto.KakaoMemberInfoDTO;
@@ -7,8 +8,6 @@ import homeTry.member.dto.MemberDTO;
 import homeTry.auth.kakaoAuth.dto.TokenResponseDTO;
 import java.net.URI;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,29 +16,21 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
 @Service
-@PropertySource("classpath:application-kakao-login.properties")
-@PropertySource("classpath:application-secret.properties")
 public class KakaoTokenService {
 
-    @Value("${kakao-token-url}")
-    private String tokenUrl;
-
-    @Value("${kakao-user-info-url}")
-    private String userInfoUrl;
-
-    @Value("${kakao-redirect-uri}")
-    private String kakaoRedirectUri;
-
-    @Value("${kakao-rest-api-key}")
-    private String clientId;
+    private final KakaoAuthConfig kakaoAuthConfig;
 
     private final RestClient client = RestClient.builder().build();
 
+    public KakaoTokenService(KakaoAuthConfig kakaoAuthConfig) {
+        this.kakaoAuthConfig = kakaoAuthConfig;
+    }
+
     public String getAccessToken(String code){
         try {
-            var body = makeBody(clientId, kakaoRedirectUri, code);
+            var body = makeBody(kakaoAuthConfig.getRestApiKey(), kakaoAuthConfig.getRedirectUri(), code);
             ResponseEntity<TokenResponseDTO> result = client.post()
-                    .uri(URI.create(tokenUrl)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .uri(URI.create(kakaoAuthConfig.getTokenUrl())).contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(body).retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                         throw new BadRequestException("잘못된 요청으로 인한 오류입니다.\n" + response.getBody()
@@ -63,7 +54,7 @@ public class KakaoTokenService {
     public MemberDTO getMemberInfo(String kakaoAccessToken){
         try {
             ResponseEntity<KakaoMemberInfoDTO> responseUserInfo = client.get()
-                    .uri(URI.create(userInfoUrl))
+                    .uri(URI.create(kakaoAuthConfig.getUserInfoUrl()))
                     .header("Authorization", "Bearer " + kakaoAccessToken)
                     .header("Content-type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8")
                     .retrieve()
