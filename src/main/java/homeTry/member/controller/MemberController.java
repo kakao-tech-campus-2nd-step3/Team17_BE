@@ -31,7 +31,7 @@ public class MemberController {
 
     @GetMapping("/profile")
     public ResponseEntity<MyPageDTO> getMemberInfo(@LoginMember MemberDTO memberDTO) {
-        Long id = memberDTO.id()
+        Long id = memberDTO.id();
 
         Duration weeklyTotal = exerciseService.getWeeklyTotalExercise(id);
         Duration monthlyTotal = exerciseService.getMonthlyTotalExercise(id);
