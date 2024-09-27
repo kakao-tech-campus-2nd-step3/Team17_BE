@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:application-secret.properties")
 public class JwtAuth {
+    private final static Integer HOUR = 3600;
+    private final static Integer EXPIRED_MILLIS = 1000 * 6 * HOUR;
 
     @Value("${jwt-secret-key}")
     private String secret;
@@ -36,7 +38,7 @@ public class JwtAuth {
                 .setSubject(memberDTO.email())
                 .claim("nickname", memberDTO.nickname())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 21000))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_MILLIS))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
@@ -44,10 +46,10 @@ public class JwtAuth {
     public Boolean validateToken(String token) {
         try {
             jwtParser.parseClaimsJws(token); // 서명 검증
+            return !isTokenExpired(token); // 만료 여부 확인
         } catch (JwtException e) {
             return false;
         }
-        return true;
     }
 
 
