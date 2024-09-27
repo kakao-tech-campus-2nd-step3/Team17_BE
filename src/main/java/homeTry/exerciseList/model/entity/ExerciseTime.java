@@ -35,6 +35,10 @@ public class ExerciseTime {
         this.exerciseTime = this.exerciseTime.plus(timeElapsed);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Duration getExerciseTime() {
         return exerciseTime;
     }
@@ -47,8 +51,8 @@ public class ExerciseTime {
         this.startTime = startTime;
     }
 
-    public void resetExerciseTime(Duration exerciseTime) {
-        this.exerciseTime = exerciseTime;
+    public void resetExerciseTime() {
+        this.exerciseTime = Duration.ZERO;
     }
 
 }

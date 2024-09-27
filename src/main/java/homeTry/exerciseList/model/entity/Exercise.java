@@ -31,7 +31,7 @@ public class Exercise {
     private boolean isDeprecated;
 
     @ManyToOne
-    @JoinColumn(name = "member_email", referencedColumnName = "email", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
     @OneToOne(cascade = CascadeType.ALL)
