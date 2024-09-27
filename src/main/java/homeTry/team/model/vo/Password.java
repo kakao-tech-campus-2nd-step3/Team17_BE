@@ -17,8 +17,8 @@ public class Password {
     }
 
     private void validatePassword(String value) {
-        if(value == null || value.isBlank())
-            throw new IllegalArgumentException("password 값은 필수입니다");
+        if(value != null && value.isBlank())
+            throw new IllegalArgumentException("password값은 비어있을 수 없습니다");
     }
 
     public String getValue() {
