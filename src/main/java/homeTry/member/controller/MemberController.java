@@ -31,12 +31,12 @@ public class MemberController {
 
     @GetMapping("/profile")
     public ResponseEntity<MyPageDTO> getMemberInfo(@LoginMember MemberDTO memberDTO) {
-        String email = memberDTO.email();
+        Long id = memberDTO.id()
 
-        Duration weeklyTotal = exerciseService.getWeeklyTotalExercise(email);
-        Duration monthlyTotal = exerciseService.getMonthlyTotalExercise(email);
+        Duration weeklyTotal = exerciseService.getWeeklyTotalExercise(id);
+        Duration monthlyTotal = exerciseService.getMonthlyTotalExercise(id);
 
-        MyPageDTO myPageDTO = new MyPageDTO(memberDTO.nickname(), email, weeklyTotal, monthlyTotal);
+        MyPageDTO myPageDTO = new MyPageDTO(memberDTO.nickname(), memberDTO.email(), weeklyTotal, monthlyTotal);
 
         return ResponseEntity.ok(myPageDTO);
     }
