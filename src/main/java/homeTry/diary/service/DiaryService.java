@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import homeTry.diary.dto.DiaryDto;
 
-import homeTry.member.model.vo.Email;
 import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.model.entity.Diary;
