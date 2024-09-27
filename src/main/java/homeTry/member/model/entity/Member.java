@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @Embedded
     @Column(nullable = false, unique = true)
     private Email email;
 
@@ -43,7 +43,6 @@ public class Member {
         this.password = new Password(password);
         this.registrationDate = registrationDate;
     }
-
     public Long getId() { return id; }
     public String getEmail() { return email.email(); }
     public String getPassword() { return password.password(); }
@@ -52,4 +51,7 @@ public class Member {
     public LocalDateTime getRegistrationDate() {return registrationDate;}
 
     public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
+    public void changeNickname(Nickname nickname) { this.nickname = nickname; }
+
+
 }

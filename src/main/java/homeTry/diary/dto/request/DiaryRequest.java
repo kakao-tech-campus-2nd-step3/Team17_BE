@@ -1,15 +1,5 @@
 package homeTry.diary.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+public record DiaryRequest(String memo) {
 
-import homeTry.diary.model.vo.Memo;
-
-public class DiaryRequest {
-
-    private Memo memo;
-
-    @JsonValue
-    public Memo getMemo() {
-        return memo;
-    }
 }
