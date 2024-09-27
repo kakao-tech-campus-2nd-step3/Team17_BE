@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import homeTry.diary.model.vo.Memo;
-import homeTry.member.model.vo.Email;
+import homeTry.member.model.entity.Member;
 
 @Entity
 @Table(name = "diary")
@@ -23,15 +23,16 @@ public class Diary {
     @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
     private Memo memo; 
 
-    @Column(nullable = false)
-    private Email memberEmail;
+    @ManyToOne
+    @JoinColumn(name = "member_email", referencedColumnName = "email", nullable = false)
+    private Member member;
 
     protected Diary() {}
 
-    public Diary(LocalDateTime createdAt, String memo, String memberEmail) {
+    public Diary(LocalDateTime createdAt, String memo, Member member) {
         this.createdAt = createdAt;
         this.memo = new Memo(memo);
-        this.memberEmail = new Email(memberEmail);
+        this.member = member;
     }
 
     public Long getId() {
@@ -46,7 +47,7 @@ public class Diary {
         return memo;
     }
 
-    public Email getMemberEmail() {
-        return memberEmail;
+    public Member getMember() {
+        return member;
     }
 }

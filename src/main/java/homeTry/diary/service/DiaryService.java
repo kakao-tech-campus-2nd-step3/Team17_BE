@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 import homeTry.diary.dto.DiaryDto;
 
-import homeTry.member.model.vo.Email;
-
+import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
@@ -18,9 +17,11 @@ import jakarta.transaction.Transactional;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final MemberService memberService;
 
-    public DiaryService(DiaryRepository diaryRepository) {
+    public DiaryService(DiaryRepository diaryRepository, MemberService memberService) {
         this.diaryRepository = diaryRepository;
+        this.memberService = memberService;
     }
 
     public DiaryDto getDiaryByDate(int year, int month, int day, String memberEmail) {
@@ -28,10 +29,10 @@ public class DiaryService {
         LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0); // 시작 시간
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
-        Diary diary = diaryRepository.findByDateRangeAndMemberEmail(startOfDay, endOfDay, new Email(memberEmail))
+        Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberEmail))
             .orElseThrow(() ->new IllegalStateException("존재하지 않는 일기입니다."));
         
-        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMemberEmail().toString());
+        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMember().getEmail().toString());
      }
 
     @Transactional
@@ -40,7 +41,7 @@ public class DiaryService {
         diaryRepository.save(
                 new Diary(LocalDateTime.now(),
                         diaryRequest.memo(),
-                        memberEmail));
+                        memberService.getMemberEntity(memberEmail)));
     }
 
     @Transactional
