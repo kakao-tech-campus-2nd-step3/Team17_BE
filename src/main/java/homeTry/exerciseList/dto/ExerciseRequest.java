@@ -1,11 +1,9 @@
 package homeTry.exerciseList.dto;
 
-import homeTry.exerciseList.model.vo.ExerciseName;
+import jakarta.validation.constraints.NotBlank;
 
-public record ExerciseRequest(String exerciseName) {
-
-    public ExerciseName toExerciseName() {
-        return new ExerciseName(this.exerciseName);
-    }
+public record ExerciseRequest(
+    @NotBlank(message = "운동 이름은 필수입니다.")
+    String exerciseName) {
 
 }
