@@ -75,8 +75,8 @@ public class ExerciseService {
     }
 
     private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
-        Member foundMember = memberService.getMember(memberDTO.id());
-        return exerciseRepository.findByIdAndMemberId(exerciseId, foundMember.getId())
+        MemberDTO foundMember = memberService.getMember(memberDTO.id());
+        return exerciseRepository.findByIdAndMemberId(exerciseId, foundMember.id())
             .orElseThrow(ExerciseNotFoundException::new);
     }
 
