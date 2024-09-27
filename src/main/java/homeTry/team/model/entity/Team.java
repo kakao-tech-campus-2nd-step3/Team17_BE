@@ -1,22 +1,21 @@
-package homeTry.group.model.entity;
+package homeTry.team.model.entity;
 
-import homeTry.group.model.vo.*;
+import homeTry.team.model.vo.*;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "`group`")
-public class Group {
+public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false, unique = true, length = 15))
-    private Name groupName;
+    private Name teamName;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "group_description"))
-    private Description groupDescription;
+    @AttributeOverride(name = "value", column = @Column(name = "team_description"))
+    private Description teamDescription;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "chief_email", nullable = false))
@@ -34,12 +33,12 @@ public class Group {
     @AttributeOverride(name = "value", column = @Column(name = "password", nullable = false))
     private Password password;
 
-    protected Group() {
+    protected Team() {
     }
 
-    public Group(String groupName, String groupDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
-        this.groupName = new Name(groupName);
-        this.groupDescription = new Description(groupDescription);
+    public Team(String teamName, String teamDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
+        this.teamName = new Name(teamName);
+        this.teamDescription = new Description(teamDescription);
         this.chiefEmail = new Email(chiefEmail);
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);
@@ -50,12 +49,12 @@ public class Group {
         return id;
     }
 
-    public Name getGroupName() {
-        return groupName;
+    public Name getTeamName() {
+        return teamName;
     }
 
-    public Description getGroupDescription() {
-        return groupDescription;
+    public Description getTeamDescription() {
+        return teamDescription;
     }
 
     public Email getChiefEmail() {
@@ -74,9 +73,9 @@ public class Group {
         return password;
     }
 
-    public void updateGroup(String groupName, String groupDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
-        this.groupName = new Name(groupName);
-        this.groupDescription = new Description(groupDescription);
+    public void updateTeam(String teamName, String teamDescription, String chiefEmail, long maxParticipants, long currentParticipants, String password) {
+        this.teamName = new Name(teamName);
+        this.teamDescription = new Description(teamDescription);
         this.chiefEmail = new Email(chiefEmail);
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);

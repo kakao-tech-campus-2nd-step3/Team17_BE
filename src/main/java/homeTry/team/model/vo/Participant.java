@@ -1,4 +1,4 @@
-package homeTry.group.model.vo;
+package homeTry.team.model.vo;
 
 import jakarta.persistence.Embeddable;
 
