@@ -6,6 +6,8 @@ import homeTry.member.service.MemberService;
 import homeTry.team.dto.RequestTeamDTO;
 import homeTry.team.dto.ResponseRanking;
 import homeTry.team.model.entity.Team;
+import homeTry.team.model.entity.TeamMember;
+import homeTry.team.repository.TeamMemberRepository;
 import homeTry.team.repository.TeamRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,17 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 
 public class TeamService {
     private final TeamRepository teamRepository;
     private final MemberService memberService;
+    private final TeamMemberRepository teamMemberRepository;
     private static final int DEFAULT_PARTICIPANTS = 1;
 
-    public TeamService(TeamRepository teamRepository, MemberService memberService) {
+    public TeamService(TeamRepository teamRepository, MemberService memberService, TeamMemberRepository teamMemberRepository) {
         this.teamRepository = teamRepository;
         this.memberService = memberService;
+        this.teamMemberRepository = teamMemberRepository;
     }
 
     @Transactional
@@ -38,6 +43,21 @@ public class TeamService {
                 DEFAULT_PARTICIPANTS,
                 requestTeamDTO.password()
         ));
+    }
+
+    @Transactional
+    public void deleteTeam(MemberDTO memberDTO, Long teamId) {
+        Member leader = memberService.getMemberEntity(memberDTO.id());
+
+        Team team  = teamRepository.findById(teamId)
+                .orElseThrow(()->new IllegalArgumentException("찾을 수 없습니다"));
+
+        List<TeamMember> teamMembers = teamMemberRepository.findByTeam(team);
+
+        teamMembers.stream() //해당 Team의 TeamMember 데이터 모두 삭제
+                .forEach(teamMemberRepository::delete);
+
+        teamRepository.delete(team); //Team 삭제
     }
 
     /*
