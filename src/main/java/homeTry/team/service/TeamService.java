@@ -29,10 +29,11 @@ public class TeamService {
 
     @Transactional
     public void addTeam(MemberDTO memberDTO, RequestTeamDTO requestTeamDTO) {
+        Member leader = memberService.getMemberEntity(memberDTO.id());
         Team team = teamRepository.save(new Team(
                 requestTeamDTO.teamName(),
                 requestTeamDTO.teamDescription(),
-                memberDTO.id(),
+                leader,
                 requestTeamDTO.maxParticipants(),
                 DEFAULT_PARTICIPANTS,
                 requestTeamDTO.password()
