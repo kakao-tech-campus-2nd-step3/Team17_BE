@@ -24,9 +24,17 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addTeam (@LoginMember MemberDTO memberDTO, @Valid RequestTeamDTO requestTeamDTO){
+    public ResponseEntity<Void> addTeam (@LoginMember MemberDTO memberDTO,
+                                         @Valid RequestTeamDTO requestTeamDTO){
         teamService.addTeam(memberDTO, requestTeamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{teamId}")
+    public ResponseEntity<Void> deleteTeam (@LoginMember MemberDTO memberDTO,
+                                            @PathVariable("teamId") Long teamID) {
+        teamService.deleteTeam(memberDTO, teamID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /*
