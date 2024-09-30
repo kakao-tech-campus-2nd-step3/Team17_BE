@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import homeTry.diary.dto.DiaryDto;
+import java.util.List;
 
 import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
@@ -24,15 +25,15 @@ public class DiaryService {
         this.memberService = memberService;
     }
 
-    public DiaryDto getDiaryByDate(int year, int month, int day, Long memberId) {
+    public List<DiaryDto> getDiaryByDate(int year, int month, int day, Long memberId) {
 
         LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0); // 시작 시간
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
-        Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId))
-                .orElseThrow(() -> new DiaryNotFoundException());
+        List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId));
 
-        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMember().getEmail().toString());
+        return diaries.stream().map(DiaryDto::convertToDiaryDto).toList();
+
     }
 
     @Transactional
