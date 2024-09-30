@@ -9,6 +9,7 @@ import homeTry.diary.dto.DiaryDto;
 
 import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
+import homeTry.diary.exception.DiaryNotFoundException;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
 import jakarta.transaction.Transactional;
@@ -30,7 +31,7 @@ public class DiaryService {
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
         Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일기입니다."));
+                .orElseThrow(() -> new DiaryNotFoundException());
 
         return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMember().getEmail().toString());
     }
@@ -48,7 +49,7 @@ public class DiaryService {
     public void deleteDiary(Long diaryId) {
 
         if (diaryRepository.findById(diaryId).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new DiaryNotFoundException();
         } else {
             diaryRepository.deleteById(diaryId);
         }
