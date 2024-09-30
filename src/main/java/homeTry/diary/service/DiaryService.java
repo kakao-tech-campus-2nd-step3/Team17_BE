@@ -24,24 +24,24 @@ public class DiaryService {
         this.memberService = memberService;
     }
 
-    public DiaryDto getDiaryByDate(int year, int month, int day, String memberEmail) {
+    public DiaryDto getDiaryByDate(int year, int month, int day, Long memberId) {
 
         LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0); // 시작 시간
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
 
-        Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberEmail))
+        Diary diary = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId))
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 일기입니다."));
 
         return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().toString(), diary.getMember().getEmail().toString());
     }
 
     @Transactional
-    public void createDiary(DiaryRequest diaryRequest, String memberEmail) {
+    public void createDiary(DiaryRequest diaryRequest, Long memberId) {
 
         diaryRepository.save(
                 new Diary(LocalDateTime.now(),
                         diaryRequest.memo(),
-                        memberService.getMemberEntity(memberEmail)));
+                        memberService.getMemberEntity(memberId)));
     }
 
     @Transactional
