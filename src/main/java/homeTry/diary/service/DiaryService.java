@@ -1,7 +1,6 @@
 package homeTry.diary.service;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
