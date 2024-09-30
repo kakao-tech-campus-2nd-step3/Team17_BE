@@ -28,6 +28,6 @@ public class MainPageController {
         @RequestBody MainPageRequest mainPageRequest,
         @LoginMember MemberDTO memberDTO) {
         
-        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.email()), HttpStatus.OK);
+        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()), HttpStatus.OK);
     }
 }
