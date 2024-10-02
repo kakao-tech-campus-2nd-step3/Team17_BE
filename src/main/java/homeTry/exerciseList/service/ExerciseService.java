@@ -1,6 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.dto.ExerciseResponse;
+import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
 import homeTry.exerciseList.exception.ExerciseNotStartedException;
@@ -52,6 +53,15 @@ public class ExerciseService {
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+
+        List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
+            .filter(ex -> ex.getCurrentExerciseTime().isActive())
+            .toList();
+
+        if (!activeExercises.isEmpty()) {
+            throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
+        }
+
         ExerciseTime currentExerciseTime = exercise.getCurrentExerciseTime();
 
         if (currentExerciseTime.isActive()) {
