@@ -77,7 +77,7 @@ public class ExerciseHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseRanking> getRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
+    public List<ResponseRanking> getMembersRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
         return members.stream()
             .map(member -> {
                 Duration totalExerciseTime = getExerciseHistoriesForDay(member.id(), targetDate);
