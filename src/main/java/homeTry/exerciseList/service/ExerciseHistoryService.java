@@ -4,9 +4,12 @@ import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
+import homeTry.member.dto.MemberDTO;
+import homeTry.team.dto.ResponseRanking;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,5 +74,16 @@ public class ExerciseHistoryService {
         return exercises.stream()
             .map(ExerciseHistory::getExerciseHistoryTime)
             .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseRanking> getRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
+        return members.stream()
+            .map(member -> {
+                Duration totalExerciseTime = getExerciseHistoriesForDay(member.id(), targetDate);
+                return new ResponseRanking(member.nickname(), totalExerciseTime);
+            })
+            .sorted(Comparator.comparing(ResponseRanking::time).reversed())
+            .toList();
     }
 }
