@@ -2,6 +2,7 @@ package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.exception.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
+import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
 import homeTry.member.dto.MemberDTO;
@@ -34,7 +35,19 @@ public class ExerciseTimeService {
         saveExerciseTime(exerciseTime);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public ExerciseTime getExerciseTime(Long exerciseId) {
+        return exerciseTimeRepository.findByExerciseId(exerciseId)
+            .orElseThrow(ExerciseNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isExerciseActive(Long exerciseId) {
+        ExerciseTime exerciseTime = getExerciseTime(exerciseId);
+        return exerciseTime.isActive();
+    }
+
+    @Transactional(readOnly = true)
     public void validateStartExercise(Long memberId) {
         Duration totalExerciseTimeForToday = getExerciseTimesForToday(memberId);
 
@@ -45,6 +58,7 @@ public class ExerciseTimeService {
     }
 
     // 운동 시간 초과 여부 확인
+    @Transactional(readOnly = true)
     public void validateDailyExerciseLimit(ExerciseTime exerciseTime) {
         Duration timeElapsed = Duration.between(exerciseTime.getStartTime(), LocalDateTime.now());
         Duration totalTime = exerciseTime.getExerciseTime().plus(timeElapsed);
@@ -65,7 +79,7 @@ public class ExerciseTimeService {
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
 
         // 해당 멤버의 당일 운동 시간 목록 조회
-        List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByMemberIdAndStartTimeBetween(memberId, startOfDay, endOfDay);
+        List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(memberId, startOfDay, endOfDay);
 
         return exerciseTimes.stream()
             .map(ExerciseTime::getExerciseTime)
