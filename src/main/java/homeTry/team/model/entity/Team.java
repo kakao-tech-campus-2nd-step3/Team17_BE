@@ -11,7 +11,7 @@ public class Team {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false, unique = true, length = 15))
+    @AttributeOverride(name = "value", column = @Column(name = "team_name", nullable = false, unique = true, length = 15))
     private Name teamName;
 
     @Embedded
