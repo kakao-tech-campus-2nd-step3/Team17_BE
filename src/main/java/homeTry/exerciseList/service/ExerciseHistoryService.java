@@ -1,5 +1,6 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
@@ -84,6 +85,19 @@ public class ExerciseHistoryService {
                 return new ResponseRanking(member.nickname(), totalExerciseTime);
             })
             .sorted(Comparator.comparing(ResponseRanking::time).reversed())
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ExerciseResponse> getExerciseResponsesForDay(Long memberId, LocalDate date) {
+        LocalDateTime startOfDay = date.atTime(3, 0, 0);
+        LocalDateTime endOfDay = date.plusDays(1).atTime(2, 59, 59);
+
+        List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
+            memberId, startOfDay, endOfDay);
+
+        return exerciseHistories.stream()
+            .map(ExerciseResponse::fromHistory)
             .toList();
     }
 }
