@@ -13,8 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Entity
 public class Exercise {
@@ -45,17 +43,7 @@ public class Exercise {
         this.exerciseName = new ExerciseName(exerciseName);
         this.isDeprecated = false;
         this.member = member;
-        this.currentExerciseTime = new ExerciseTime(LocalDateTime.now());
-    }
-
-    public void startExercise() {
-        this.currentExerciseTime.setStartTime(LocalDateTime.now());
-    }
-
-    public void stopExercise() {
-        if(currentExerciseTime != null && currentExerciseTime.getStartTime() != null) {
-            currentExerciseTime.endExercise(LocalDateTime.now());
-        }
+        this.currentExerciseTime = new ExerciseTime();
     }
 
     public Long getExerciseId() {
@@ -80,10 +68,6 @@ public class Exercise {
 
     public void markAsDeprecated() {
         this.isDeprecated = true;
-    }
-
-    public Duration calculateDuration() {
-        return currentExerciseTime.getExerciseTime();
     }
 
 }
