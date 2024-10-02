@@ -31,21 +31,21 @@ public class MainPageService {
     
     public MainPageResponse getMainPage(MainPageRequest mainPageRequest, Long memberId) {
 
-        LocalDate day = LocalDate.of(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day());
+        LocalDate date = LocalDate.of(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day());
 
-        if(isToday(day)) {
+        if(isToday(date)) {
 
             return new MainPageResponse(
                 exerciseTimeService.getExerciseTimesForToday(memberId), 
                 exerciseService.getExercisesForMember(memberId), 
-                diaryService.getDiaryByDate(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day(), memberId));
+                diaryService.getDiaryByDate(date, memberId));
 
         } else {
 
             return new MainPageResponse(
-                exerciseHistoryService.getExerciseHistoriesForDay(memberId, day), 
+                exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
                 null, 
-                diaryService.getDiaryByDate(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day(), memberId));
+                diaryService.getDiaryByDate(date, memberId));
         }
     }
 

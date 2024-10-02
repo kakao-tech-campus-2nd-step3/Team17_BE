@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import homeTry.diary.dto.DiaryDto;
 import java.util.List;
 
+import java.time.LocalDate;
+
 import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.exception.DiaryNotFoundException;
@@ -25,10 +27,10 @@ public class DiaryService {
         this.memberService = memberService;
     }
 
-    public List<DiaryDto> getDiaryByDate(int year, int month, int day, Long memberId) {
+    public List<DiaryDto> getDiaryByDate(LocalDate date, Long memberId) {
 
-        LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0); // 시작 시간
-        LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59); // 끝 시간
+        LocalDateTime startOfDay = date.atStartOfDay(); 
+        LocalDateTime endOfDay = date.atTime(23, 59, 59); 
 
         List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId));
 
