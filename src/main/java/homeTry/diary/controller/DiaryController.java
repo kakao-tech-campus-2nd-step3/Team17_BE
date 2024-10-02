@@ -30,7 +30,7 @@ public class DiaryController {
             @LoginMember MemberDTO memberDTO
     ) {
 
-        diaryService.createDiary(diaryRequest, memberDTO.email());
+        diaryService.createDiary(diaryRequest, memberDTO.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

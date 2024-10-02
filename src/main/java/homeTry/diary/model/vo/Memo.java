@@ -1,38 +1,20 @@
 package homeTry.diary.model.vo;
 
-
 import jakarta.persistence.Embeddable;
 
-import java.util.Objects;
+import homeTry.diary.exception.MemoBlankException;
+
 
 @Embeddable
-public class Memo {
-    
-    private String value;
+public record Memo(String value) {
 
-    protected Memo() {}
-
-    public Memo(String value) {
-        validateMemo(value);
-        this.value = value;
+    public Memo {
+        validateMemo(value);  
     }
 
-    private void validateMemo(String value) {
+    private static void validateMemo(String value) {
         if (value != null && value.isBlank())
-            throw new IllegalArgumentException();
-    } 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Memo memo = (Memo) o;
-        return Objects.equals(value, memo.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
+            throw new MemoBlankException();
     }
 
     @Override
@@ -40,4 +22,3 @@ public class Memo {
         return value;
     }
 }
-
