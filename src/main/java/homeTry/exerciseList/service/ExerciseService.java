@@ -54,6 +54,8 @@ public class ExerciseService {
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
 
+        exerciseTimeService.validateStartExercise(memberDTO.id());
+
         List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
             .filter(ex -> ex.getCurrentExerciseTime().isActive())
             .toList();
@@ -80,6 +82,8 @@ public class ExerciseService {
         if (!currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
         }
+
+        exerciseTimeService.validateDailyExerciseLimit(currentExerciseTime);
 
         currentExerciseTime.stopExercise();
         exerciseTimeService.saveExerciseTime(currentExerciseTime);

@@ -1,5 +1,7 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exerciseList.exception.DailyExerciseTimeLimitExceededException;
+import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
 import homeTry.member.dto.MemberDTO;
@@ -30,6 +32,30 @@ public class ExerciseTimeService {
     public void resetExerciseTime(ExerciseTime exerciseTime) {
         exerciseTime.resetExerciseTime();
         saveExerciseTime(exerciseTime);
+    }
+
+    @Transactional
+    public void validateStartExercise(Long memberId) {
+        Duration totalExerciseTimeForToday = getExerciseTimesForToday(memberId);
+
+        // 하루 총 운동 시간이 12시간을 초과했는지 확인
+        if (totalExerciseTimeForToday.toHours() > 12) {
+            throw new DailyExerciseTimeLimitExceededException();  // 12시간 초과 시 예외 발생
+        }
+    }
+
+    // 운동 시간 초과 여부 확인
+    public void validateDailyExerciseLimit(ExerciseTime exerciseTime) {
+        Duration timeElapsed = Duration.between(exerciseTime.getStartTime(), LocalDateTime.now());
+        Duration totalTime = exerciseTime.getExerciseTime().plus(timeElapsed);
+
+        if (totalTime.toHours() > 12) {
+            throw new DailyExerciseTimeLimitExceededException();
+        }
+
+        if (timeElapsed.toHours() > 8) {
+            throw new ExerciseTimeLimitExceededException();
+        }
     }
 
     // 당일의 운동 시간 반환
