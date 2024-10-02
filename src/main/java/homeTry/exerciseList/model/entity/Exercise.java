@@ -3,7 +3,6 @@ package homeTry.exerciseList.model.entity;
 import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.member.model.entity.Member;
 import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -12,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Exercise {
@@ -32,10 +30,6 @@ public class Exercise {
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "exercise_time_id")
-    private ExerciseTime currentExerciseTime;
-
     protected Exercise() {
     }
 
@@ -43,7 +37,6 @@ public class Exercise {
         this.exerciseName = new ExerciseName(exerciseName);
         this.isDeprecated = false;
         this.member = member;
-        this.currentExerciseTime = new ExerciseTime();
     }
 
     public Long getExerciseId() {
@@ -60,10 +53,6 @@ public class Exercise {
 
     public Member getMember() {
         return member;
-    }
-
-    public ExerciseTime getCurrentExerciseTime() {
-        return currentExerciseTime;
     }
 
     public void markAsDeprecated() {

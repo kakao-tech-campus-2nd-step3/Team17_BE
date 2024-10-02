@@ -30,7 +30,7 @@ public class ExerciseSchedulerService {
 
         // 모든 운동 기록을 히스토리에 저장하고 운동 시간을 초기화
         for (Exercise exercise : allExercises) {
-            ExerciseTime exerciseTime = exercise.getCurrentExerciseTime();
+            ExerciseTime exerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
             exerciseHistoryService.saveExerciseHistory(exercise, exerciseTime);
             exerciseTimeService.resetExerciseTime(exerciseTime);
         }

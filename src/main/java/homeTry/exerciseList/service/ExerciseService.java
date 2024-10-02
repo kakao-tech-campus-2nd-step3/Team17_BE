@@ -1,6 +1,5 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
@@ -57,14 +56,14 @@ public class ExerciseService {
         exerciseTimeService.validateStartExercise(memberDTO.id());
 
         List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
-            .filter(ex -> ex.getCurrentExerciseTime().isActive())
+            .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
             .toList();
 
         if (!activeExercises.isEmpty()) {
             throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
         }
 
-        ExerciseTime currentExerciseTime = exercise.getCurrentExerciseTime();
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
 
         if (currentExerciseTime.isActive()) {
             throw new ExerciseAlreadyStartedException();
@@ -77,7 +76,7 @@ public class ExerciseService {
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
-        ExerciseTime currentExerciseTime = exercise.getCurrentExerciseTime();
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
 
         if (!currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
@@ -97,15 +96,6 @@ public class ExerciseService {
     @Transactional(readOnly = true)
     public List<Exercise> findAllExercises() {
         return exerciseRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ExerciseResponse> getExercisesForMember(Long memberId) {
-        List<Exercise> exercises = exerciseRepository.findAllByMemberId(memberId);
-
-        return exercises.stream()
-            .map(ExerciseResponse::fromEntity)
-            .toList();
     }
 
 }
