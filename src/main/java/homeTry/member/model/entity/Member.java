@@ -1,5 +1,6 @@
 package homeTry.member.model.entity;
 
+import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
 import homeTry.member.model.vo.Password;
@@ -9,7 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -35,6 +38,9 @@ public class Member {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
+    @OneToMany
+    private List<Exercise> exerciseList;
+
     protected Member() { }
 
     public Member(String email, String password, String nickname, LocalDateTime registrationDate) {
@@ -49,6 +55,7 @@ public class Member {
     public String getNickname() { return nickname.nickname(); }
     public String getKakaoAccessToken() { return kakaoAccessToken;}
     public LocalDateTime getRegistrationDate() {return registrationDate;}
+    public List<Exercise> getExerciseList() { return exerciseList; }
 
     public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
     public void changeNickname(Nickname nickname) { this.nickname = nickname; }
