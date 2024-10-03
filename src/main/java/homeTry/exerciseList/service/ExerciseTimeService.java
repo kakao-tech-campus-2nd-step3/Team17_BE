@@ -1,5 +1,6 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.exception.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
@@ -94,6 +95,20 @@ public class ExerciseTimeService {
                 return new ResponseRanking(member.nickname(), totalExerciseTime);
             })
             .sorted(Comparator.comparing(ResponseRanking::time).reversed())
+            .toList();
+    }
+
+    // 메인 페이지 운동 리스트 반환
+    @Transactional(readOnly = true)
+    public List<ExerciseResponse> getExerciseResponsesForToday(Long memberId) {
+        LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
+
+        List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
+            memberId, startOfDay, endOfDay);
+
+        return exerciseTimes.stream()
+            .map(ExerciseResponse::fromTime)
             .toList();
     }
 

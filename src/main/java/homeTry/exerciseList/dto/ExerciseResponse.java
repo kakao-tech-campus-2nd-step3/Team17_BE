@@ -3,12 +3,11 @@ package homeTry.exerciseList.dto;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
-import java.time.Duration;
 
 public record ExerciseResponse(
     Long exerciseId,
     String exerciseName,
-    Duration exerciseTime,
+    Long exerciseTime,
     boolean isActive
 ) {
 
@@ -16,7 +15,7 @@ public record ExerciseResponse(
         return new ExerciseResponse(
             exercise.getExerciseId(),
             exercise.getExerciseName(),
-            exerciseTime.getExerciseTime(),
+            exerciseTime.getExerciseTime().toMillis(),
             exerciseTime.isActive()
         );
     }
@@ -25,7 +24,16 @@ public record ExerciseResponse(
         return new ExerciseResponse(
             history.getExercise().getExerciseId(),
             history.getExercise().getExerciseName(),
-            history.getExerciseHistoryTime(),
+            history.getExerciseHistoryTime().toMillis(),
+            false
+        );
+    }
+
+    public static ExerciseResponse fromTime(ExerciseTime exerciseTime) {
+        return new ExerciseResponse(
+            exerciseTime.getExercise().getExerciseId(),
+            exerciseTime.getExercise().getExerciseName(),
+            exerciseTime.getExerciseTime().toMillis(),
             false
         );
     }
