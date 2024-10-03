@@ -4,6 +4,7 @@ import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.clientException.UserNotFoundException;
 import homeTry.exception.serverException.InternalServerException;
 import homeTry.member.dto.ChangeNicknameDTO;
+import homeTry.member.dto.GetExerciseListDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
@@ -60,8 +61,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberDTO getMember(Long id) throws RuntimeException {
         try {
-            return MemberDTO.convertToMemberDTO(memberRepository.findById(id).orElseThrow(()
-                    -> new UserNotFoundException("유저를 찾을 수 없습니다.")));
+            return MemberDTO.convertToMemberDTO(getMemberEntity(id));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage());
         } catch (BadRequestException e) {
@@ -107,6 +107,15 @@ public class MemberService {
             throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public GetExerciseListDTO getExerciseList(Long id) throws RuntimeException {
+        try {
+            return new GetExerciseListDTO(getMemberEntity(id).getExerciseList());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 }
