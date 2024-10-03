@@ -2,15 +2,15 @@ package homeTry.team.dto;
 
 import homeTry.team.model.entity.Team;
 
-public record ResponseTotalTeam (
+public record ResponseTeam(
         String teamName,
         String teamDescription,
         long maxParticipants,
         long currentParticipants,
         String password
 ){
-    public static ResponseTotalTeam of(Team team){
-        return new ResponseTotalTeam(team.getTeamName().getValue(),
+    public static ResponseTeam of(Team team){
+        return new ResponseTeam(team.getTeamName().getValue(),
                 team.getTeamDescription().getValue(),
                 team.getMaxParticipants().getValue(),
                 team.getCurrentParticipants().getValue(),
