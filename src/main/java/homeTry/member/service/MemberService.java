@@ -4,7 +4,6 @@ import homeTry.exception.clientException.BadRequestException;
 import homeTry.exception.clientException.UserNotFoundException;
 import homeTry.exception.serverException.InternalServerException;
 import homeTry.member.dto.ChangeNicknameDTO;
-import homeTry.member.dto.GetExerciseListDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
@@ -107,15 +106,6 @@ public class MemberService {
             throw new BadRequestException(e.getMessage());
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public GetExerciseListDTO getExerciseList(Long id) throws RuntimeException {
-        try {
-            return new GetExerciseListDTO(getMemberEntity(id).getExerciseList());
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
         }
     }
 }
