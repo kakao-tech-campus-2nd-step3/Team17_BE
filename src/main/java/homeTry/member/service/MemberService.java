@@ -60,8 +60,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberDTO getMember(Long id) throws RuntimeException {
         try {
-            return MemberDTO.convertToMemberDTO(memberRepository.findById(id).orElseThrow(()
-                    -> new UserNotFoundException("유저를 찾을 수 없습니다.")));
+            return MemberDTO.convertToMemberDTO(getMemberEntity(id));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage());
         } catch (BadRequestException e) {
