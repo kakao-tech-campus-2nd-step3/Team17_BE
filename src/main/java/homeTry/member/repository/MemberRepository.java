@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Long countByEmailAndPassword(Email email, Password password);
-    Long countByEmail(Email email);
-
-    Optional<Member> findByEmail(Email email);
 
     Optional<Member> findByEmailAndPassword(Email email, Password password);
 }

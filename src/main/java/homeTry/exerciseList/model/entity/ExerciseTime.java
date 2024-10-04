@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -21,18 +23,29 @@ public class ExerciseTime {
     @Column(name = "exercise_time", nullable = false)
     private Duration exerciseTime;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
+    @OneToOne
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
+
     protected ExerciseTime() {
         this.exerciseTime = Duration.ZERO;
+        this.isActive = false;
     }
 
-    public ExerciseTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-        this.exerciseTime = Duration.ZERO;
+    public void startExercise() {
+        this.startTime = LocalDateTime.now();
+        this.isActive = true;
     }
 
-    public void endExercise(LocalDateTime endTime) {
-        Duration timeElapsed = Duration.between(this.startTime, endTime);
-        this.exerciseTime = this.exerciseTime.plus(timeElapsed);
+    public void stopExercise() {
+        if (isActive) {
+            Duration timeElapsed = Duration.between(this.startTime, LocalDateTime.now());
+            this.exerciseTime = this.exerciseTime.plus(timeElapsed);
+            this.isActive = false;
+        }
     }
 
     public Long getId() {
@@ -47,12 +60,17 @@ public class ExerciseTime {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public Exercise getExercise() {
+        return exercise;
     }
 
     public void resetExerciseTime() {
         this.exerciseTime = Duration.ZERO;
+        this.isActive = false;
     }
 
 }

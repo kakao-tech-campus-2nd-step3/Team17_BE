@@ -21,7 +21,7 @@ public class KakaoAuthController {
     }
 
     @GetMapping
-    public String loginOrRegister(@RequestParam String code) {
+    public String loginOrRegister(@RequestParam(name = "code") String code) {
         return jwtAuth.generateToken(kakaoAuthService.loginOrRegister(code));
     }
 }
