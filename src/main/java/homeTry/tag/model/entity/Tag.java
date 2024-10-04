@@ -3,6 +3,7 @@ package homeTry.tag.model.entity;
 import homeTry.team.model.vo.Name;
 import jakarta.persistence.*;
 
+@Entity
 public class Tag {
 
     @Id
@@ -14,8 +15,10 @@ public class Tag {
     private Name tagName;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "tagAttribute", nullable = false))
+    @AttributeOverride(name = "value", column = @Column(name = "tag_attribute", nullable = false))
     private Name tagAttribute;
+
+    protected Tag () {}
 
     public Tag(Name tagName, Name tagAttribute) {
         this.tagName = tagName;
