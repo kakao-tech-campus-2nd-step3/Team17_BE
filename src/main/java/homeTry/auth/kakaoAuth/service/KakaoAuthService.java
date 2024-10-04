@@ -5,7 +5,6 @@ import homeTry.exception.BadRequestException;
 import homeTry.exception.InternalServerException;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.exception.badRequestException.LoginFailedException;
-import homeTry.member.exception.badRequestException.MemberNotFoundException;
 import homeTry.member.service.MemberService;
 import org.springframework.stereotype.Service;
 
