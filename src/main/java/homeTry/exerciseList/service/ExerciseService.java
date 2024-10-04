@@ -1,5 +1,6 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exception.serverException.InternalServerException;
 import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
@@ -51,26 +52,29 @@ public class ExerciseService {
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        try {
+            Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+            exerciseTimeService.validateStartExercise(memberDTO.id());
 
-        exerciseTimeService.validateStartExercise(memberDTO.id());
+            List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
+                .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
+                .toList();
 
-        List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
-            .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
-            .toList();
+            if (!activeExercises.isEmpty()) {
+                throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
+            }
 
-        if (!activeExercises.isEmpty()) {
-            throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
+            ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+
+            if (currentExerciseTime.isActive()) {
+                throw new ExerciseAlreadyStartedException();
+            }
+
+            currentExerciseTime.startExercise();
+            exerciseTimeService.saveExerciseTime(currentExerciseTime);
+        } catch (Exception e) {
+            throw new InternalServerException("운동 시작 실패");
         }
-
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
-
-        if (currentExerciseTime.isActive()) {
-            throw new ExerciseAlreadyStartedException();
-        }
-
-        currentExerciseTime.startExercise();
-        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     @Transactional
