@@ -3,6 +3,7 @@ package homeTry.team.model.entity;
 import homeTry.member.model.entity.Member;
 import jakarta.persistence.*;
 
+@Entity
 public class TeamMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +16,8 @@ public class TeamMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
+
+    protected TeamMember () {}
 
     public TeamMember(Member member, Team team) {
         this.member = member;
