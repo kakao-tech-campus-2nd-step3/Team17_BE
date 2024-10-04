@@ -18,7 +18,6 @@ public class Team {
     @AttributeOverride(name = "value", column = @Column(name = "team_description", nullable = false))
     private Description teamDescription;
 
-
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn
     private Member leader;
