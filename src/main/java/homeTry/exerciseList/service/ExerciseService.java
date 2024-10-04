@@ -1,10 +1,10 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exception.serverException.InternalServerException;
 import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
 import homeTry.exerciseList.exception.ExerciseNotStartedException;
+import homeTry.exerciseList.exception.ExerciseStartException;
 import homeTry.exerciseList.exception.NoExercisePermissionException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
@@ -73,7 +73,7 @@ public class ExerciseService {
             currentExerciseTime.startExercise();
             exerciseTimeService.saveExerciseTime(currentExerciseTime);
         } catch (Exception e) {
-            throw new InternalServerException("운동 시작 실패");
+            throw new ExerciseStartException();
         }
     }
 

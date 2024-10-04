@@ -18,7 +18,10 @@ public enum ExerciseErrorType implements ErrorType {
     // 하루 운동 시간 제한 초과 - 400
     DAILY_EXERCISE_TIME_LIMIT_EXCEEDED_EXCEPTION("Exercise400_005", HttpStatus.BAD_REQUEST, "하루 전체 운동 시간은 12시간을 초과할 수 없습니다."),
     // 운동에 대한 권한이 없을 때 - 403
-    EXERCISE_NO_PERMISSION_EXCEPTION("Exercise403_001", HttpStatus.FORBIDDEN, "이 운동에 대한 실행 권한이 없습니다.");
+    EXERCISE_NO_PERMISSION_EXCEPTION("Exercise403_001", HttpStatus.FORBIDDEN, "이 운동에 대한 실행 권한이 없습니다."),
+
+    EXERCISE_START_EXCEPTION("Exercise500_001", HttpStatus.INTERNAL_SERVER_ERROR, "운동 시작과 관련한 에러가 발생했습니다.");
+
 
     private final String errorCode;
     private final HttpStatus httpStatus;
