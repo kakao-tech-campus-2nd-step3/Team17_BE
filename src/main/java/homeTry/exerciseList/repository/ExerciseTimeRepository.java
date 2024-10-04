@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExerciseTimeRepository extends JpaRepository<ExerciseTime, Long> {
 
-    List<ExerciseTime> findByExerciseMemberIdAndStartTimeBetween(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
+    List<ExerciseTime> findByExerciseMemberIdAndStartTimeBetween(
+        Long memberId, LocalDateTime startTime, LocalDateTime endTime);
 
     Optional<ExerciseTime> findByExerciseId(Long exerciseId);
 
