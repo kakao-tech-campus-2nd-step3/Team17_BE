@@ -25,14 +25,18 @@ public class KakaoAuthService {
 
         try{
             Long id = memberService.login(memberDTO); // -> LoginFailedException을 던질 수 있음
-            memberService.setMemeberAccessToken(id, accessToken);
+            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.password(),
+                    memberDTO.nickname());
 
-            return memberDTO;
+            memberService.setMemeberAccessToken(id, accessToken);
+            return memberDTOWithId;
         } catch (LoginFailedException e) { //유저를 못 찾으면 회원가입
             Long id = memberService.register(memberDTO);
-            memberService.setMemeberAccessToken(id, accessToken);
+            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.password(),
+                    memberDTO.nickname());
 
-            return memberDTO;
+            memberService.setMemeberAccessToken(id, accessToken);
+            return memberDTOWithId;
         } catch (InternalServerException | BadRequestException e){
             throw e;
         } catch (Exception e){
