@@ -24,7 +24,7 @@ public record ExerciseResponse(
             exerciseTime.getExercise().getExerciseId(),
             exerciseTime.getExercise().getExerciseName(),
             exerciseTime.getExerciseTime().toMillis(),
-            false
+            exerciseTime.isActive()
         );
     }
 
