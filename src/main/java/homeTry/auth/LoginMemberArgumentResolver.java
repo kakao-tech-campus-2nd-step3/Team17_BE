@@ -1,9 +1,9 @@
 package homeTry.auth;
 
 import homeTry.annotation.LoginMember;
-import homeTry.exception.clientException.BadRequestException;
-import homeTry.exception.clientException.UserNotFoundException;
-import homeTry.exception.serverException.InternalServerException;
+import homeTry.auth.exception.badRequestException.InvalidTokenException;
+import homeTry.auth.exception.internalServerException.HomeTryServerException;
+import homeTry.member.exception.badRequestException.MemberNotFoundException;
 import homeTry.member.service.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -33,12 +33,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             String token = webRequest.getHeader("Authorization").substring(7);
             Long id = jwtAuth.extractId(token);
             return memberService.getMember(id);
-        } catch (UserNotFoundException e) {
-            throw new UserNotFoundException("회원이 아닙니다.");
+        } catch (MemberNotFoundException e) {
+            throw e;
         } catch (NullPointerException e){
-            throw new BadRequestException("토큰이 존재하지 않습니다.");
+            throw new InvalidTokenException();
         } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
+            throw new HomeTryServerException();
         }
     }
 }
