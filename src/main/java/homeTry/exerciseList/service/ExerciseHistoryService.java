@@ -1,12 +1,16 @@
 package homeTry.exerciseList.service;
 
+import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
+import homeTry.member.dto.MemberDTO;
+import homeTry.team.dto.ResponseRanking;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +26,7 @@ public class ExerciseHistoryService {
 
     @Transactional
     public void saveExerciseHistory(Exercise exercise, ExerciseTime exerciseTime) {
-        if (!exerciseTime.getExerciseTime().isZero()) {
+        if (exerciseTime != null && !exerciseTime.getExerciseTime().isZero()) {
             ExerciseHistory history = new ExerciseHistory(exercise, exerciseTime.getExerciseTime());
             exerciseHistoryRepository.save(history);
         }
@@ -71,5 +75,29 @@ public class ExerciseHistoryService {
         return exercises.stream()
             .map(ExerciseHistory::getExerciseHistoryTime)
             .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseRanking> getMembersRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
+        return members.stream()
+            .map(member -> {
+                Duration totalExerciseTime = getExerciseHistoriesForDay(member.id(), targetDate);
+                return new ResponseRanking(member.nickname(), totalExerciseTime);
+            })
+            .sorted(Comparator.comparing(ResponseRanking::time).reversed())
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ExerciseResponse> getExerciseResponsesForDay(Long memberId, LocalDate date) {
+        LocalDateTime startOfDay = date.atTime(3, 0, 0);
+        LocalDateTime endOfDay = date.plusDays(1).atTime(2, 59, 59);
+
+        List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
+            memberId, startOfDay, endOfDay);
+
+        return exerciseHistories.stream()
+            .map(ExerciseResponse::fromHistory)
+            .toList();
     }
 }
