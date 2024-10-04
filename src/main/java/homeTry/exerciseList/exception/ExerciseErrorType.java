@@ -22,7 +22,6 @@ public enum ExerciseErrorType implements ErrorType {
 
     EXERCISE_START_EXCEPTION("Exercise500_001", HttpStatus.INTERNAL_SERVER_ERROR, "운동 시작과 관련한 에러가 발생했습니다.");
 
-
     private final String errorCode;
     private final HttpStatus httpStatus;
     private final String message;
