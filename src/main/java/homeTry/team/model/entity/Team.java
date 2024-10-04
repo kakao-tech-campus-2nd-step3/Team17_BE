@@ -1,5 +1,6 @@
 package homeTry.team.model.entity;
 
+import homeTry.member.model.entity.Member;
 import homeTry.team.model.vo.*;
 import jakarta.persistence.*;
 
@@ -10,15 +11,16 @@ public class Team {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false, unique = true, length = 15))
+    @AttributeOverride(name = "value", column = @Column(name = "team_name", nullable = false, unique = true, length = 15))
     private Name teamName;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "team_description", nullable = false))
     private Description teamDescription;
 
-    @Column( nullable = false)
-    private Long leaderId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn
+    private Member leader;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "max_participants", nullable = false))
@@ -35,10 +37,10 @@ public class Team {
     protected Team() {
     }
 
-    public Team(String teamName, String teamDescription, long leaderId, long maxParticipants, long currentParticipants, String password) {
+    public Team(String teamName, String teamDescription, Member leader, long maxParticipants, long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
-        this.leaderId= leaderId;
+        this.leader = leader;
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);
         this.password = new Password(password);
@@ -56,8 +58,8 @@ public class Team {
         return teamDescription;
     }
 
-    public Long getLeaderId () {
-        return leaderId;
+    public Member getLeader () {
+        return leader;
     }
 
     public Participant getMaxParticipants() {
@@ -72,10 +74,10 @@ public class Team {
         return password;
     }
 
-    public void updateTeam(String teamName, String teamDescription, long leaderId, long maxParticipants, long currentParticipants, String password) {
+    public void updateTeam(String teamName, String teamDescription, Member leader, long maxParticipants, long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
-        this.leaderId = leaderId;
+        this.leader = leader;
         this.maxParticipants = new Participant(maxParticipants);
         this.currentParticipants = new Participant(currentParticipants);
         this.password = new Password(password);

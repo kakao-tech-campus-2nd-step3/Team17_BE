@@ -1,9 +1,10 @@
 package homeTry.auth.kakaoAuth.service;
 
+import homeTry.auth.exception.internalServerException.HomeTryServerException;
+import homeTry.exception.BadRequestException;
+import homeTry.exception.InternalServerException;
 import homeTry.member.dto.MemberDTO;
-import homeTry.exception.clientException.BadRequestException;
-import homeTry.exception.clientException.UserNotFoundException;
-import homeTry.exception.serverException.InternalServerException;
+import homeTry.member.exception.badRequestException.LoginFailedException;
 import homeTry.member.service.MemberService;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +24,23 @@ public class KakaoAuthService {
         MemberDTO memberDTO = kakaoTokenService.getMemberInfo(accessToken);
 
         try{
-            Long id = memberService.login(memberDTO); // -> UserNotFoundException을 던질 수 있음
-            memberService.setMemeberAccessToken(id, accessToken);
+            Long id = memberService.login(memberDTO); // -> LoginFailedException을 던질 수 있음
+            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.password(),
+                    memberDTO.nickname());
 
-            return memberDTO;
-        } catch (UserNotFoundException e) { //유저를 못 찾으면 회원가입
+            memberService.setMemeberAccessToken(id, accessToken);
+            return memberDTOWithId;
+        } catch (LoginFailedException e) { //유저를 못 찾으면 회원가입
             Long id = memberService.register(memberDTO);
-            memberService.setMemeberAccessToken(id, accessToken);
+            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.password(),
+                    memberDTO.nickname());
 
-            return memberDTO;
+            memberService.setMemeberAccessToken(id, accessToken);
+            return memberDTOWithId;
         } catch (InternalServerException | BadRequestException e){
             throw e;
         } catch (Exception e){
-            throw new InternalServerException(e.getMessage());
+            throw new HomeTryServerException();
         }
     }
 }

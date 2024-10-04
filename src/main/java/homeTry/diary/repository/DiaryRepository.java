@@ -8,14 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.time.LocalDateTime;
+
+import java.util.List;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Query("SELECT d FROM Diary d WHERE d.createdAt BETWEEN :startOfDay AND :endOfDay AND d.member = :member")
-    Optional<Diary> findByDateRangeAndMember(@Param("startOfDay") LocalDateTime startOfDay,
+    List<Diary> findByDateRangeAndMember(@Param("startOfDay") LocalDateTime startOfDay,
                                              @Param("endOfDay") LocalDateTime endOfDay,
                                              @Param("member") Member member);
 }
