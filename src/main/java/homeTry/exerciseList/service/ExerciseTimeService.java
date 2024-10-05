@@ -100,7 +100,7 @@ public class ExerciseTimeService {
             memberId, startOfDay, endOfDay);
 
         return exerciseTimes.stream()
-            .map(ExerciseResponse::fromTime)
+            .map(ExerciseResponse::from)
             .toList();
     }
 
