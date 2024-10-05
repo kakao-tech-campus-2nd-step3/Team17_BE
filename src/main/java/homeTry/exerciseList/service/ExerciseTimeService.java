@@ -6,12 +6,9 @@ import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
-import homeTry.member.dto.MemberDTO;
-import homeTry.team.dto.TotalExerciseTimeForDay;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,17 +82,6 @@ public class ExerciseTimeService {
         return exerciseTimes.stream()
             .map(ExerciseTime::getExerciseTime)
             .reduce(Duration.ZERO, Duration::plus);
-    }
-
-    @Transactional(readOnly = true)
-    public List<TotalExerciseTimeForDay> getTodayMembersRanking(List<MemberDTO> members) {
-        return members.stream()
-            .map(member -> {
-                Duration totalExerciseTime = getExerciseTimesForToday(member.id());
-                return new TotalExerciseTimeForDay(member.nickname(), totalExerciseTime);
-            })
-            .sorted(Comparator.comparing(TotalExerciseTimeForDay::time).reversed())
-            .toList();
     }
 
     // 메인 페이지 운동 리스트 반환
