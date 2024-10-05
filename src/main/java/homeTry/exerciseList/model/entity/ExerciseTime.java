@@ -27,7 +27,7 @@ public class ExerciseTime {
     private boolean isActive;
 
     @OneToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Exercise exercise;
 
     protected ExerciseTime() {
