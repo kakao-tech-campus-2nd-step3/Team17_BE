@@ -1,7 +1,7 @@
 package homeTry.exerciseList.model.vo;
 
-import homeTry.exerciseList.exception.ExerciseNameBlankException;
-import homeTry.exerciseList.exception.ExerciseNameTooLongException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNameBlankException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNameTooLongException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable

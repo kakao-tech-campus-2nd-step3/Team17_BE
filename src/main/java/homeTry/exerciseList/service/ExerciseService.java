@@ -1,11 +1,11 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
-import homeTry.exerciseList.exception.ExerciseDeprecatedException;
-import homeTry.exerciseList.exception.ExerciseNotFoundException;
-import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
-import homeTry.exerciseList.exception.ExerciseNotStartedException;
-import homeTry.exerciseList.exception.NoExercisePermissionException;
+import homeTry.exerciseList.exception.badRequestException.AnotherExerciseInProgressException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNotStartedException;
+import homeTry.exerciseList.exception.badRequestException.NoExercisePermissionException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
 import homeTry.exerciseList.model.entity.Exercise;
