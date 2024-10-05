@@ -90,7 +90,7 @@ public class ExerciseService {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
 
-        if (!currentExerciseTime.isActive()) {
+        if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
         }
 
