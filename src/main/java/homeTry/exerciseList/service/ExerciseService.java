@@ -59,7 +59,7 @@ public class ExerciseService {
         }
 
         // 하루 총 운동 시간이 12시간을 초과했는지 확인
-        exerciseTimeService.validateStartExercise(memberDTO.id());
+        exerciseTimeService.validateExerciseStartConditions(memberDTO.id());
 
         // 현재 운동의 상태 확인
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
@@ -95,7 +95,7 @@ public class ExerciseService {
         }
 
         // 하루 최대 12시간, 한 번에 저장되는 최대 시간 8시간을 넘었는지 확인
-        exerciseTimeService.validateDailyExerciseLimit(currentExerciseTime);
+        exerciseTimeService.validateExerciseDurationLimits(currentExerciseTime);
 
         currentExerciseTime.stopExercise();
     }

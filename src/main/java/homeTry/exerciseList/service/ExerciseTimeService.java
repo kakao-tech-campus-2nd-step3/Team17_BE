@@ -50,7 +50,7 @@ public class ExerciseTimeService {
     }
 
     @Transactional(readOnly = true)
-    public void validateStartExercise(Long memberId) {
+    public void validateExerciseStartConditions(Long memberId) {
         Duration totalExerciseTimeForToday = getExerciseTimesForToday(memberId);
 
         // 하루 총 운동 시간이 12시간을 초과했는지 확인
@@ -61,7 +61,7 @@ public class ExerciseTimeService {
 
     // 운동 시간 초과 여부 확인
     @Transactional(readOnly = true)
-    public void validateDailyExerciseLimit(ExerciseTime exerciseTime) {
+    public void validateExerciseDurationLimits(ExerciseTime exerciseTime) {
         Duration timeElapsed = Duration.between(exerciseTime.getStartTime(), LocalDateTime.now());
         Duration totalTime = exerciseTime.getExerciseTime().plus(timeElapsed);
 
