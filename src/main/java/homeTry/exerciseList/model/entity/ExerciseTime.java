@@ -17,13 +17,13 @@ public class ExerciseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "exercise_time", nullable = false)
+    @Column(nullable = false)
     private Duration exerciseTime;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(nullable = false)
     private boolean isActive;
 
     @OneToOne
