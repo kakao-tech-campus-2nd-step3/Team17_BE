@@ -1,8 +1,8 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.dto.ExerciseResponse;
-import homeTry.exerciseList.exception.DailyExerciseTimeLimitExceededException;
-import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
+import homeTry.exerciseList.exception.badRequestException.DailyExerciseTimeLimitExceededException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
 import java.time.Duration;
