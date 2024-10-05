@@ -85,7 +85,7 @@ public class ExerciseHistoryService {
             memberId, startOfDay, endOfDay);
 
         return exerciseHistories.stream()
-            .map(ExerciseResponse::fromHistory)
+            .map(ExerciseResponse::from)
             .toList();
     }
 }

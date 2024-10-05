@@ -1,5 +1,6 @@
 package homeTry.exerciseList.dto;
 
+import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import java.time.Duration;
@@ -11,22 +12,21 @@ public record ExerciseResponse(
     boolean isActive
 ) {
 
-    public static ExerciseResponse fromHistory(ExerciseHistory history) {
+    public static ExerciseResponse from(Exercise exercise, Duration exerciseTime, boolean isActive) {
         return new ExerciseResponse(
-            history.getExercise().getExerciseId(),
-            history.getExercise().getExerciseName(),
-            history.getExerciseHistoryTime(),
-            false
+            exercise.getExerciseId(),
+            exercise.getExerciseName(),
+            exerciseTime,
+            isActive
         );
     }
 
-    public static ExerciseResponse fromTime(ExerciseTime exerciseTime) {
-        return new ExerciseResponse(
-            exerciseTime.getExercise().getExerciseId(),
-            exerciseTime.getExercise().getExerciseName(),
-            exerciseTime.getExerciseTime(),
-            exerciseTime.isActive()
-        );
+    public static ExerciseResponse from(ExerciseHistory history) {
+        return from(history.getExercise(), history.getExerciseHistoryTime(), false);
+    }
+
+    public static ExerciseResponse from(ExerciseTime exerciseTime) {
+        return from(exerciseTime.getExercise(), exerciseTime.getExerciseTime(), exerciseTime.isActive());
     }
 
 }
