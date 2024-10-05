@@ -52,7 +52,7 @@ public class ExerciseController {
     public ResponseEntity<Void> stopExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseService.stopExercise(exerciseId, memberDTO);  // 운동 시작
+        exerciseService.stopExercise(exerciseId, memberDTO);  // 운동 종료
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
