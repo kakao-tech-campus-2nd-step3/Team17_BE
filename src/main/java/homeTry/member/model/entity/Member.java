@@ -6,12 +6,16 @@ import homeTry.member.model.vo.Password;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,16 +36,16 @@ public class Member {
     @Column(nullable = true)
     private String kakaoAccessToken;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
     protected Member() { }
 
-    public Member(String email, String password, String nickname, LocalDateTime registrationDate) {
+    public Member(String email, String password, String nickname) {
         this.nickname = new Nickname(nickname);
         this.email = new Email(email);
         this.password = new Password(password);
-        this.registrationDate = registrationDate;
     }
     public Long getId() { return id; }
     public String getEmail() { return email.email(); }
