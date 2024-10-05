@@ -30,7 +30,6 @@ public class ExerciseTimeService {
     @Transactional
     public void resetExerciseTime(ExerciseTime exerciseTime) {
         exerciseTime.resetExerciseTime();
-        saveExerciseTime(exerciseTime);
     }
 
     @Transactional(readOnly = true)
