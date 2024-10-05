@@ -27,7 +27,7 @@ public class Exercise {
     private boolean isDeprecated;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Member member;
 
     protected Exercise() {

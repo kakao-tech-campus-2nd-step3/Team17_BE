@@ -22,7 +22,7 @@ public class ExerciseHistory {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Exercise exercise;
 
     @CreatedDate
