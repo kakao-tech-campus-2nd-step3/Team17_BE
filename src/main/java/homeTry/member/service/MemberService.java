@@ -15,7 +15,6 @@ import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
 import homeTry.member.model.vo.Password;
 import homeTry.member.repository.MemberRepository;
-import java.time.LocalDateTime;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +48,7 @@ public class MemberService {
     @Transactional
     public Long register(MemberDTO memberDTO) throws RuntimeException {
         try {
-            Member member = memberDTO.convertToMember(LocalDateTime.now()); //가입 날짜 정의
+            Member member = memberDTO.convertToMember();
             return memberRepository.save(member).getId();
         } catch (DataIntegrityViolationException e) {
             throw new RegisterEmailConflictException();
