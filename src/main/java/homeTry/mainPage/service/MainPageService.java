@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 import homeTry.diary.service.DiaryService;
 import homeTry.exerciseList.service.ExerciseHistoryService;
-import homeTry.exerciseList.service.ExerciseService;
 import homeTry.exerciseList.service.ExerciseTimeService;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
@@ -16,16 +15,13 @@ public class MainPageService {
 
     private final DiaryService diaryService;
     private final ExerciseTimeService exerciseTimeService;
-    private final ExerciseService exerciseService;
     private final ExerciseHistoryService exerciseHistoryService;
 
     public MainPageService(DiaryService diaryService, 
                             ExerciseTimeService exerciseTimeService, 
-                            ExerciseService exerciseService,
                             ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
-        this.exerciseService = exerciseService;
         this.exerciseHistoryService = exerciseHistoryService;
     }
     
@@ -37,14 +33,14 @@ public class MainPageService {
 
             return new MainPageResponse(
                 exerciseTimeService.getExerciseTimesForToday(memberId), 
-                exerciseService.getExercisesForMember(memberId), 
+                exerciseTimeService.getExerciseResponsesForToday(memberId),
                 diaryService.getDiaryByDate(date, memberId));
 
         } else {
 
             return new MainPageResponse(
                 exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
-                null, 
+                exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
                 diaryService.getDiaryByDate(date, memberId));
         }
     }
