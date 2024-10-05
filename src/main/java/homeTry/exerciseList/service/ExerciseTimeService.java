@@ -1,5 +1,6 @@
 package homeTry.exerciseList.service;
 
+import homeTry.constants.DateTimeUtil;
 import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.exception.badRequestException.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseTimeLimitExceededException;
@@ -77,12 +78,14 @@ public class ExerciseTimeService {
     // 당일의 운동 시간 반환
     @Transactional(readOnly = true)
     public Duration getExerciseTimesForToday(Long memberId) {
-        LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
+        LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(LocalDate.now());
+        LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(LocalDate.now());
 
         // 해당 멤버의 당일 운동 시간 목록 조회
-        List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(memberId, startOfDay, endOfDay);
+        List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
+            memberId, startOfDay, endOfDay);
 
+        // 운동 시간 총 합
         return exerciseTimes.stream()
             .map(ExerciseTime::getExerciseTime)
             .reduce(Duration.ZERO, Duration::plus);
@@ -91,8 +94,8 @@ public class ExerciseTimeService {
     // 메인 페이지 운동 리스트 반환
     @Transactional(readOnly = true)
     public List<ExerciseResponse> getExerciseResponsesForToday(Long memberId) {
-        LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
+        LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(LocalDate.now());
+        LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(LocalDate.now());
 
         List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
             memberId, startOfDay, endOfDay);
