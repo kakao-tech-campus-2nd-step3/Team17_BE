@@ -1,10 +1,10 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
+import homeTry.exerciseList.exception.ExerciseDeprecatedException;
 import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
 import homeTry.exerciseList.exception.ExerciseNotStartedException;
-import homeTry.exerciseList.exception.ExerciseStartException;
 import homeTry.exerciseList.exception.NoExercisePermissionException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
@@ -52,29 +52,36 @@ public class ExerciseService {
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        try {
-            Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
-            exerciseTimeService.validateStartExercise(memberDTO.id());
+        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
 
-            List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
-                .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
-                .toList();
-
-            if (!activeExercises.isEmpty()) {
-                throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
-            }
-
-            ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
-
-            if (currentExerciseTime.isActive()) {
-                throw new ExerciseAlreadyStartedException();
-            }
-
-            currentExerciseTime.startExercise();
-            exerciseTimeService.saveExerciseTime(currentExerciseTime);
-        } catch (Exception e) {
-            throw new ExerciseStartException();
+        // 삭제한 운동을 시작하려는 경우
+        if (exercise.isDeprecated()) {
+            throw new ExerciseDeprecatedException();
         }
+
+        exerciseTimeService.validateStartExercise(memberDTO.id());
+
+        // 현재 운동의 상태 확인
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+
+        if (currentExerciseTime != null && currentExerciseTime.isActive()) {
+            throw new ExerciseAlreadyStartedException(); // 이미 시작된 운동을 종료 전 다시 시작하려는 경우
+        }
+
+        List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
+            .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
+            .toList();
+
+        if (!activeExercises.isEmpty()) {
+            throw new AnotherExerciseInProgressException(); // 운동이 진행 중인 경우
+        }
+
+        if (currentExerciseTime == null) {
+            currentExerciseTime = new ExerciseTime(exercise); // 새로 생성
+        }
+
+        currentExerciseTime.startExercise();
+        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     @Transactional
