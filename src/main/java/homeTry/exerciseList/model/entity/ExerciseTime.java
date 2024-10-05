@@ -21,24 +21,21 @@ public class ExerciseTime {
     private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private Duration exerciseTime;
+    private Duration exerciseTime = Duration.ZERO;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean isActive = false;
 
     @OneToOne
     @JoinColumn(nullable = false)
     private Exercise exercise;
 
     protected ExerciseTime() {
-        this.exerciseTime = Duration.ZERO;
-        this.isActive = false;
     }
 
     public ExerciseTime(Exercise exercise) {
         this.exercise = exercise;
         this.startTime = LocalDateTime.now();
-        this.exerciseTime = Duration.ZERO;
         isActive = true;
     }
 
