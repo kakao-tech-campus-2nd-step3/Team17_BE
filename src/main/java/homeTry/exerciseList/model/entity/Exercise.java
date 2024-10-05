@@ -23,7 +23,7 @@ public class Exercise {
     @AttributeOverride(name = "value", column = @Column(name = "exercise_name", nullable = false))
     private ExerciseName exerciseName;
 
-    @Column(name = "is_deprecated", nullable = false)
+    @Column(nullable = false)
     private boolean isDeprecated;
 
     @ManyToOne
