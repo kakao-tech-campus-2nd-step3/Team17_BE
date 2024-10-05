@@ -52,8 +52,9 @@ public class DiaryService {
 
         if (diaryRepository.findById(diaryId).isEmpty()) {
             throw new DiaryNotFoundException();
-        } else {
-            diaryRepository.deleteById(diaryId);
-        }
+        } 
+        
+        diaryRepository.deleteById(diaryId);
+        
     }
 }
