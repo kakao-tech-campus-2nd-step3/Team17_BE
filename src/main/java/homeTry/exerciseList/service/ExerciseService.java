@@ -47,7 +47,6 @@ public class ExerciseService {
         }
 
         exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정
-        exerciseRepository.save(exercise);
     }
 
     @Transactional
@@ -99,7 +98,6 @@ public class ExerciseService {
         exerciseTimeService.validateDailyExerciseLimit(currentExerciseTime);
 
         currentExerciseTime.stopExercise();
-        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
