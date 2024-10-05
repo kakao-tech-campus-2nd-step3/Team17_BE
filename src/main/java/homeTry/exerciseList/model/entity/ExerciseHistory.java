@@ -2,6 +2,7 @@ package homeTry.exerciseList.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,8 +11,10 @@ import jakarta.persistence.ManyToOne;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class ExerciseHistory {
 
     @Id
@@ -35,7 +38,6 @@ public class ExerciseHistory {
 
     public ExerciseHistory(Exercise exercise, Duration exerciseHistoryTime) {
         this.exercise = exercise;
-        this.createdAt = LocalDateTime.now();
         this.exerciseHistoryTime = exerciseHistoryTime;
     }
 
