@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 import homeTry.diary.service.DiaryService;
 import homeTry.exerciseList.service.ExerciseHistoryService;
-import homeTry.exerciseList.service.ExerciseService;
 import homeTry.exerciseList.service.ExerciseTimeService;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
