@@ -1,5 +1,7 @@
 package homeTry.exerciseList.model.vo;
 
+import homeTry.exerciseList.exception.ExerciseNameBlankException;
+import homeTry.exerciseList.exception.ExerciseNameTooLongException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -11,8 +13,13 @@ public record ExerciseName(String value) {
 
     private void validateExerciseName(String exerciseName) {
         if (exerciseName == null || exerciseName.isBlank()) {
-            throw new IllegalArgumentException("운동 이름은 필수입니다.");
+            throw new ExerciseNameBlankException();
         }
+
+        if (exerciseName.length() > 20) {
+            throw new ExerciseNameTooLongException();
+        }
+
     }
 
     @Override
