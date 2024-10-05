@@ -3,7 +3,6 @@ package homeTry.exerciseList.service;
 import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.exception.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.ExerciseTimeLimitExceededException;
-import homeTry.exerciseList.exception.ExerciseNotFoundException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
 import java.time.Duration;
@@ -36,12 +35,17 @@ public class ExerciseTimeService {
     @Transactional(readOnly = true)
     public ExerciseTime getExerciseTime(Long exerciseId) {
         return exerciseTimeRepository.findByExerciseId(exerciseId)
-            .orElseThrow(ExerciseNotFoundException::new);
+            .orElse(null);
     }
 
     @Transactional(readOnly = true)
     public boolean isExerciseActive(Long exerciseId) {
         ExerciseTime exerciseTime = getExerciseTime(exerciseId);
+
+        if (exerciseTime == null) {
+            return false;
+        }
+
         return exerciseTime.isActive();
     }
 

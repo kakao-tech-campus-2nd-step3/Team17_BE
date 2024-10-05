@@ -35,6 +35,13 @@ public class ExerciseTime {
         this.isActive = false;
     }
 
+    public ExerciseTime(Exercise exercise) {
+        this.exercise = exercise;
+        this.startTime = LocalDateTime.now();
+        this.exerciseTime = Duration.ZERO;
+        isActive = true;
+    }
+
     public void startExercise() {
         this.startTime = LocalDateTime.now();
         this.isActive = true;
