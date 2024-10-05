@@ -6,7 +6,7 @@ import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
 import homeTry.member.dto.MemberDTO;
-import homeTry.team.dto.ResponseRanking;
+import homeTry.team.dto.TotalExerciseTimeForDay;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,13 +78,13 @@ public class ExerciseHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseRanking> getMembersRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
+    public List<TotalExerciseTimeForDay> getMembersRankingForDay(List<MemberDTO> members, LocalDate targetDate) {
         return members.stream()
             .map(member -> {
                 Duration totalExerciseTime = getExerciseHistoriesForDay(member.id(), targetDate);
-                return new ResponseRanking(member.nickname(), totalExerciseTime);
+                return new TotalExerciseTimeForDay(member.nickname(), totalExerciseTime);
             })
-            .sorted(Comparator.comparing(ResponseRanking::time).reversed())
+            .sorted(Comparator.comparing(TotalExerciseTimeForDay::time).reversed())
             .toList();
     }
 
