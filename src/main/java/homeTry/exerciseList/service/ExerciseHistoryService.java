@@ -21,6 +21,7 @@ public class ExerciseHistoryService {
         this.exerciseHistoryRepository = exerciseHistoryRepository;
     }
 
+    // 운동 저장
     @Transactional
     public void saveExerciseHistory(Exercise exercise, ExerciseTime exerciseTime) {
         if (exerciseTime != null && !exerciseTime.getExerciseTime().isZero()) {
@@ -68,12 +69,15 @@ public class ExerciseHistoryService {
         return sumExerciseTime(monthlyExercises);
     }
 
+    // 운동 시간 합
     private Duration sumExerciseTime(List<ExerciseHistory> exercises) {
         return exercises.stream()
             .map(ExerciseHistory::getExerciseHistoryTime)
             .reduce(Duration.ZERO, Duration::plus);
     }
 
+    // 메인페이지 조회 시 사용
+    // 특정 날에 대한 운동 기록 반환
     @Transactional(readOnly = true)
     public List<ExerciseResponse> getExerciseResponsesForDay(Long memberId, LocalDate date) {
         LocalDateTime startOfDay = date.atTime(3, 0, 0);

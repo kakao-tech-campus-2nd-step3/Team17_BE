@@ -59,6 +59,7 @@ public class ExerciseService {
             throw new ExerciseDeprecatedException();
         }
 
+        // 하루 총 운동 시간이 12시간을 초과했는지 확인
         exerciseTimeService.validateStartExercise(memberDTO.id());
 
         // 현재 운동의 상태 확인
@@ -68,6 +69,7 @@ public class ExerciseService {
             throw new ExerciseAlreadyStartedException(); // 이미 시작된 운동을 종료 전 다시 시작하려는 경우
         }
 
+        // 실행 중이 운동이 있는지
         List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
             .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
             .toList();
@@ -77,7 +79,7 @@ public class ExerciseService {
         }
 
         if (currentExerciseTime == null) {
-            currentExerciseTime = new ExerciseTime(exercise); // 새로 생성
+            currentExerciseTime = new ExerciseTime(exercise); // 처음 운동을 시작한다면, 새로 생성
         }
 
         currentExerciseTime.startExercise();
@@ -93,6 +95,7 @@ public class ExerciseService {
             throw new ExerciseNotStartedException();
         }
 
+        // 하루 최대 12시간, 한 번에 저장되는 최대 시간 8시간을 넘었는지 확인
         exerciseTimeService.validateDailyExerciseLimit(currentExerciseTime);
 
         currentExerciseTime.stopExercise();
