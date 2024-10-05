@@ -36,13 +36,13 @@ public class MainPageService {
                 exerciseTimeService.getExerciseResponsesForToday(memberId),
                 diaryService.getDiaryByDate(date, memberId));
 
-        } else {
+        } 
 
-            return new MainPageResponse(
-                exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
-                exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
-                diaryService.getDiaryByDate(date, memberId));
-        }
+        return new MainPageResponse(
+            exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
+            exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
+            diaryService.getDiaryByDate(date, memberId));
+    
     }
 
     private boolean isToday(LocalDate day){
