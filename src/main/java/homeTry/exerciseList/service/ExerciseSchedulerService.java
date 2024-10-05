@@ -1,7 +1,6 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.model.entity.Exercise;
-import homeTry.exerciseList.model.entity.ExerciseTime;
 import java.util.List;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,11 +28,12 @@ public class ExerciseSchedulerService {
         List<Exercise> allExercises = exerciseService.findAllExercises();
 
         // 모든 운동 기록을 히스토리에 저장하고 운동 시간을 초기화
-        for (Exercise exercise : allExercises) {
-            ExerciseTime exerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
-            exerciseHistoryService.saveExerciseHistory(exercise, exerciseTime);
-            exerciseTimeService.resetExerciseTime(exerciseTime);
-        }
+        allExercises.stream()
+            .map(exercise -> exerciseTimeService.getExerciseTime(exercise.getExerciseId()))
+            .forEach(exerciseTime -> {
+                exerciseHistoryService.saveExerciseHistory(exerciseTime.getExercise(), exerciseTime);
+                exerciseTimeService.resetExerciseTime(exerciseTime);
+            });
     }
 
 }
