@@ -9,7 +9,6 @@ import homeTry.diary.model.vo.Memo;
 import homeTry.member.model.entity.Member;
 
 @Entity
-@Table(name = "diary")
 public class Diary {
 
     @Id
