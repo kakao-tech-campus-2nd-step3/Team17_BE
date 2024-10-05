@@ -8,7 +8,7 @@ public enum ExerciseErrorType implements ErrorType {
     // 운동 리스트를 찾을 수 없을 때 - 404
     EXERCISE_NOT_FOUND_EXCEPTION("Exercise404_001", HttpStatus.NOT_FOUND, "해당 운동을 찾을 수 없습니다."),
     // 운동이 이미 진행 중일 때 - 400
-    EXERCISE_ALREADY_ACTIVE_EXCEPTION("Exercise400_001", HttpStatus.BAD_REQUEST, "이미 운동을 진행 중입니다."),
+    EXERCISE_ALREADY_ACTIVE_EXCEPTION("Exercise400_001", HttpStatus.BAD_REQUEST, "이미 해당 운동을 진행 중입니다."),
     // 운동이 시작되지 않았는데 종료를 시도할 때 - 400
     EXERCISE_NOT_ACTIVE_EXCEPTION("Exercise400_002", HttpStatus.BAD_REQUEST, "운동이 시작되지 않았습니다."),
     // 이미 다른 운동이 시작 중일 때 - 400
