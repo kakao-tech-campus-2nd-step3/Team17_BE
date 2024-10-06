@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
-import homeTry.diary.exception.DiaryNotFoundException;
+import homeTry.diary.exception.BadRequestException.DiaryNotFoundException;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
 import jakarta.transaction.Transactional;
