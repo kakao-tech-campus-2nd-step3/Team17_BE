@@ -60,12 +60,9 @@ public class ExerciseService {
         // 하루 총 운동 시간이 12시간을 초과했는지 확인
         exerciseTimeService.validateExerciseStartConditions(memberDTO.id());
 
-        // 실행 중이 운동이 있는지
-        List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
-            .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
-            .toList();
-
-        if (!activeExercises.isEmpty()) {
+        // 실행 중인 운동이 있는지
+        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(memberDTO.id());
+        if (activeExerciseCount > 0) {
             throw new ExerciseAlreadyStartedException();
         }
 
