@@ -31,6 +31,17 @@ public class ExerciseSchedulerService {
         allExercises.stream()
             .map(exercise -> exerciseTimeService.getExerciseTime(exercise.getExerciseId()))
             .forEach(exerciseTime -> {
+                // exerciseTime 값이 null 이면 넘어감
+                if (exerciseTime == null) {
+                    return;
+                }
+
+                // 3시에도 운동이 실행 중이면 강제로 멈추고 저장
+                if (exerciseTime.isActive()) {
+                    exerciseTime.stopExercise();
+                    exerciseTimeService.saveExerciseTime(exerciseTime);
+                }
+
                 exerciseHistoryService.saveExerciseHistory(exerciseTime.getExercise(), exerciseTime);
                 exerciseTimeService.resetExerciseTime(exerciseTime);
             });
