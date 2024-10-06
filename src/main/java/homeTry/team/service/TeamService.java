@@ -135,7 +135,6 @@ public class TeamService {
 
     }
 
-
     //새로운 팀 생성에 필요한 정보 조회
     @Transactional(readOnly = true)
     public ResponseNewTeamFrom getNewTeamForm() {
@@ -150,11 +149,10 @@ public class TeamService {
 
         long tagListSize = tagList.size();
 
+        //태그 처리가 된 팀을 받음
         Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize, pageable);
 
-        List<Team> taggedTeamList= taggedTeamListPage.getContent();
-
-        List<ResponseTeam> responseTeamList = taggedTeamList
+        List<ResponseTeam> responseTeamList = taggedTeamListPage.getContent()
                 .stream()
                 .map(this::convertToResponseTeam)
                 .toList();
