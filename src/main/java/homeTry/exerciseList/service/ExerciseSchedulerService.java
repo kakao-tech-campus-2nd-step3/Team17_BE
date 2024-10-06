@@ -46,7 +46,7 @@ public class ExerciseSchedulerService {
 
                 exerciseHistoryService.saveExerciseHistory(exerciseTime.getExercise(), exerciseTime);
                 exerciseTimeService.resetExerciseTime(exerciseTime);
-            });
+        });
     }
 
 }
