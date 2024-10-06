@@ -22,14 +22,14 @@ public class ExerciseHistory {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Exercise exercise;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "exercise_history_time", nullable = false)
+    @Column(nullable = false)
     private Duration exerciseHistoryTime;
 
     protected ExerciseHistory() {
