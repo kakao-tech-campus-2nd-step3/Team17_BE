@@ -1,6 +1,7 @@
 package homeTry.mainPage.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -25,6 +26,7 @@ public class MainPageService {
         this.exerciseHistoryService = exerciseHistoryService;
     }
     
+    @Transactional(readOnly = true)
     public MainPageResponse getMainPage(MainPageRequest mainPageRequest, Long memberId) {
 
         LocalDate date = LocalDate.of(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day());
@@ -36,13 +38,13 @@ public class MainPageService {
                 exerciseTimeService.getExerciseResponsesForToday(memberId),
                 diaryService.getDiaryByDate(date, memberId));
 
-        } else {
+        } 
 
-            return new MainPageResponse(
-                exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
-                exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
-                diaryService.getDiaryByDate(date, memberId));
-        }
+        return new MainPageResponse(
+            exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
+            exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
+            diaryService.getDiaryByDate(date, memberId));
+    
     }
 
     private boolean isToday(LocalDate day){
