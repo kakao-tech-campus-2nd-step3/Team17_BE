@@ -21,9 +21,4 @@ public record Memo(String value) {
             throw new MemoTooLongException();
         }
     }
-
-    @Override
-    public String toString() {
-        return value;
-    }
 }
