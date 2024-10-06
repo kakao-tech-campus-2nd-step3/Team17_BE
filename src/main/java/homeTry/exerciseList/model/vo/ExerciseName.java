@@ -23,9 +23,4 @@ public record ExerciseName(String value) {
 
     }
 
-    @Override
-    public String toString() {
-        return value;
-    }
-
 }
