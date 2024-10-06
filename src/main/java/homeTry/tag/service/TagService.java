@@ -1,6 +1,7 @@
 package homeTry.tag.service;
 
 import homeTry.tag.dto.TagDTO;
+import homeTry.tag.exeception.TagNotFoundException;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.repository.TagRepository;
 import homeTry.team.model.entity.Team;
@@ -44,7 +45,7 @@ public class TagService {
         return tagIdList
                 .stream()
                 .map(tagId-> tagRepository.findById(tagId)
-                        .orElseThrow(()-> new IllegalArgumentException("해당 태그ID를 가진 태그가 존재하지 않습니다")))
+                        .orElseThrow(()-> new TagNotFoundException()))
                 .toList();
     }
 

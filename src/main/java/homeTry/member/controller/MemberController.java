@@ -1,12 +1,10 @@
 package homeTry.member.controller;
 
 import homeTry.annotation.LoginMember;
-import homeTry.exerciseList.service.ExerciseHistoryService;
 import homeTry.member.dto.ChangeNicknameDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.dto.MyPageDTO;
 import homeTry.member.service.MemberService;
-import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,25 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    private final ExerciseHistoryService exerciseHistoryService;
     private final MemberService memberService;
 
     @Autowired
-    public MemberController(ExerciseHistoryService exerciseHistoryService, MemberService memberService) {
-        this.exerciseHistoryService = exerciseHistoryService;
-        this.memberService = memberService;
-    }
+    public MemberController(MemberService memberService) { this.memberService = memberService; }
 
     @GetMapping("/profile")
     public ResponseEntity<MyPageDTO> getMemberInfo(@LoginMember MemberDTO memberDTO) {
-        Long id = memberDTO.id();
-
-        Duration weeklyTotal = exerciseHistoryService.getWeeklyTotalExercise(id);
-        Duration monthlyTotal = exerciseHistoryService.getMonthlyTotalExercise(id);
-
-        MyPageDTO myPageDTO = new MyPageDTO(memberDTO.nickname(), memberDTO.email(), weeklyTotal, monthlyTotal);
-
-        return ResponseEntity.ok(myPageDTO);
+        return ResponseEntity.ok(memberService.getMemberInfo(memberDTO));
     }
 
     @PutMapping("/profile")

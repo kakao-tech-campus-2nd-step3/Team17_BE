@@ -4,7 +4,6 @@ import homeTry.annotation.LoginMember;
 import homeTry.exerciseList.service.ExerciseService;
 import homeTry.exerciseList.dto.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +25,7 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createExercise(@Valid @RequestBody ExerciseRequest request,
+    public ResponseEntity<Void> createExercise(@RequestBody ExerciseRequest request,
         @LoginMember MemberDTO memberDTO) {
 
         exerciseService.createExercise(request, memberDTO);  // 운동 생성
@@ -45,7 +44,7 @@ public class ExerciseController {
     public ResponseEntity<Void> startExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseService.startExercise(exerciseId, memberDTO);
+        exerciseService.startExercise(exerciseId, memberDTO);  // 운동 시작
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
@@ -53,7 +52,7 @@ public class ExerciseController {
     public ResponseEntity<Void> stopExercise(@PathVariable Long exerciseId,
         @LoginMember MemberDTO memberDTO) {
 
-        exerciseService.stopExercise(exerciseId, memberDTO);
+        exerciseService.stopExercise(exerciseId, memberDTO);  // 운동 종료
         return new ResponseEntity<>(HttpStatus.OK);  // 상태 코드 200
     }
 
