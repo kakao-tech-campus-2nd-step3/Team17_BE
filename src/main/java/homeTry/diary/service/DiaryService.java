@@ -3,6 +3,7 @@ package homeTry.diary.service;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import homeTry.diary.dto.DiaryDto;
 import java.util.List;
@@ -14,7 +15,6 @@ import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.exception.BadRequestException.DiaryNotFoundException;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class DiaryService {
@@ -27,6 +27,7 @@ public class DiaryService {
         this.memberService = memberService;
     }
 
+    @Transactional(readOnly = true)
     public List<DiaryDto> getDiaryByDate(LocalDate date, Long memberId) {
 
         //time 상수 추가시 추가 리팩토링 예정
