@@ -8,7 +8,11 @@ import homeTry.tag.dto.TagDTO;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.service.TagService;
 import homeTry.team.dto.*;
+import homeTry.team.exception.NotTeamLeaderException;
+import homeTry.team.exception.TeamNameAlreadyExistsException;
+import homeTry.team.exception.TeamNotFoundException;
 import homeTry.team.model.entity.Team;
+import homeTry.team.model.vo.Name;
 import homeTry.team.repository.TeamRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -47,18 +51,38 @@ public class TeamService {
     @Transactional
     public void addTeam(MemberDTO memberDTO, RequestTeamDTO requestTeamDTO) {
         Member leader = memberService.getMemberEntity(memberDTO.id());
-        Team team = teamRepository.save(new Team(
+
+        validateTeamName(requestTeamDTO); // 팀 이름 유효성 검사 수행
+
+        Team team = teamRepository.save(createTeam(requestTeamDTO, leader)); //팀 저장
+
+        teamMemberService.addTeamMember(team, leader); //리더를 TeamMember 엔티티에 추가
+
+        addTagsToTeam(requestTeamDTO.tagIdList(), team); //팀에 태그 정보 추가
+    }
+
+    private Team createTeam(RequestTeamDTO requestTeamDTO, Member leader) {
+        return new Team(
                 requestTeamDTO.teamName(),
                 requestTeamDTO.teamDescription(),
                 leader,
                 requestTeamDTO.maxParticipants(),
                 DEFAULT_PARTICIPANTS,
                 requestTeamDTO.password()
-        ));
+        );
+    }
 
-        teamMemberService.addTeamMember(team, leader);
+    //동일한 이름을 가지고 있는지 체크
+    private void validateTeamName(RequestTeamDTO requestTeamDTO) {
+        teamRepository.findByTeamName(new Name(requestTeamDTO.teamName()))
+                .ifPresent(team -> {
+                    throw new TeamNameAlreadyExistsException();
+                });
+    }
 
-        List<Long> tagIdList = requestTeamDTO.tagIdList()
+    //팀의 태그 정보를 추가
+    private void addTagsToTeam(List<TagDTO> tagDTOList, Team team) {
+        List<Long> tagIdList = tagDTOList
                 .stream()
                 .map(TagDTO::tagId)
                 .toList();
@@ -68,20 +92,27 @@ public class TeamService {
         teamTagService.addTeamTags(tagList, team);
     }
 
-
     //팀 삭제 기능
     @Transactional
     public void deleteTeam(MemberDTO memberDTO, Long teamId) {
-        Member leader = memberService.getMemberEntity(memberDTO.id());
+        Member member = memberService.getMemberEntity(memberDTO.id());
 
         Team team  = teamRepository.findById(teamId)
-                .orElseThrow(()->new IllegalArgumentException("찾을 수 없습니다"));
+                .orElseThrow(()-> new TeamNotFoundException());
+
+        validateIsLeader(team.getLeader(), member); //팀 리더인지 체크
 
         teamMemberService.deleteAllTeamMemberFromTeam(team); // 해당 팀에 대한 TeamMember 데이터 삭제
 
         teamTagService.deleteAllTeamTagFromTeam(team); //해당 팀에 대한 TeamTag 데이터 삭제
 
         teamRepository.delete(team); //Team 삭제
+    }
+
+    //팀 리더인지 체크
+    private void validateIsLeader(Member leader, Member member) {
+        if (leader != member)
+            throw new NotTeamLeaderException();
     }
 
 
@@ -104,7 +135,6 @@ public class TeamService {
 
     }
 
-
     //새로운 팀 생성에 필요한 정보 조회
     @Transactional(readOnly = true)
     public ResponseNewTeamFrom getNewTeamForm() {
@@ -119,11 +149,10 @@ public class TeamService {
 
         long tagListSize = tagList.size();
 
+        //태그 처리가 된 팀을 받음
         Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize, pageable);
 
-        List<Team> taggedTeamList= taggedTeamListPage.getContent();
-
-        List<ResponseTeam> responseTeamList = taggedTeamList
+        List<ResponseTeam> responseTeamList = taggedTeamListPage.getContent()
                 .stream()
                 .map(this::convertToResponseTeam)
                 .toList();

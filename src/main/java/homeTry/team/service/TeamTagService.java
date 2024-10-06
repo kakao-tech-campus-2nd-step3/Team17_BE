@@ -19,7 +19,7 @@ public class TeamTagService {
         this.teamTagRepository = teamTagRepository;
     }
 
-    //팀 추가시 해당 팀에 해당하는 태그를 추가하는 작업
+    //팀에 해당하는 태그를 TeamTag에 추가
     //TeamService의 addTeam 메소드에서 하나의 트랜잭션으로 묶여있음
     public void addTeamTags(List<Tag> tagList, Team team) {
         tagList.forEach(
