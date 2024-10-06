@@ -14,10 +14,10 @@ public record Memo(String value) {
     }
 
     private static void validateMemo(String value) {
-        if (value != null && value.isBlank()) {
+        if (value == null || value.isBlank()) {
             throw new MemoBlankException();
         }
-        if (value != null && value.length() > MAX_LENGTH) {
+        if (value.length() > MAX_LENGTH) {
             throw new MemoTooLongException();
         }
     }
