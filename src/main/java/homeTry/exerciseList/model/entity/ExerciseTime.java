@@ -52,6 +52,11 @@ public class ExerciseTime {
         }
     }
 
+    public void resetExerciseTime() {
+        this.exerciseTime = Duration.ZERO;
+        this.isActive = false;
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,11 +75,6 @@ public class ExerciseTime {
 
     public Exercise getExercise() {
         return exercise;
-    }
-
-    public void resetExerciseTime() {
-        this.exerciseTime = Duration.ZERO;
-        this.isActive = false;
     }
 
 }
