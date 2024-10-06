@@ -1,6 +1,5 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.exception.badRequestException.AnotherExerciseInProgressException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
@@ -61,24 +60,21 @@ public class ExerciseService {
         // 하루 총 운동 시간이 12시간을 초과했는지 확인
         exerciseTimeService.validateExerciseStartConditions(memberDTO.id());
 
-        // 현재 운동의 상태 확인
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
-
-        if (currentExerciseTime != null && currentExerciseTime.isActive()) {
-            throw new ExerciseAlreadyStartedException(); // 이미 시작된 운동을 종료 전 다시 시작하려는 경우
-        }
-
         // 실행 중이 운동이 있는지
         List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
             .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
             .toList();
 
         if (!activeExercises.isEmpty()) {
-            throw new AnotherExerciseInProgressException(); // 운동이 진행 중인 경우
+            throw new ExerciseAlreadyStartedException();
         }
 
+        // 현재 운동의 상태 확인
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+
+        // 처음 운동을 시작한다면, 새로 생성
         if (currentExerciseTime == null) {
-            currentExerciseTime = new ExerciseTime(exercise); // 처음 운동을 시작한다면, 새로 생성
+            currentExerciseTime = new ExerciseTime(exercise);
         }
 
         currentExerciseTime.startExercise();
