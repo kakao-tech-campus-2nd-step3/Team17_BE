@@ -18,12 +18,12 @@ public record ResponseTeam(
     public static ResponseTeam of(Team team, List<TagDTO> tagList){
         return new ResponseTeam(
                 team.getId(),
-                team.getTeamName().getValue(),
+                team.getTeamName().value(),
                 team.getLeader().getNickname(),
-                team.getTeamDescription().getValue(),
-                team.getMaxParticipants().getValue(),
-                team.getCurrentParticipants().getValue(),
-                team.getPassword().getValue(),
+                team.getTeamDescription().value(),
+                team.getMaxParticipants().value(),
+                team.getCurrentParticipants().value(),
+                team.getPassword().value(),
                 tagList);
     }
 }

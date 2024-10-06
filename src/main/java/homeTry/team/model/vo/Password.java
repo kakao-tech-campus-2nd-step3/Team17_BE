@@ -5,20 +5,16 @@ import jakarta.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Password {
-
-    private String value;
-
-    protected Password () {}
-
-    public Password(String value) {
+public record Password (String value){
+    public Password {
         validatePassword(value);
-        this.value = value;
     }
 
     private void validatePassword(String value) {
-        if(value != null && value.isBlank())
+        if(value == null || value.isBlank())
             throw new IllegalArgumentException("password값은 비어있을 수 없습니다");
+        if(value.length() > 10)
+            throw new IllegalArgumentException("password의 길이는 최대 10글자 입니다");
     }
 
     public String getValue() {
