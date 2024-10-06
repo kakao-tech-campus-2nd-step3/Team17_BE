@@ -29,12 +29,16 @@ public class DiaryService {
 
     public List<DiaryDto> getDiaryByDate(LocalDate date, Long memberId) {
 
-        LocalDateTime startOfDay = date.atStartOfDay(); 
-        LocalDateTime endOfDay = date.atTime(23, 59, 59); 
+        //time 상수 추가시 추가 리팩토링 예정
+        LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
+        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
 
         List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId));
 
-        return diaries.stream().map(DiaryDto::convertToDiaryDto).toList();
+        return diaries
+                .stream()
+                .map(DiaryDto::convertToDiaryDto)
+                .toList();
 
     }
 
@@ -42,19 +46,17 @@ public class DiaryService {
     public void createDiary(DiaryRequest diaryRequest, Long memberId) {
 
         diaryRepository.save(
-                new Diary(LocalDateTime.now(),
-                        diaryRequest.memo(),
+                new Diary(diaryRequest.memo(),
                         memberService.getMemberEntity(memberId)));
     }
 
     @Transactional
     public void deleteDiary(Long diaryId) {
 
-        if (diaryRepository.findById(diaryId).isEmpty()) {
-            throw new DiaryNotFoundException();
-        } 
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new DiaryNotFoundException());
         
-        diaryRepository.deleteById(diaryId);
+        diaryRepository.delete(diary);
         
     }
 }
