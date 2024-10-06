@@ -2,7 +2,7 @@ package homeTry.member.model.entity;
 
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
-import homeTry.member.model.vo.Password;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -17,20 +17,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "email", nullable = false))
     private Email email;
 
     @Embedded
-    @Column(nullable = false)
-    private Password password;
-
-    @Embedded
-    @Column(nullable = false)
+    @AttributeOverride(name = "value", column = @Column(name = "nickname", nullable = false))
     private Nickname nickname;
 
     @Column(nullable = true)
@@ -42,15 +40,13 @@ public class Member {
 
     protected Member() { }
 
-    public Member(String email, String password, String nickname) {
+    public Member(String email, String nickname) {
         this.nickname = new Nickname(nickname);
         this.email = new Email(email);
-        this.password = new Password(password);
     }
     public Long getId() { return id; }
-    public String getEmail() { return email.email(); }
-    public String getPassword() { return password.password(); }
-    public String getNickname() { return nickname.nickname(); }
+    public String getEmail() { return email.value(); }
+    public String getNickname() { return nickname.value(); }
     public String getKakaoAccessToken() { return kakaoAccessToken;}
     public LocalDateTime getRegistrationDate() {return registrationDate;}
 
