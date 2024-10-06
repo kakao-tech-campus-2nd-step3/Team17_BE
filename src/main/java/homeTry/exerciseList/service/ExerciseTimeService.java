@@ -38,28 +38,20 @@ public class ExerciseTimeService {
             .orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public void validateExerciseStartConditions(Long memberId) {
-        Duration totalExerciseTimeForToday = getExerciseTimesForToday(memberId);
-
-        // 하루 총 운동 시간이 12시간을 초과했는지 확인
-        if (totalExerciseTimeForToday.toHours() > 12) {
-            throw new DailyExerciseTimeLimitExceededException();  // 12시간 초과 시 예외 발생
-        }
-    }
-
-    // 운동 시간 초과 여부 확인
-    @Transactional(readOnly = true)
     public void validateExerciseDurationLimits(ExerciseTime exerciseTime) {
         Duration timeElapsed = Duration.between(exerciseTime.getStartTime(), LocalDateTime.now());
         Duration totalTime = exerciseTime.getExerciseTime().plus(timeElapsed);
 
-        if (totalTime.toHours() > 12) {
-            throw new DailyExerciseTimeLimitExceededException();
+        // 한 번 운동한 시간이 8시간을 초과한 경우
+        if (timeElapsed.toHours() > 8) {
+            exerciseTime.stopExerciseWithoutSavingTime();  // 기록 저장 없이 강제 종료
+            throw new ExerciseTimeLimitExceededException();
         }
 
-        if (timeElapsed.toHours() > 8) {
-            throw new ExerciseTimeLimitExceededException();
+        // 하루 총 운동 시간이 12시간을 초과한 경우
+        if (totalTime.toHours() > 12) {
+            exerciseTime.stopExerciseWithoutSavingTime();
+            throw new DailyExerciseTimeLimitExceededException();
         }
     }
 
