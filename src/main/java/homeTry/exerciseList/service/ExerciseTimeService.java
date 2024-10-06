@@ -39,17 +39,6 @@ public class ExerciseTimeService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isExerciseActive(Long exerciseId) {
-        ExerciseTime exerciseTime = getExerciseTime(exerciseId);
-
-        if (exerciseTime == null) {
-            return false;
-        }
-
-        return exerciseTime.isActive();
-    }
-
-    @Transactional(readOnly = true)
     public void validateExerciseStartConditions(Long memberId) {
         Duration totalExerciseTimeForToday = getExerciseTimesForToday(memberId);
 
