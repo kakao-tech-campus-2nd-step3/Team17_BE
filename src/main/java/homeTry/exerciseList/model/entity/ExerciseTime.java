@@ -52,6 +52,12 @@ public class ExerciseTime {
         }
     }
 
+    public void stopExerciseWithoutSavingTime() {
+        if (isActive) {
+            this.isActive = false;  // 운동을 종료하지만 시간을 더하지 않음
+        }
+    }
+
     public void resetExerciseTime() {
         this.exerciseTime = Duration.ZERO;
         this.isActive = false;
