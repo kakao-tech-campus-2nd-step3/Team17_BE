@@ -5,18 +5,22 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import homeTry.diary.model.vo.Memo;
 import homeTry.member.model.entity.Member;
 
 @Entity
-@Table(name = "diary")
+@EntityListeners(AuditingEntityListener.class)
 public class Diary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Embedded
@@ -24,13 +28,12 @@ public class Diary {
     private Memo memo; 
 
     @ManyToOne
-    @JoinColumn(name = "member_email", referencedColumnName = "email", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
     protected Diary() {}
 
-    public Diary(LocalDateTime createdAt, String memo, Member member) {
-        this.createdAt = createdAt;
+    public Diary(String memo, Member member) {
         this.memo = new Memo(memo);
         this.member = member;
     }

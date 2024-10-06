@@ -1,12 +1,13 @@
 package homeTry.auth.kakaoAuth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoErrorResponseDTO(
-        @JsonProperty("error")
         String error,
 
-        @JsonProperty("error_description")
         String errorDescription,
 
         @JsonProperty("error_code")

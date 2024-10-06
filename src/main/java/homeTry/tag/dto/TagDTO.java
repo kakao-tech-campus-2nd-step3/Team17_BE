@@ -14,7 +14,7 @@ public record TagDTO(
     public static TagDTO of(Tag tag) {
         return new TagDTO(
                 tag.getId(),
-                tag.getTagName().getValue(),
-                tag.getTagAttribute().getValue());
+                tag.getTagName().value(),
+                tag.getTagAttribute().value());
     }
 }

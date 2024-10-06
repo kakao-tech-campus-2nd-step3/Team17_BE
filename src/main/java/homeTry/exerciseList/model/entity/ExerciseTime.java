@@ -17,22 +17,26 @@ public class ExerciseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "exercise_time", nullable = false)
-    private Duration exerciseTime;
+    @Column(nullable = false)
+    private Duration exerciseTime = Duration.ZERO;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(nullable = false)
+    private boolean isActive = false;
 
     @OneToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Exercise exercise;
 
     protected ExerciseTime() {
-        this.exerciseTime = Duration.ZERO;
-        this.isActive = false;
+    }
+
+    public ExerciseTime(Exercise exercise) {
+        this.exercise = exercise;
+        this.startTime = LocalDateTime.now();
+        isActive = true;
     }
 
     public void startExercise() {
@@ -46,6 +50,17 @@ public class ExerciseTime {
             this.exerciseTime = this.exerciseTime.plus(timeElapsed);
             this.isActive = false;
         }
+    }
+
+    public void stopExerciseWithoutSavingTime() {
+        if (isActive) {
+            this.isActive = false;  // 운동을 종료하지만 시간을 더하지 않음
+        }
+    }
+
+    public void resetExerciseTime() {
+        this.exerciseTime = Duration.ZERO;
+        this.isActive = false;
     }
 
     public Long getId() {
@@ -66,11 +81,6 @@ public class ExerciseTime {
 
     public Exercise getExercise() {
         return exercise;
-    }
-
-    public void resetExerciseTime() {
-        this.exerciseTime = Duration.ZERO;
-        this.isActive = false;
     }
 
 }

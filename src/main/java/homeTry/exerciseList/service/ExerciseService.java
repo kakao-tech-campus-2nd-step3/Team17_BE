@@ -1,11 +1,10 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.exception.AnotherExerciseInProgressException;
-import homeTry.exerciseList.exception.ExerciseNotFoundException;
-import homeTry.exerciseList.exception.ExerciseAlreadyStartedException;
-import homeTry.exerciseList.exception.ExerciseNotStartedException;
-import homeTry.exerciseList.exception.ExerciseStartException;
-import homeTry.exerciseList.exception.NoExercisePermissionException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseNotStartedException;
+import homeTry.exerciseList.exception.badRequestException.NoExercisePermissionException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
 import homeTry.exerciseList.model.entity.Exercise;
@@ -47,34 +46,33 @@ public class ExerciseService {
         }
 
         exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정
-        exerciseRepository.save(exercise);
     }
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        try {
-            Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
-            exerciseTimeService.validateStartExercise(memberDTO.id());
+        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
 
-            List<Exercise> activeExercises = exerciseRepository.findAllByMemberId(memberDTO.id()).stream()
-                .filter(ex -> exerciseTimeService.isExerciseActive(ex.getExerciseId()))
-                .toList();
-
-            if (!activeExercises.isEmpty()) {
-                throw new AnotherExerciseInProgressException(); // 다른 운동이 진행 중인 경우
-            }
-
-            ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
-
-            if (currentExerciseTime.isActive()) {
-                throw new ExerciseAlreadyStartedException();
-            }
-
-            currentExerciseTime.startExercise();
-            exerciseTimeService.saveExerciseTime(currentExerciseTime);
-        } catch (Exception e) {
-            throw new ExerciseStartException();
+        // 삭제한 운동을 시작하려는 경우
+        if (exercise.isDeprecated()) {
+            throw new ExerciseDeprecatedException();
         }
+
+        // 실행 중인 운동이 있는지
+        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(memberDTO.id());
+        if (activeExerciseCount > 0) {
+            throw new ExerciseAlreadyStartedException();
+        }
+
+        // 현재 운동의 상태 확인
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+
+        // 처음 운동을 시작한다면, 새로 생성
+        if (currentExerciseTime == null) {
+            currentExerciseTime = new ExerciseTime(exercise);
+        }
+
+        currentExerciseTime.startExercise();
+        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     @Transactional
@@ -82,14 +80,14 @@ public class ExerciseService {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
 
-        if (!currentExerciseTime.isActive()) {
+        if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
         }
 
-        exerciseTimeService.validateDailyExerciseLimit(currentExerciseTime);
+        // 하루 최대 12시간, 한 번에 저장되는 최대 시간 8시간을 넘었는지 확인
+        exerciseTimeService.validateExerciseDurationLimits(currentExerciseTime);
 
         currentExerciseTime.stopExercise();
-        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
