@@ -1,92 +1,88 @@
 package homeTry.auth.kakaoAuth.service;
 
-import homeTry.exception.clientException.BadRequestException;
-import homeTry.exception.serverException.InternalServerException;
-import homeTry.dto.kakaoAPI.KakaoMemberInfoDTO;
-import homeTry.dto.MemberDTO;
-import homeTry.dto.kakaoAPI.TokenResponseDTO;
+import homeTry.auth.exception.badRequestException.InvalidAuthCodeException;
+import homeTry.auth.exception.internalServerException.HomeTryServerException;
+import homeTry.auth.exception.internalServerException.KakaoAuthServerException;
+import homeTry.auth.kakaoAuth.config.KakaoAuthConfig;
+import homeTry.auth.kakaoAuth.dto.KakaoErrorResponseDTO;
+import homeTry.auth.kakaoAuth.dto.KakaoMemberInfoDTO;
+import homeTry.member.dto.MemberDTO;
+import homeTry.auth.kakaoAuth.dto.TokenResponseDTO;
 import java.net.URI;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatusCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 @Service
-@PropertySource("classpath:application-kakao-login.properties")
-@PropertySource("classpath:application-secret.properties")
 public class KakaoTokenService {
 
-    @Value("${kakao-token-url}")
-    private String tokenUrl;
-
-    @Value("${kakao-user-info-url}")
-    private String userInfoUrl;
-
-    @Value("${kakao-redirect-uri}")
-    private String kakaoRedirectUri;
-
-    @Value("${kakao-rest-api-key}")
-    private String clientId;
-
+    private final KakaoAuthConfig kakaoAuthConfig;
+    private static final Logger logger = LoggerFactory.getLogger(KakaoTokenService.class);
     private final RestClient client = RestClient.builder().build();
 
-    public String getAccessToken(String code){
+    public KakaoTokenService(KakaoAuthConfig kakaoAuthConfig) {
+        this.kakaoAuthConfig = kakaoAuthConfig;
+    }
+
+    public String getAccessToken(String code) {
         try {
-            var body = makeBody(clientId, kakaoRedirectUri, code);
+            var body = makeBody(kakaoAuthConfig.getRestApiKey(), kakaoAuthConfig.getRedirectUri(), code);
             ResponseEntity<TokenResponseDTO> result = client.post()
-                    .uri(URI.create(tokenUrl)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(body).retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                        throw new BadRequestException("잘못된 요청으로 인한 오류입니다.\n" + response.getBody()
-                                .toString().replace("{", "").replace("}", "").trim()
-                        );
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
-                        throw new InternalServerException("서버에서 오류가 발생하였습니다.\n" + response.getBody()
-                                .toString().replace("{", "").replace("}", "").trim()
-                        );
-                    }).toEntity(TokenResponseDTO.class);
+                    .uri(URI.create(kakaoAuthConfig.getTokenUrl()))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(body)
+                    .retrieve()
+                    .toEntity(TokenResponseDTO.class);
 
             return Objects.requireNonNull(result.getBody()).accessToken();
-        } catch (BadRequestException | InternalServerException e){
-            throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
+        } catch (HttpClientErrorException e) {
+            KakaoErrorResponseDTO kakaoErrorResponseDTO = e.getResponseBodyAs(KakaoErrorResponseDTO.class);
+            if(Objects.requireNonNull(kakaoErrorResponseDTO).KakaoErrorCode().equals("KOE320"))
+                throw new InvalidAuthCodeException();
+
+            logger.error(kakaoErrorResponseDTO.toString());
+            throw new HomeTryServerException();
+        } catch (HttpServerErrorException e) {
+            KakaoErrorResponseDTO kakaoErrorResponseDTO = e.getResponseBodyAs(KakaoErrorResponseDTO.class);
+            logger.error(Objects.requireNonNull(kakaoErrorResponseDTO).toString());
+
+            throw new KakaoAuthServerException();
         }
     }
 
     public MemberDTO getMemberInfo(String kakaoAccessToken){
         try {
             ResponseEntity<KakaoMemberInfoDTO> responseUserInfo = client.get()
-                    .uri(URI.create(userInfoUrl))
+                    .uri(URI.create(kakaoAuthConfig.getUserInfoUrl()))
                     .header("Authorization", "Bearer " + kakaoAccessToken)
                     .header("Content-type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8")
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                        throw new BadRequestException("잘못된 요청으로 인한 오류입니다.\n" + response.getBody()
-                                .toString().replace("{", "").replace("}", "").trim()
-                        );
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
-                        throw new InternalServerException("서버에서 오류가 발생하였습니다.\n" + response.getBody()
-                                .toString().replace("{", "").replace("}", "").trim()
-                        );
-                    }).toEntity(KakaoMemberInfoDTO.class);
+                    .retrieve().toEntity(KakaoMemberInfoDTO.class);
 
             KakaoMemberInfoDTO userInfo = responseUserInfo.getBody();
             KakaoMemberInfoDTO.KakaoAccount kakaoAccount = Objects.requireNonNull(userInfo).kakaoAccount();
             KakaoMemberInfoDTO.KakaoAccount.Profile profile = kakaoAccount.profile();
 
-            return new MemberDTO(kakaoAccount.email(), "default",  profile.nickname());
-        } catch (BadRequestException | InternalServerException e){
-            throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
+            return new MemberDTO(0L, kakaoAccount.email(), profile.nickname());
+        } catch (HttpClientErrorException e) {
+            KakaoErrorResponseDTO kakaoErrorResponseDTO = e.getResponseBodyAs(KakaoErrorResponseDTO.class);
+
+            if(Objects.requireNonNull(kakaoErrorResponseDTO).KakaoErrorCode().equals("KOE320"))
+                throw new InvalidAuthCodeException();
+
+            logger.error(kakaoErrorResponseDTO.toString());
+            throw new HomeTryServerException();
+        } catch (HttpServerErrorException e) {
+            KakaoErrorResponseDTO kakaoErrorResponseDTO = e.getResponseBodyAs(KakaoErrorResponseDTO.class);
+            logger.error(Objects.requireNonNull(kakaoErrorResponseDTO).toString());
+
+            throw new KakaoAuthServerException();
         }
     }
 

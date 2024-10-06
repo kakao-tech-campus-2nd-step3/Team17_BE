@@ -4,30 +4,38 @@ package homeTry.diary.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import homeTry.diary.model.vo.Memo;
+import homeTry.member.model.entity.Member;
 
 @Entity
-@Table(name = "diary")
+@EntityListeners(AuditingEntityListener.class)
 public class Diary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime createAt;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
     private Memo memo; 
 
-    @Column(nullable = false)
-    private String memberEmail;
+    @ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    private Member member;
 
-    public Diary(LocalDateTime createAt, Memo memo, String memberEmail) {
-        this.createAt = createAt;
-        this.memo = memo;
-        this.memberEmail = memberEmail;
+    protected Diary() {}
+
+    public Diary(String memo, Member member) {
+        this.memo = new Memo(memo);
+        this.member = member;
     }
 
     public Long getId() {
@@ -35,14 +43,14 @@ public class Diary {
     }
 
     public LocalDateTime getCreateAt() {
-        return createAt;
+        return createdAt;
     }
 
     public Memo getMemo() {
         return memo;
     }
 
-    public String getMemberEmail() {
-        return memberEmail;
+    public Member getMember() {
+        return member;
     }
 }

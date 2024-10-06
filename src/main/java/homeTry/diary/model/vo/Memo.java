@@ -1,38 +1,29 @@
 package homeTry.diary.model.vo;
 
-
+import homeTry.diary.exception.BadRequestException.MemoBlankException;
+import homeTry.diary.exception.BadRequestException.MemoTooLongException;
 import jakarta.persistence.Embeddable;
 
-import java.util.Objects;
-
 @Embeddable
-public class Memo {
-    
-    private final String value;
+public record Memo(String value) {
 
-    public Memo(String value) {
-        //constraints
-        this.value = value;
+    private static final int MAX_LENGTH = 500;
+
+    public Memo {
+        validateMemo(value);  
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Memo memo = (Memo) o;
-        return Objects.equals(value, memo.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
+    private static void validateMemo(String value) {
+        if (value != null && value.isBlank()) {
+            throw new MemoBlankException();
+        }
+        if (value != null && value.length() > MAX_LENGTH) {
+            throw new MemoTooLongException();
+        }
     }
 
     @Override
     public String toString() {
-        return "Memo{" +
-                "value='" + value + '\'' +
-                '}';
+        return value;
     }
 }
-

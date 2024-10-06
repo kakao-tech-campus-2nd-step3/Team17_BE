@@ -1,15 +1,22 @@
 package homeTry.diary.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import homeTry.diary.exception.BadRequestException.MemoBlankException;
+import homeTry.diary.exception.BadRequestException.MemoTooLongException;
 
-import homeTry.diary.model.vo.Memo;
+public record DiaryRequest(String memo) {
+    private static final int MAX_LENGTH = 500;
 
-public class DiaryRequest {
+    public DiaryRequest(String memo) {
+        validateMemo(memo);
+        this.memo = memo;  
+    }
 
-    private Memo memo;
-
-    @JsonValue
-    public Memo getMemo() {
-        return memo;
+    private static void validateMemo(String memo) {
+        if (memo != null && memo.isBlank()) {
+            throw new MemoBlankException();
+        }
+        if (memo != null && memo.length() > MAX_LENGTH) {
+            throw new MemoTooLongException();
+        }
     }
 }
