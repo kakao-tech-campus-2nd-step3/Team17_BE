@@ -6,10 +6,16 @@ import java.time.LocalDate;
 import homeTry.mainPage.exception.BadRequestException.InvalidDateException;
 
 public record MainPageRequest(
-    int year,
-    int month,
-    int day
-) {
+        int year,
+        int month,
+        int day) {
+
+    public MainPageRequest() {
+        this(LocalDate.now().getYear(),
+                LocalDate.now().getMonthValue(),
+                LocalDate.now().getDayOfMonth());
+
+    }
 
     public MainPageRequest(int year, int month, int day) {
         validateDay(year, month, day);
@@ -26,4 +32,7 @@ public record MainPageRequest(
         }
     }
 
+    public LocalDate toDate() {
+        return LocalDate.of(year, month, day);
+    }
 }
