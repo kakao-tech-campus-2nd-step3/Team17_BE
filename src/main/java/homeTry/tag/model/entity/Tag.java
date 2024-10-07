@@ -11,14 +11,15 @@ public class Tag {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name ="value",column = @Column(name = "tag_name", nullable = false, length = 15))
+    @AttributeOverride(name = "value", column = @Column(name = "tag_name", nullable = false, length = 15))
     private Name tagName;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "tag_attribute", nullable = false))
     private Name tagAttribute;
 
-    protected Tag () {}
+    protected Tag() {
+    }
 
     public Tag(Name tagName, Name tagAttribute) {
         this.tagName = tagName;

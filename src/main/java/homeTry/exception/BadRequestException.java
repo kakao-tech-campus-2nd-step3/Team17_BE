@@ -1,7 +1,7 @@
 package homeTry.exception;
 
-public class BadRequestException extends RuntimeException{
-    
+public class BadRequestException extends RuntimeException {
+
     private final ErrorType errorType;
 
     public BadRequestException(ErrorType errorType) {
@@ -9,7 +9,7 @@ public class BadRequestException extends RuntimeException{
         this.errorType = errorType;
     }
 
-    public ErrorType getErrorType (){
+    public ErrorType getErrorType() {
         return errorType;
     }
 

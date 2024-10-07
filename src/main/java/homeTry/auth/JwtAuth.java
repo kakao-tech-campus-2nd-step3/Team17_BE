@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:application-secret.properties")
 public class JwtAuth {
+
     private final static Integer HOUR = 3600;
     private final static Integer EXPIRED_MILLIS = 1000 * 6 * HOUR;
 
@@ -28,20 +29,20 @@ public class JwtAuth {
 
     public Long extractId(String token) {
         return Long.valueOf(jwtParser
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject());
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject());
     }
 
     public String generateToken(MemberDTO memberDTO) {
         return Jwts.builder()
-                .setSubject(memberDTO.id().toString())
-                .claim("email", memberDTO.email())
-                .claim("nickname", memberDTO.nickname())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_MILLIS))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
+            .setSubject(memberDTO.id().toString())
+            .claim("email", memberDTO.email())
+            .claim("nickname", memberDTO.nickname())
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_MILLIS))
+            .signWith(SignatureAlgorithm.HS256, secret)
+            .compact();
     }
 
     public Boolean validateToken(String token) {
@@ -56,10 +57,10 @@ public class JwtAuth {
 
     private Boolean isTokenExpired(String token) {
         return jwtParser
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration()
-                .before(new Date());
+            .parseClaimsJws(token)
+            .getBody()
+            .getExpiration()
+            .before(new Date());
     }
 }
 

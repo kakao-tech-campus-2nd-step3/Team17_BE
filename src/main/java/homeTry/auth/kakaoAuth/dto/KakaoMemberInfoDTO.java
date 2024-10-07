@@ -7,23 +7,27 @@ import java.util.Date;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoMemberInfoDTO(
-        Long id,
+    Long id,
 
-        Date connectedAt,
+    Date connectedAt,
 
-        KakaoAccount kakaoAccount
+    KakaoAccount kakaoAccount
 ) {
+
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public record KakaoAccount(
-            Boolean profileNicknameNeedsAgreement,
+        Boolean profileNicknameNeedsAgreement,
 
-            Boolean hasEmail,
+        Boolean hasEmail,
 
-            @Email(message = "올바른 이메일 형식이 아닙니다.")
-            String email,
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        String email,
 
-            Profile profile
+        Profile profile
     ) {
-        public record Profile(String nickname) { }
+
+        public record Profile(String nickname) {
+
+        }
     }
 }

@@ -9,6 +9,7 @@ public record DiaryDto(
     LocalDateTime createdAt,
     String memo
 ) {
+
     public static DiaryDto convertToDiaryDto(Diary diary) {
         return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().value());
     }

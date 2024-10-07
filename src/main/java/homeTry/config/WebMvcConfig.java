@@ -31,8 +31,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/oauth/**");
+            .addPathPatterns("/**")
+            .excludePathPatterns("/api/oauth/**");
         //토큰 받는 경로 지정
     }
 
@@ -44,8 +44,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .exposedHeaders(HttpHeaders.LOCATION);
+            .allowedOrigins("*")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .exposedHeaders(HttpHeaders.LOCATION);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class TeamTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long Id;
@@ -17,7 +18,8 @@ public class TeamTag {
     @JoinColumn
     Tag tag;
 
-    protected TeamTag () {}
+    protected TeamTag() {
+    }
 
     public TeamTag(Tag tag, Team team) {
         this.tag = tag;

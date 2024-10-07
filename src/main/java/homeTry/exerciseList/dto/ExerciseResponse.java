@@ -12,7 +12,8 @@ public record ExerciseResponse(
     boolean isActive
 ) {
 
-    public static ExerciseResponse from(Exercise exercise, Duration exerciseTime, boolean isActive) {
+    public static ExerciseResponse from(Exercise exercise, Duration exerciseTime,
+        boolean isActive) {
         return new ExerciseResponse(
             exercise.getExerciseId(),
             exercise.getExerciseName(),
@@ -26,7 +27,8 @@ public record ExerciseResponse(
     }
 
     public static ExerciseResponse from(ExerciseTime exerciseTime) {
-        return from(exerciseTime.getExercise(), exerciseTime.getExerciseTime(), exerciseTime.isActive());
+        return from(exerciseTime.getExercise(), exerciseTime.getExerciseTime(),
+            exerciseTime.isActive());
     }
 
 }

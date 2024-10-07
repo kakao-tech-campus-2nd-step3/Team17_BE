@@ -8,6 +8,8 @@ import homeTry.exerciseList.dto.ExerciseResponse;
 
 public record MainPageResponse(
     Duration totalTime,
-    List<ExerciseResponse> exerciseList, 
+    List<ExerciseResponse> exerciseList,
     List<DiaryDto> diaries
-) {}
+) {
+
+}

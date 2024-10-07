@@ -25,6 +25,7 @@ import java.util.List;
 @Service
 
 public class TeamService {
+
     private final TeamRepository teamRepository;
     private final MemberService memberService;
     private final TagService tagService;
@@ -34,11 +35,11 @@ public class TeamService {
     private static final int DEFAULT_PARTICIPANTS = 1;
 
     public TeamService(TeamRepository teamRepository,
-                       MemberService memberService,
-                       TagService tagService,
-                       TeamTagService teamTagService,
-                       TeamMemberService teamMemberService,
-                       ExerciseHistoryService exerciseHistoryService) {
+        MemberService memberService,
+        TagService tagService,
+        TeamTagService teamTagService,
+        TeamMemberService teamMemberService,
+        ExerciseHistoryService exerciseHistoryService) {
         this.teamRepository = teamRepository;
         this.memberService = memberService;
         this.tagService = tagService;
@@ -63,29 +64,29 @@ public class TeamService {
 
     private Team createTeam(RequestTeamDTO requestTeamDTO, Member leader) {
         return new Team(
-                requestTeamDTO.teamName(),
-                requestTeamDTO.teamDescription(),
-                leader,
-                requestTeamDTO.maxParticipants(),
-                DEFAULT_PARTICIPANTS,
-                requestTeamDTO.password()
+            requestTeamDTO.teamName(),
+            requestTeamDTO.teamDescription(),
+            leader,
+            requestTeamDTO.maxParticipants(),
+            DEFAULT_PARTICIPANTS,
+            requestTeamDTO.password()
         );
     }
 
     //동일한 이름을 가지고 있는지 체크
     private void validateTeamName(RequestTeamDTO requestTeamDTO) {
         teamRepository.findByTeamName(new Name(requestTeamDTO.teamName()))
-                .ifPresent(team -> {
-                    throw new TeamNameAlreadyExistsException();
-                });
+            .ifPresent(team -> {
+                throw new TeamNameAlreadyExistsException();
+            });
     }
 
     //팀의 태그 정보를 추가
     private void addTagsToTeam(List<TagDTO> tagDTOList, Team team) {
         List<Long> tagIdList = tagDTOList
-                .stream()
-                .map(TagDTO::tagId)
-                .toList();
+            .stream()
+            .map(TagDTO::tagId)
+            .toList();
 
         List<Tag> tagList = tagService.getTagEntityList(tagIdList);
 
@@ -97,8 +98,8 @@ public class TeamService {
     public void deleteTeam(MemberDTO memberDTO, Long teamId) {
         Member member = memberService.getMemberEntity(memberDTO.id());
 
-        Team team  = teamRepository.findById(teamId)
-                .orElseThrow(()-> new TeamNotFoundException());
+        Team team = teamRepository.findById(teamId)
+            .orElseThrow(() -> new TeamNotFoundException());
 
         validateIsLeader(team.getLeader(), member); //팀 리더인지 체크
 
@@ -111,8 +112,9 @@ public class TeamService {
 
     //팀 리더인지 체크
     private void validateIsLeader(Member leader, Member member) {
-        if (leader != member)
+        if (leader != member) {
             throw new NotTeamLeaderException();
+        }
     }
 
 
@@ -120,10 +122,10 @@ public class TeamService {
     @Transactional(readOnly = true)
     public Page<ResponseTeam> getTotalTeamPage(Pageable pageable) {
         Page<Team> teamListPage = teamRepository.findAll(pageable);
-        List<ResponseTeam> responseTeamList= teamListPage.getContent()
-                .stream()
-                .map(this::convertToResponseTeam)
-                .toList();
+        List<ResponseTeam> responseTeamList = teamListPage.getContent()
+            .stream()
+            .map(this::convertToResponseTeam)
+            .toList();
 
         return new PageImpl<>(responseTeamList, pageable, teamListPage.getTotalElements());
     }
@@ -150,14 +152,15 @@ public class TeamService {
         long tagListSize = tagList.size();
 
         //태그 처리가 된 팀을 받음
-        Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize, pageable);
+        Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize,
+            pageable);
 
         List<ResponseTeam> responseTeamList = taggedTeamListPage.getContent()
-                .stream()
-                .map(this::convertToResponseTeam)
-                .toList();
+            .stream()
+            .map(this::convertToResponseTeam)
+            .toList();
 
-        return new PageImpl<>(responseTeamList, pageable,taggedTeamListPage.getTotalElements());
+        return new PageImpl<>(responseTeamList, pageable, taggedTeamListPage.getTotalElements());
     }
 
 }

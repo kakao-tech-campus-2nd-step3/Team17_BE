@@ -1,7 +1,7 @@
 package homeTry.exception;
 
-public class InternalServerException extends RuntimeException{
-    
+public class InternalServerException extends RuntimeException {
+
     private final ErrorType errorType;
 
     public InternalServerException(ErrorType errorType) {
@@ -9,7 +9,7 @@ public class InternalServerException extends RuntimeException{
         this.errorType = errorType;
     }
 
-    public ErrorType getErrorType (){
+    public ErrorType getErrorType() {
         return errorType;
     }
 

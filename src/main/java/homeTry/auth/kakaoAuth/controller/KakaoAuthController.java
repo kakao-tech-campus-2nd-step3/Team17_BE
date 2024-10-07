@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/oauth/login")
 public class KakaoAuthController {
+
     private final KakaoAuthService kakaoAuthService;
     private final JwtAuth jwtAuth;
 

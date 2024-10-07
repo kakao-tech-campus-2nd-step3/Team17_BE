@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +19,7 @@ public class Team {
     @AttributeOverride(name = "value", column = @Column(name = "team_description", nullable = false))
     private Description teamDescription;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member leader;
 
@@ -37,7 +38,8 @@ public class Team {
     protected Team() {
     }
 
-    public Team(String teamName, String teamDescription, Member leader, long maxParticipants, long currentParticipants, String password) {
+    public Team(String teamName, String teamDescription, Member leader, long maxParticipants,
+        long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
         this.leader = leader;
@@ -58,7 +60,7 @@ public class Team {
         return teamDescription;
     }
 
-    public Member getLeader () {
+    public Member getLeader() {
         return leader;
     }
 
@@ -74,7 +76,8 @@ public class Team {
         return password;
     }
 
-    public void updateTeam(String teamName, String teamDescription, Member leader, long maxParticipants, long currentParticipants, String password) {
+    public void updateTeam(String teamName, String teamDescription, Member leader,
+        long maxParticipants, long currentParticipants, String password) {
         this.teamName = new Name(teamName);
         this.teamDescription = new Description(teamDescription);
         this.leader = leader;

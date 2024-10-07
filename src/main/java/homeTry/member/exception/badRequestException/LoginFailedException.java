@@ -4,5 +4,8 @@ import homeTry.exception.BadRequestException;
 import homeTry.member.exception.MemberErrorType;
 
 public class LoginFailedException extends BadRequestException {
-    public LoginFailedException() { super(MemberErrorType.LOGIN_FAILED_EXCEPTION); }
+
+    public LoginFailedException() {
+        super(MemberErrorType.LOGIN_FAILED_EXCEPTION);
+    }
 }

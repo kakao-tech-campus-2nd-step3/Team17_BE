@@ -4,11 +4,12 @@ import homeTry.diary.exception.BadRequestException.MemoBlankException;
 import homeTry.diary.exception.BadRequestException.MemoTooLongException;
 
 public record DiaryRequest(String memo) {
+
     private static final int MAX_LENGTH = 500;
 
     public DiaryRequest(String memo) {
         validateMemo(memo);
-        this.memo = memo;  
+        this.memo = memo;
     }
 
     private static void validateMemo(String memo) {

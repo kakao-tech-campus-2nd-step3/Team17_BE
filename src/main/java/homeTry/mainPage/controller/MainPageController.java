@@ -19,15 +19,16 @@ public class MainPageController {
 
     private final MainPageService mainPageService;
 
-    public MainPageController(MainPageService mainPageService){
+    public MainPageController(MainPageService mainPageService) {
         this.mainPageService = mainPageService;
     }
-    
+
     @GetMapping
     public ResponseEntity<MainPageResponse> mainPage(
         @RequestBody MainPageRequest mainPageRequest,
         @LoginMember MemberDTO memberDTO) {
-        
-        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()), HttpStatus.OK);
+
+        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()),
+            HttpStatus.OK);
     }
 }

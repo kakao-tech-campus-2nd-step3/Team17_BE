@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KakaoAuthService {
+
     private final KakaoTokenService kakaoTokenService;
     private final MemberService memberService;
 
@@ -20,7 +21,7 @@ public class KakaoAuthService {
         String accessToken = kakaoTokenService.getAccessToken(code);
         MemberDTO memberDTO = kakaoTokenService.getMemberInfo(accessToken);
 
-        try{
+        try {
             Long id = memberService.login(memberDTO); // -> LoginFailedException을 던질 수 있음
             MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.nickname());
 

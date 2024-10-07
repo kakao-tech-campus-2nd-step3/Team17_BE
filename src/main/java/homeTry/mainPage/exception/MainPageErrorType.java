@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import homeTry.exception.ErrorType;
 
-public enum MainPageErrorType implements ErrorType{
+public enum MainPageErrorType implements ErrorType {
 
     INVALID_DATE_EXCEPTION("MAINPAGE400_001", HttpStatus.BAD_REQUEST, "유효하지 않은 날짜입니다.");
 

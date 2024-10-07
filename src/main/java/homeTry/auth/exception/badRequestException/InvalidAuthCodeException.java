@@ -5,5 +5,7 @@ import homeTry.exception.BadRequestException;
 
 public class InvalidAuthCodeException extends BadRequestException {
 
-    public InvalidAuthCodeException() { super(AuthErrorType.INVALID_AUTH_CODE_EXCEPTION); }
+    public InvalidAuthCodeException() {
+        super(AuthErrorType.INVALID_AUTH_CODE_EXCEPTION);
+    }
 }
