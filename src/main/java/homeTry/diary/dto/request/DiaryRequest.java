@@ -13,7 +13,7 @@ public record DiaryRequest(String memo) {
     }
 
     private static void validateMemo(String memo) {
-        if (memo != null && memo.isBlank()) {
+        if (memo == null || memo.isBlank()) {
             throw new MemoBlankException();
         }
         if (memo != null && memo.length() > MAX_LENGTH) {
