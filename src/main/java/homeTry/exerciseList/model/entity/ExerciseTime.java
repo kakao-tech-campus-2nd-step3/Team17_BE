@@ -1,5 +1,6 @@
 package homeTry.exerciseList.model.entity;
 
+import homeTry.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
-public class ExerciseTime {
+public class ExerciseTime extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
