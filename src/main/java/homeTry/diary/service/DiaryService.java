@@ -39,7 +39,7 @@ public class DiaryService {
 
         return diaries
             .stream()
-            .map(DiaryDto::convertToDiaryDto)
+            .map(DiaryDto::from)
             .toList();
 
     }
