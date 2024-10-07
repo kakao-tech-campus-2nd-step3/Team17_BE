@@ -31,21 +31,23 @@ public class ExerciseSchedulerService {
 
         // 모든 운동 기록을 히스토리에 저장하고 운동 시간을 초기화
         allExercises.forEach(exercise -> {
-                ExerciseTime exerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+            ExerciseTime exerciseTime = exerciseTimeService.getExerciseTime(
+                exercise.getExerciseId());
 
-                // exerciseTime 값이 null 이면 넘어감
-                if (exerciseTime == null) {
-                    return;
-                }
+            // exerciseTime 값이 null 이면 넘어감
+            if (exerciseTime == null) {
+                return;
+            }
 
-                // 3시에도 운동이 실행 중이면 강제로 멈추고 저장
-                if (exerciseTime.isActive()) {
-                    exerciseService.stopExercise(exercise.getExerciseId(), MemberDTO.convertToMemberDTO(exercise.getMember()));
-                    exerciseTimeService.saveExerciseTime(exerciseTime);
-                }
+            // 3시에도 운동이 실행 중이면 강제로 멈추고 저장
+            if (exerciseTime.isActive()) {
+                exerciseService.stopExercise(exercise.getExerciseId(),
+                    MemberDTO.convertToMemberDTO(exercise.getMember()));
+                exerciseTimeService.saveExerciseTime(exerciseTime);
+            }
 
-                exerciseHistoryService.saveExerciseHistory(exerciseTime.getExercise(), exerciseTime);
-                exerciseTimeService.resetExerciseTime(exerciseTime);
+            exerciseHistoryService.saveExerciseHistory(exerciseTime.getExercise(), exerciseTime);
+            exerciseTimeService.resetExerciseTime(exerciseTime);
         });
     }
 

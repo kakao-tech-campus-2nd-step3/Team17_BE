@@ -1,3 +1,5 @@
 package homeTry.member.dto;
 
-public record ChangeNicknameDTO(String name) { }
+public record ChangeNicknameDTO(String name) {
+
+}

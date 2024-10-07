@@ -34,12 +34,13 @@ public class DiaryService {
         LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
         LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
 
-        List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId));
+        List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay,
+            memberService.getMemberEntity(memberId));
 
         return diaries
-                .stream()
-                .map(DiaryDto::convertToDiaryDto)
-                .toList();
+            .stream()
+            .map(DiaryDto::convertToDiaryDto)
+            .toList();
 
     }
 
@@ -47,8 +48,8 @@ public class DiaryService {
     public void createDiary(DiaryRequest diaryRequest, Long memberId) {
 
         diaryRepository.save(
-                new Diary(diaryRequest.memo(),
-                        memberService.getMemberEntity(memberId)));
+            new Diary(diaryRequest.memo(),
+                memberService.getMemberEntity(memberId)));
     }
 
     @Transactional
@@ -56,8 +57,8 @@ public class DiaryService {
 
         Diary diary = diaryRepository.findById(diaryId)
             .orElseThrow(() -> new DiaryNotFoundException());
-        
+
         diaryRepository.delete(diary);
-        
+
     }
 }

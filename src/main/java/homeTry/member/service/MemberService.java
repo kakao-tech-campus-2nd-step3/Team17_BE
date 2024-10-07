@@ -19,19 +19,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
+
     private final ExerciseHistoryService exerciseHistoryService;
     private final MemberRepository memberRepository;
 
-    public MemberService(ExerciseHistoryService exerciseHistoryService, MemberRepository memberRepository) {
+    public MemberService(ExerciseHistoryService exerciseHistoryService,
+        MemberRepository memberRepository) {
         this.exerciseHistoryService = exerciseHistoryService;
-        this.memberRepository = memberRepository; }
+        this.memberRepository = memberRepository;
+    }
 
     @Transactional(readOnly = true)
     public Long login(MemberDTO memberDTO) {
         Long countByEmail = memberRepository.countByEmail(new Email(memberDTO.email()));
 
-        if (countByEmail < 1) { throw new LoginFailedException(); }
-        if (countByEmail > 1) { throw new UniqueKeyViolatonException(); }
+        if (countByEmail < 1) {
+            throw new LoginFailedException();
+        }
+        if (countByEmail > 1) {
+            throw new UniqueKeyViolatonException();
+        }
 
         // 로그인 성공
         return memberRepository.findByEmail(new Email(memberDTO.email())).get().getId();
@@ -41,8 +48,9 @@ public class MemberService {
     public Long register(MemberDTO memberDTO) {
         Member member = memberDTO.convertToMember();
 
-        if(memberRepository.countByEmail(new Email(memberDTO.email())) > 0)
+        if (memberRepository.countByEmail(new Email(memberDTO.email())) > 0) {
             throw new RegisterEmailConflictException();
+        }
 
         return memberRepository.save(member).getId();
     }

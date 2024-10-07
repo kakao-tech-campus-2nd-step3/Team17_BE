@@ -1,6 +1,6 @@
 package homeTry.exerciseList.service;
 
-import homeTry.constants.DateTimeUtil;
+import homeTry.common.constants.DateTimeUtil;
 import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;

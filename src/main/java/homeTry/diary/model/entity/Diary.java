@@ -25,13 +25,14 @@ public class Diary {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
-    private Memo memo; 
+    private Memo memo;
 
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
-    protected Diary() {}
+    protected Diary() {
+    }
 
     public Diary(String memo, Member member) {
         this.memo = new Memo(memo);

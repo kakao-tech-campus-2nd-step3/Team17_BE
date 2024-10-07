@@ -38,20 +38,41 @@ public class Member {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
-    protected Member() { }
+    protected Member() {
+    }
 
     public Member(String email, String nickname) {
         this.nickname = new Nickname(nickname);
         this.email = new Email(email);
     }
-    public Long getId() { return id; }
-    public String getEmail() { return email.value(); }
-    public String getNickname() { return nickname.value(); }
-    public String getKakaoAccessToken() { return kakaoAccessToken;}
-    public LocalDateTime getRegistrationDate() {return registrationDate;}
 
-    public void setKakaoAccessToken(String kakaoAccessToken) { this.kakaoAccessToken = kakaoAccessToken; }
-    public void changeNickname(Nickname nickname) { this.nickname = nickname; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email.value();
+    }
+
+    public String getNickname() {
+        return nickname.value();
+    }
+
+    public String getKakaoAccessToken() {
+        return kakaoAccessToken;
+    }
+
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setKakaoAccessToken(String kakaoAccessToken) {
+        this.kakaoAccessToken = kakaoAccessToken;
+    }
+
+    public void changeNickname(Nickname nickname) {
+        this.nickname = nickname;
+    }
 
 
 }

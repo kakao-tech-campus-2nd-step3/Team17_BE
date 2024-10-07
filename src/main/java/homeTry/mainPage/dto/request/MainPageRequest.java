@@ -10,7 +10,8 @@ public record MainPageRequest(
     int month,
     int day
 ) {
-     public MainPageRequest(int year, int month, int day) {
+
+    public MainPageRequest(int year, int month, int day) {
         validateDay(year, month, day);
         this.year = year;
         this.month = month;
@@ -19,7 +20,7 @@ public record MainPageRequest(
 
     private static void validateDay(int year, int month, int day) {
         try {
-            LocalDate.of(year, month, day); 
+            LocalDate.of(year, month, day);
         } catch (DateTimeException e) {
             throw new InvalidDateException();
         }

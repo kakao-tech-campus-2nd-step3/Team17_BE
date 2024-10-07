@@ -1,6 +1,6 @@
 package homeTry.exerciseList.controller;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.exerciseList.service.ExerciseService;
 import homeTry.exerciseList.dto.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;

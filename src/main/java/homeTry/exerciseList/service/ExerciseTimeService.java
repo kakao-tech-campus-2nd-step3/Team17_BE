@@ -1,6 +1,6 @@
 package homeTry.exerciseList.service;
 
-import homeTry.constants.DateTimeUtil;
+import homeTry.common.constants.DateTimeUtil;
 import homeTry.exerciseList.dto.ExerciseResponse;
 import homeTry.exerciseList.exception.badRequestException.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseTimeLimitExceededException;

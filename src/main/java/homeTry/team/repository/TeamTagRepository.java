@@ -18,9 +18,10 @@ public interface TeamTagRepository extends JpaRepository<TeamTag, Long> {
     void deleteByTeam(Team team);
 
     @Query("SELECT tt.team " +
-            "FROM TeamTag tt " +
-            "WHERE tt.tag IN :tagList " +
-            "GROUP BY tt.team " +
-            "HAVING COUNT(DISTINCT tt.tag) = :tagListSize")
-    Page<Team> findTeamsByTags(@Param("tagList") List<Tag> tagList, @Param("tagListSize") long tagListSize, Pageable pageable);
+        "FROM TeamTag tt " +
+        "WHERE tt.tag IN :tagList " +
+        "GROUP BY tt.team " +
+        "HAVING COUNT(DISTINCT tt.tag) = :tagListSize")
+    Page<Team> findTeamsByTags(@Param("tagList") List<Tag> tagList,
+        @Param("tagListSize") long tagListSize, Pageable pageable);
 }

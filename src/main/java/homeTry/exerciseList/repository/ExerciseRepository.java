@@ -13,8 +13,8 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     Optional<Exercise> findByIdAndMemberId(Long exerciseId, Long memberId);
 
     @Query("SELECT COUNT(et) FROM ExerciseTime et " +
-           "JOIN et.exercise e " +
-           "WHERE e.member.id = :memberId AND et.isActive = true")
+        "JOIN et.exercise e " +
+        "WHERE e.member.id = :memberId AND et.isActive = true")
     long countActiveExercisesByMemberId(@Param("memberId") Long memberId);
 
 }

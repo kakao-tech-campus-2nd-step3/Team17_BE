@@ -1,6 +1,6 @@
 package homeTry.member.controller;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.member.dto.ChangeNicknameDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.dto.MyPageDTO;
@@ -21,7 +21,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @Autowired
-    public MemberController(MemberService memberService) { this.memberService = memberService; }
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @GetMapping("/profile")
     public ResponseEntity<MyPageDTO> getMemberInfo(@LoginMember MemberDTO memberDTO) {
@@ -30,7 +32,7 @@ public class MemberController {
 
     @PutMapping("/profile")
     public ResponseEntity<Void> changeNickname(@LoginMember MemberDTO memberDTO,
-            @RequestBody ChangeNicknameDTO changeNicknameDTO) {
+        @RequestBody ChangeNicknameDTO changeNicknameDTO) {
         memberService.changeNickname(memberDTO.id(), changeNicknameDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }

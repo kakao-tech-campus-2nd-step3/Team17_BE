@@ -10,7 +10,7 @@ public record Memo(String value) {
     private static final int MAX_LENGTH = 500;
 
     public Memo {
-        validateMemo(value);  
+        validateMemo(value);
     }
 
     private static void validateMemo(String value) {

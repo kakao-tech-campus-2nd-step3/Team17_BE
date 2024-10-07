@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
 import homeTry.mainPage.service.MainPageService;
@@ -19,15 +19,16 @@ public class MainPageController {
 
     private final MainPageService mainPageService;
 
-    public MainPageController(MainPageService mainPageService){
+    public MainPageController(MainPageService mainPageService) {
         this.mainPageService = mainPageService;
     }
-    
+
     @GetMapping
     public ResponseEntity<MainPageResponse> mainPage(
         @RequestBody MainPageRequest mainPageRequest,
         @LoginMember MemberDTO memberDTO) {
-        
-        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()), HttpStatus.OK);
+
+        return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()),
+            HttpStatus.OK);
     }
 }

@@ -58,13 +58,15 @@ public class ExerciseService {
         }
 
         // 실행 중인 운동이 있는지
-        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(memberDTO.id());
+        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(
+            memberDTO.id());
         if (activeExerciseCount > 0) {
             throw new ExerciseAlreadyStartedException();
         }
 
         // 현재 운동의 상태 확인
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
 
         // 처음 운동을 시작한다면, 새로 생성
         if (currentExerciseTime == null) {
@@ -78,7 +80,8 @@ public class ExerciseService {
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
 
         if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();

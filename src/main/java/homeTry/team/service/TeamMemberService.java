@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TeamMemberService {
+
     private final TeamMemberRepository teamMemberRepository;
 
     public TeamMemberService(TeamMemberRepository teamMemberRepository) {
@@ -16,14 +17,14 @@ public class TeamMemberService {
     }
 
     //TeamMember 엔티티 추가 (멤버가 팀 가입시 사용)
-    public void addTeamMember (Team team, Member member){
+    public void addTeamMember(Team team, Member member) {
         teamMemberRepository.save(new TeamMember(member, team));
     }
 
     //TeamMember 엔티티 삭제 (멤버가 팀에서 나갈 시)
     public void deleteTeamMember(Team team, Member member) {
         TeamMember teamMember = teamMemberRepository.findByTeamAndMember(team, member)
-                .orElseThrow(()-> new TeamMemberNotFoundException());
+            .orElseThrow(() -> new TeamMemberNotFoundException());
 
         teamMemberRepository.delete(teamMember);
     }

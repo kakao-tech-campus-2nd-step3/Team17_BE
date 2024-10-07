@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class TeamTagService {
+
     private final TeamTagRepository teamTagRepository;
 
     public TeamTagService(TeamTagRepository teamTagRepository) {
@@ -23,7 +24,7 @@ public class TeamTagService {
     //TeamService의 addTeam 메소드에서 하나의 트랜잭션으로 묶여있음
     public void addTeamTags(List<Tag> tagList, Team team) {
         tagList.forEach(
-                tag-> teamTagRepository.save(new TeamTag(tag, team)));
+            tag -> teamTagRepository.save(new TeamTag(tag, team)));
     }
 
     //팀과 연관된 teamTag를 반환
