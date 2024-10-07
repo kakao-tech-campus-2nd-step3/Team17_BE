@@ -39,7 +39,8 @@ public class ExerciseService {
 
     @Transactional
     public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
 
         if (!exercise.getMember().getId().equals(memberDTO.id())) {
             throw new NoExercisePermissionException();
@@ -50,7 +51,8 @@ public class ExerciseService {
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
 
         // 삭제한 운동을 시작하려는 경우
         if (exercise.isDeprecated()) {
@@ -79,7 +81,9 @@ public class ExerciseService {
 
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
+
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
             exercise.getExerciseId());
 
@@ -93,9 +97,16 @@ public class ExerciseService {
         currentExerciseTime.stopExercise();
     }
 
-    private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
-        return exerciseRepository.findByIdAndMemberId(exerciseId, memberDTO.id())
+    private Exercise getExerciseById(Long exerciseId) {
+        return exerciseRepository.findById(exerciseId)
             .orElseThrow(ExerciseNotFoundException::new);
+    }
+
+    // 해당 운동이 해당 회원의 것인지 검증
+    private void validateMemberPermission(Exercise exercise, MemberDTO memberDTO) {
+        if (!exercise.getMember().getId().equals(memberDTO.id())) {
+            throw new NoExercisePermissionException();
+        }
     }
 
     @Transactional(readOnly = true)
