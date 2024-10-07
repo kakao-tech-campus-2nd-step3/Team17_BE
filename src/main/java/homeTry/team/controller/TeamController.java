@@ -1,6 +1,6 @@
 package homeTry.team.controller;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.member.dto.MemberDTO;
 import homeTry.team.dto.*;
 import homeTry.team.service.TeamService;

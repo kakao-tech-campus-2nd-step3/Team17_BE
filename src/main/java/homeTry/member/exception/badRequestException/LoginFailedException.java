@@ -1,6 +1,6 @@
 package homeTry.member.exception.badRequestException;
 
-import homeTry.exception.BadRequestException;
+import homeTry.common.exception.BadRequestException;
 import homeTry.member.exception.MemberErrorType;
 
 public class LoginFailedException extends BadRequestException {

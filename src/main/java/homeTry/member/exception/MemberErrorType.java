@@ -1,6 +1,6 @@
 package homeTry.member.exception;
 
-import homeTry.exception.ErrorType;
+import homeTry.common.exception.ErrorType;
 import org.springframework.http.HttpStatus;
 
 public enum MemberErrorType implements ErrorType {

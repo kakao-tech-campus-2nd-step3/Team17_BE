@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
 import homeTry.mainPage.service.MainPageService;

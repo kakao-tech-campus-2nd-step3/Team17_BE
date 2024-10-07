@@ -1,6 +1,6 @@
 package homeTry.member.exception.internalServerException;
 
-import homeTry.exception.InternalServerException;
+import homeTry.common.exception.InternalServerException;
 import homeTry.member.exception.MemberErrorType;
 
 public class UniqueKeyViolatonException extends InternalServerException {

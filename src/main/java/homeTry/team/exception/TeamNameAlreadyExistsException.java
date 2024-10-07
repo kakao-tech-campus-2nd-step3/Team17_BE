@@ -1,6 +1,6 @@
 package homeTry.team.exception;
 
-import homeTry.exception.BadRequestException;
+import homeTry.common.exception.BadRequestException;
 
 public class TeamNameAlreadyExistsException extends BadRequestException {
 

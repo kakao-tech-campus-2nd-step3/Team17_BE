@@ -1,7 +1,6 @@
 package homeTry.team.exception;
 
-import homeTry.exception.BadRequestException;
-import homeTry.exception.ErrorType;
+import homeTry.common.exception.BadRequestException;
 
 public class TeamNotFoundException extends BadRequestException {
 

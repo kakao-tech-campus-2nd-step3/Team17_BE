@@ -1,6 +1,6 @@
 package homeTry.exerciseList.exception;
 
-import homeTry.exception.ErrorType;
+import homeTry.common.exception.ErrorType;
 import org.springframework.http.HttpStatus;
 
 public enum ExerciseErrorType implements ErrorType {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.service.DiaryService;
 import homeTry.member.dto.MemberDTO;

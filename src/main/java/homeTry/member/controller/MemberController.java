@@ -1,6 +1,6 @@
 package homeTry.member.controller;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.member.dto.ChangeNicknameDTO;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.dto.MyPageDTO;

@@ -1,7 +1,7 @@
 package homeTry.diary.exception.BadRequestException;
 
 import homeTry.diary.exception.DiaryErrorType;
-import homeTry.exception.BadRequestException;
+import homeTry.common.exception.BadRequestException;
 
 public class DiaryNotFoundException extends BadRequestException {
 
