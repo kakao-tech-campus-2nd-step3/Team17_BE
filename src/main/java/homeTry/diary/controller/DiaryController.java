@@ -27,8 +27,7 @@ public class DiaryController {
     @PostMapping
     public ResponseEntity<Void> createDiary(
         @RequestBody DiaryRequest diaryRequest,
-        @LoginMember MemberDTO memberDTO
-    ) {
+        @LoginMember MemberDTO memberDTO) {
 
         diaryService.createDiary(diaryRequest, memberDTO.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -37,8 +36,7 @@ public class DiaryController {
     @DeleteMapping("/{diaryId}")
     public ResponseEntity<Void> deleteDiary(
         @PathVariable Long diaryId,
-        @LoginMember MemberDTO memberDto
-    ) {
+        @LoginMember MemberDTO memberDto) {
 
         diaryService.deleteDiary(diaryId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

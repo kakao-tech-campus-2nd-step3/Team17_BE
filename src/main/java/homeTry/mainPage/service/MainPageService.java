@@ -19,8 +19,8 @@ public class MainPageService {
     private final ExerciseHistoryService exerciseHistoryService;
 
     public MainPageService(DiaryService diaryService,
-        ExerciseTimeService exerciseTimeService,
-        ExerciseHistoryService exerciseHistoryService) {
+            ExerciseTimeService exerciseTimeService,
+            ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
         this.exerciseHistoryService = exerciseHistoryService;
@@ -29,26 +29,34 @@ public class MainPageService {
     @Transactional(readOnly = true)
     public MainPageResponse getMainPage(MainPageRequest mainPageRequest, Long memberId) {
 
-        LocalDate date = LocalDate.of(mainPageRequest.year(), mainPageRequest.month(),
-            mainPageRequest.day());
+        LocalDate date = mainPageRequest.toDate();
 
         if (isToday(date)) {
-
-            return new MainPageResponse(
-                exerciseTimeService.getExerciseTimesForToday(memberId),
-                exerciseTimeService.getExerciseResponsesForToday(memberId),
-                diaryService.getDiaryByDate(date, memberId));
-
+            return getTodayMainPageResponse(memberId);
         }
 
-        return new MainPageResponse(
-            exerciseHistoryService.getExerciseHistoriesForDay(memberId, date),
-            exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
-            diaryService.getDiaryByDate(date, memberId));
+        return getHistoricalMainPageResponse(memberId, date);
 
     }
 
-    private boolean isToday(LocalDate day) {
-        return day.equals(LocalDate.now());
+    private MainPageResponse getTodayMainPageResponse(Long memberId) {
+
+        return new MainPageResponse(
+                exerciseTimeService.getExerciseTimesForToday(memberId),
+                exerciseTimeService.getExerciseResponsesForToday(memberId),
+                diaryService.getDiaryByDate(LocalDate.now(), memberId));
+
+    }
+
+    private MainPageResponse getHistoricalMainPageResponse(Long memberId, LocalDate date) {
+
+        return new MainPageResponse(
+                exerciseHistoryService.getExerciseHistoriesForDay(memberId, date),
+                exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
+                diaryService.getDiaryByDate(date, memberId));
+    }
+
+    private boolean isToday(LocalDate date) {
+        return date.equals(LocalDate.now());
     }
 }
