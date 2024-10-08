@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import java.time.Duration;
 
 public record RankingResponse(
-        String myRanking,
+        int myRanking,
         String myNickname,
         Duration myExerciseTime,
         Page<RankingDTO> page
