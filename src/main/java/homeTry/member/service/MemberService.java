@@ -8,7 +8,6 @@ import homeTry.member.dto.response.MyPageResponse;
 import homeTry.member.exception.badRequestException.LoginFailedException;
 import homeTry.member.exception.badRequestException.MemberNotFoundException;
 import homeTry.member.exception.badRequestException.RegisterEmailConflictException;
-import homeTry.member.exception.internalServerException.UniqueKeyViolatonException;
 import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
@@ -31,26 +30,15 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Long login(MemberDTO memberDTO) {
-        Long countByEmail = memberRepository.countByEmail(new Email(memberDTO.email()));
-
-        if (countByEmail < 1) {
-            throw new LoginFailedException();
-        }
-        if (countByEmail > 1) {
-            throw new UniqueKeyViolatonException();
-        }
-
-        // 로그인 성공
-        return memberRepository.findByEmail(new Email(memberDTO.email())).get().getId();
+        return memberRepository.findByEmail(new Email(memberDTO.email())).orElseThrow(LoginFailedException::new).getId();
     }
 
     @Transactional
     public Long register(MemberDTO memberDTO) {
         Member member = memberDTO.toEntity();
 
-        if (memberRepository.countByEmail(new Email(memberDTO.email())) > 0) {
+        if (memberRepository.existsByEmail(new Email(memberDTO.email())))
             throw new RegisterEmailConflictException();
-        }
 
         return memberRepository.save(member).getId();
     }
