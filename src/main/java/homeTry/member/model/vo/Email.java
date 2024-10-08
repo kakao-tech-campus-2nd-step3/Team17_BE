@@ -1,10 +1,14 @@
 package homeTry.member.model.vo;
 
 import jakarta.persistence.Embeddable;
+
 import java.util.regex.Pattern;
 
 @Embeddable
 public record Email(String value) {
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+    );
 
     public Email {
         validateEmail(value);
@@ -15,8 +19,4 @@ public record Email(String value) {
             throw new IllegalArgumentException("올바른 이메일 형식이 아닙니다.");
         }
     }
-
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-        "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-    );
 }
