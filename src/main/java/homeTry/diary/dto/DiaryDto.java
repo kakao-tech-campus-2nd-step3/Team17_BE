@@ -10,6 +10,6 @@ public record DiaryDto(
     String memo) {
 
     public static DiaryDto from(Diary diary) {
-        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().value());
+        return new DiaryDto(diary.getId(), diary.getCreatedAt(), diary.getMemo().value());
     }
 }
