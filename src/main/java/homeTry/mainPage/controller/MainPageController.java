@@ -24,10 +24,11 @@ public class MainPageController {
     }
 
     @GetMapping
-    public ResponseEntity<MainPageResponse> mainPage(@ModelAttribute MainPageRequest mainPageRequest,
+    public ResponseEntity<MainPageResponse> mainPage(
+        @ModelAttribute MainPageRequest mainPageRequest,
         @LoginMember MemberDTO memberDTO) {
 
         return new ResponseEntity<>(mainPageService.getMainPage(mainPageRequest, memberDTO.id()),
-            HttpStatus.OK);
+                HttpStatus.OK);
     }
 }
