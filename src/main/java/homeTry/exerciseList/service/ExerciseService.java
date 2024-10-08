@@ -8,7 +8,7 @@ import homeTry.exerciseList.exception.badRequestException.NoExercisePermissionEx
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
 import homeTry.exerciseList.model.entity.Exercise;
-import homeTry.exerciseList.dto.ExerciseRequest;
+import homeTry.exerciseList.dto.request.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.service.MemberService;

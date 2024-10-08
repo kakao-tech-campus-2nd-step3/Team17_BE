@@ -1,7 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.common.constants.DateTimeUtil;
-import homeTry.exerciseList.dto.ExerciseResponse;
+import homeTry.exerciseList.dto.ExerciseDto;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
@@ -79,7 +79,7 @@ public class ExerciseHistoryService {
     // 메인페이지 조회 시 사용
     // 특정 날에 대한 운동 기록 반환
     @Transactional(readOnly = true)
-    public List<ExerciseResponse> getExerciseResponsesForDay(Long memberId, LocalDate date) {
+    public List<ExerciseDto> getExerciseResponsesForDay(Long memberId, LocalDate date) {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
@@ -87,7 +87,7 @@ public class ExerciseHistoryService {
             memberId, startOfDay, endOfDay);
 
         return exerciseHistories.stream()
-            .map(ExerciseResponse::from)
+            .map(ExerciseDto::from)
             .toList();
     }
 }

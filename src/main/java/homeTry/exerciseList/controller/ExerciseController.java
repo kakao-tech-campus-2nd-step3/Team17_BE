@@ -2,7 +2,7 @@ package homeTry.exerciseList.controller;
 
 import homeTry.common.annotation.LoginMember;
 import homeTry.exerciseList.service.ExerciseService;
-import homeTry.exerciseList.dto.ExerciseRequest;
+import homeTry.exerciseList.dto.request.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
