@@ -1,6 +1,7 @@
 package homeTry.team.service;
 
 import homeTry.exerciseList.service.ExerciseHistoryService;
+import homeTry.exerciseList.service.ExerciseTimeService;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.service.MemberService;
@@ -8,10 +9,12 @@ import homeTry.tag.dto.TagDTO;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.service.TagService;
 import homeTry.team.dto.*;
+import homeTry.team.exception.MyRankingNotFoundException;
 import homeTry.team.exception.NotTeamLeaderException;
 import homeTry.team.exception.TeamNameAlreadyExistsException;
 import homeTry.team.exception.TeamNotFoundException;
 import homeTry.team.model.entity.Team;
+import homeTry.team.model.entity.TeamMember;
 import homeTry.team.model.vo.Name;
 import homeTry.team.repository.TeamRepository;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,20 +39,24 @@ public class TeamService {
     private final TeamTagService teamTagService;
     private final TeamMemberService teamMemberService;
     private final ExerciseHistoryService exerciseHistoryService;
+    private final ExerciseTimeService exerciseTimeService;
     private static final int DEFAULT_PARTICIPANTS = 1;
+    private static final int DEFAULT_RANKING = -1;
 
     public TeamService(TeamRepository teamRepository,
-        MemberService memberService,
-        TagService tagService,
-        TeamTagService teamTagService,
-        TeamMemberService teamMemberService,
-        ExerciseHistoryService exerciseHistoryService) {
+                       MemberService memberService,
+                       TagService tagService,
+                       TeamTagService teamTagService,
+                       TeamMemberService teamMemberService,
+                       ExerciseHistoryService exerciseHistoryService,
+                       ExerciseTimeService exerciseTimeService) {
         this.teamRepository = teamRepository;
         this.memberService = memberService;
         this.tagService = tagService;
         this.teamTagService = teamTagService;
         this.teamMemberService = teamMemberService;
         this.exerciseHistoryService = exerciseHistoryService;
+        this.exerciseTimeService = exerciseTimeService;
     }
 
     //팀 추가 기능
@@ -64,29 +75,29 @@ public class TeamService {
 
     private Team createTeam(RequestTeamDTO requestTeamDTO, Member leader) {
         return new Team(
-            requestTeamDTO.teamName(),
-            requestTeamDTO.teamDescription(),
-            leader,
-            requestTeamDTO.maxParticipants(),
-            DEFAULT_PARTICIPANTS,
-            requestTeamDTO.password()
+                requestTeamDTO.teamName(),
+                requestTeamDTO.teamDescription(),
+                leader,
+                requestTeamDTO.maxParticipants(),
+                DEFAULT_PARTICIPANTS,
+                requestTeamDTO.password()
         );
     }
 
     //동일한 이름을 가지고 있는지 체크
     private void validateTeamName(RequestTeamDTO requestTeamDTO) {
         teamRepository.findByTeamName(new Name(requestTeamDTO.teamName()))
-            .ifPresent(team -> {
-                throw new TeamNameAlreadyExistsException();
-            });
+                .ifPresent(team -> {
+                    throw new TeamNameAlreadyExistsException();
+                });
     }
 
     //팀의 태그 정보를 추가
     private void addTagsToTeam(List<TagDTO> tagDTOList, Team team) {
         List<Long> tagIdList = tagDTOList
-            .stream()
-            .map(TagDTO::tagId)
-            .toList();
+                .stream()
+                .map(TagDTO::tagId)
+                .toList();
 
         List<Tag> tagList = tagService.getTagEntityList(tagIdList);
 
@@ -99,7 +110,7 @@ public class TeamService {
         Member member = memberService.getMemberEntity(memberDTO.id());
 
         Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new TeamNotFoundException());
+                .orElseThrow(() -> new TeamNotFoundException());
 
         validateIsLeader(team.getLeader(), member); //팀 리더인지 체크
 
@@ -123,9 +134,9 @@ public class TeamService {
     public Page<ResponseTeam> getTotalTeamPage(Pageable pageable) {
         Page<Team> teamListPage = teamRepository.findAll(pageable);
         List<ResponseTeam> responseTeamList = teamListPage.getContent()
-            .stream()
-            .map(this::convertToResponseTeam)
-            .toList();
+                .stream()
+                .map(this::convertToResponseTeam)
+                .toList();
 
         return new PageImpl<>(responseTeamList, pageable, teamListPage.getTotalElements());
     }
@@ -153,14 +164,83 @@ public class TeamService {
 
         //태그 처리가 된 팀을 받음
         Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize,
-            pageable);
+                pageable);
 
         List<ResponseTeam> responseTeamList = taggedTeamListPage.getContent()
-            .stream()
-            .map(this::convertToResponseTeam)
-            .toList();
+                .stream()
+                .map(this::convertToResponseTeam)
+                .toList();
 
         return new PageImpl<>(responseTeamList, pageable, taggedTeamListPage.getTotalElements());
     }
 
+    public RankingResponse getTeamRanking(MemberDTO memberDTO, Long teamId, Pageable pageable, DateDTO dateDTO) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException());
+
+        List<Member> memberList = getMemberList(team); //팀의 멤버들을 조회해옴
+
+        List<RankingDTO> rankingList = getRankingList(memberList, dateDTO.toLocalDate()); //랭킹을 구해옴
+
+        RankingDTO myRanking = rankingList //내 랭킹을 찾음
+                .stream()
+                .filter(rankingDTO -> memberDTO.nickname().equals(rankingDTO.name()))
+                .findFirst()
+                .orElseThrow(() -> new MyRankingNotFoundException());
+
+        Page<RankingDTO> page = new PageImpl<>(rankingList, pageable, pageable.getPageSize()); // 랭킹 페이지 생성
+
+        return new RankingResponse(myRanking.ranking(), myRanking.name(), myRanking.totalExerciseTime(), page);
+    }
+
+    //팀의 멤버를 찾아와주는 기능
+    private List<Member> getMemberList(Team team) {
+        List<TeamMember> teamMemberList = teamMemberService.getTeamMember(team);
+
+        return teamMemberList // 해당 팀의 멤버 리스트를 받음
+                .stream()
+                .map(TeamMember::getMember)
+                .toList();
+    }
+
+    //멤버 리스트에서 랭킹을 매겨주는 기능
+    private List<RankingDTO> getRankingList(List<Member> memberList, LocalDate date) {
+        List<RankingDTO> totalExerciseTimeList = new ArrayList<>();
+        if (date.isEqual(LocalDate.now())) // 오늘 조회인경우
+            totalExerciseTimeList = getTotalExerciseTimeListOfToday(memberList);
+        if (!date.isEqual(LocalDate.now())) // 과거 조회인경우
+            totalExerciseTimeList = getTotalExerciseTimeListOfHistory(memberList, date);
+
+        return totalExerciseTimeList //멤버들 랭킹 구함
+                .stream()
+                .sorted(Comparator.comparing(RankingDTO::totalExerciseTime))
+                .map(RankingDTO::autoIncrementRanking)
+                .toList();
+    }
+
+    //멤버들의 오늘 totalExerciseTime을 조회
+    private List<RankingDTO> getTotalExerciseTimeListOfToday(List<Member> memberList) {
+        return memberList
+                .stream()
+                .map(member -> {
+                    Duration totalExerciseTime = exerciseTimeService.getExerciseTimesForToday(member.getId());
+                    return RankingDTO.of(member.getNickname(), DEFAULT_RANKING, totalExerciseTime);
+                })
+                .toList();
+    }
+
+    //멤버들의 과거 특정 날에 대한 totalExerciseTime을 조회
+    private List<RankingDTO> getTotalExerciseTimeListOfHistory(List<Member> memberList, LocalDate date) {
+        return memberList
+                .stream()
+                .map(member -> {
+                    Duration totalExerciseTime = exerciseHistoryService.getExerciseHistoriesForDay(member.getId(), date);
+                    return RankingDTO.of(member.getNickname(), DEFAULT_RANKING, totalExerciseTime);
+                })
+                .toList();
+    }
+
+
 }
+
+

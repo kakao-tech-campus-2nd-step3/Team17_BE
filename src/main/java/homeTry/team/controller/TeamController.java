@@ -65,4 +65,15 @@ public class TeamController {
         return ResponseEntity.ok(taggedTeamPage);
     }
 
+    //팀 내 랭킹을 조회하는 api (페이징 적용)
+    @GetMapping("/{teamId}/ranking")
+    public ResponseEntity<RankingResponse> getTeamRanking(
+            @LoginMember MemberDTO memberDTO,
+            @PathVariable("teamId") Long teamId,
+            @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.ASC) Pageable pageable,
+            @ModelAttribute DateDTO dateDTO) {
+        RankingResponse rankingPage = teamService.getTeamRanking(memberDTO, teamId, pageable, dateDTO);
+        return ResponseEntity.ok(rankingPage);
+    }
+
 }
