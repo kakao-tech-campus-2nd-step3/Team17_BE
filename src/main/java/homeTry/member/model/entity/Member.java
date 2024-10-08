@@ -1,5 +1,6 @@
 package homeTry.member.model.entity;
 
+import homeTry.common.entity.BaseEntity;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
 import jakarta.persistence.AttributeOverride;
@@ -16,7 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

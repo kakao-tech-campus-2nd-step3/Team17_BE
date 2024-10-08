@@ -42,7 +42,7 @@ public class ExerciseSchedulerService {
             // 3시에도 운동이 실행 중이면 강제로 멈추고 저장
             if (exerciseTime.isActive()) {
                 exerciseService.stopExercise(exercise.getExerciseId(),
-                    MemberDTO.convertToMemberDTO(exercise.getMember()));
+                    MemberDTO.from(exercise.getMember()));
                 exerciseTimeService.saveExerciseTime(exerciseTime);
             }
 

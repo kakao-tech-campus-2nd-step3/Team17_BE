@@ -8,11 +8,11 @@ public record MemberDTO(
     String nickname
 ) {
 
-    public Member convertToMember() {
+    public Member toEntity() {
         return new Member(this.email, this.nickname);
     }
 
-    public static MemberDTO convertToMemberDTO(Member member) {
+    public static MemberDTO from(Member member) {
         return new MemberDTO(member.getId(), member.getEmail(), member.getNickname());
     }
 

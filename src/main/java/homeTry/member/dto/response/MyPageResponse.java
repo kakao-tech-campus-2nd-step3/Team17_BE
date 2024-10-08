@@ -1,8 +1,8 @@
-package homeTry.member.dto;
+package homeTry.member.dto.response;
 
 import java.time.Duration;
 
-public record MyPageDTO(
+public record MyPageResponse(
     String nickname,
     String email,
     Duration weeklyTotal,

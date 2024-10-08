@@ -1,4 +1,4 @@
-package homeTry.common.auth.kakaoAuth.dto;
+package homeTry.common.auth.kakaoAuth.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 import java.util.Date;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record KakaoMemberInfoDTO(
+public record KakaoMemberInfoResponse(
     Long id,
 
     Date connectedAt,
