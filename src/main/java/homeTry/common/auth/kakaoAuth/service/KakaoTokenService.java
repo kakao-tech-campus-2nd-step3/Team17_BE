@@ -33,10 +33,10 @@ public class KakaoTokenService {
 
     public String getAccessToken(String code) {
         try {
-            var body = makeBody(kakaoAuthConfig.getRestApiKey(), kakaoAuthConfig.getRedirectUri(),
+            var body = makeBody(kakaoAuthConfig.restApiKey(), kakaoAuthConfig.redirectUri(),
                 code);
             ResponseEntity<TokenResponse> result = client.post()
-                .uri(URI.create(kakaoAuthConfig.getTokenUrl()))
+                .uri(URI.create(kakaoAuthConfig.tokenUrl()))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(body)
                 .retrieve()
@@ -64,7 +64,7 @@ public class KakaoTokenService {
     public MemberDTO getMemberInfo(String kakaoAccessToken) {
         try {
             ResponseEntity<KakaoMemberInfoResponse> responseUserInfo = client.get()
-                .uri(URI.create(kakaoAuthConfig.getUserInfoUrl()))
+                .uri(URI.create(kakaoAuthConfig.userInfoUrl()))
                 .header("Authorization", "Bearer " + kakaoAccessToken)
                 .header("Content-type",
                     MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8")
