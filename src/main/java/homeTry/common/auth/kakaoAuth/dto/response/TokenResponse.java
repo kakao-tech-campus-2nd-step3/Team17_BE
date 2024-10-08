@@ -1,11 +1,11 @@
-package homeTry.common.auth.kakaoAuth.dto;
+package homeTry.common.auth.kakaoAuth.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record TokenResponseDTO(
+public record TokenResponse(
     @NotNull
     String accessToken,
 
