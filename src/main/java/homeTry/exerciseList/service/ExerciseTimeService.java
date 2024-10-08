@@ -1,7 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.common.constants.DateTimeUtil;
-import homeTry.exerciseList.dto.ExerciseDto;
+import homeTry.exerciseList.dto.ExerciseDTO;
 import homeTry.exerciseList.exception.badRequestException.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
@@ -73,7 +73,7 @@ public class ExerciseTimeService {
 
     // 메인 페이지 운동 리스트 반환
     @Transactional(readOnly = true)
-    public List<ExerciseDto> getExerciseResponsesForToday(Long memberId) {
+    public List<ExerciseDTO> getExerciseResponsesForToday(Long memberId) {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(LocalDate.now());
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(LocalDate.now());
 
@@ -81,7 +81,7 @@ public class ExerciseTimeService {
             memberId, startOfDay, endOfDay);
 
         return exerciseTimes.stream()
-            .map(ExerciseDto::from)
+            .map(ExerciseDTO::from)
             .toList();
     }
 
