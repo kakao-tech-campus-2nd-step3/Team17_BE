@@ -56,7 +56,7 @@ public class MainPageService {
                 diaryService.getDiaryByDate(date, memberId));
     }
 
-    private boolean isToday(LocalDate day) {
-        return day.equals(LocalDate.now());
+    private boolean isToday(LocalDate date) {
+        return date.equals(LocalDate.now());
     }
 }
