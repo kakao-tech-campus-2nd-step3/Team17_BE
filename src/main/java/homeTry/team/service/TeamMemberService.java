@@ -7,6 +7,8 @@ import homeTry.team.model.entity.TeamMember;
 import homeTry.team.repository.TeamMemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TeamMemberService {
 
@@ -24,7 +26,7 @@ public class TeamMemberService {
     //TeamMember 엔티티 삭제 (멤버가 팀에서 나갈 시)
     public void deleteTeamMember(Team team, Member member) {
         TeamMember teamMember = teamMemberRepository.findByTeamAndMember(team, member)
-            .orElseThrow(() -> new TeamMemberNotFoundException());
+                .orElseThrow(() -> new TeamMemberNotFoundException());
 
         teamMemberRepository.delete(teamMember);
     }
@@ -34,4 +36,8 @@ public class TeamMemberService {
         teamMemberRepository.deleteByTeam(team);
     }
 
+    //팀에 속한 멤버들의 TeamMEmber 를 반환
+    public List<TeamMember> getTeamMember(Team team) {
+        return teamMemberRepository.findByTeam(team);
+    }
 }
