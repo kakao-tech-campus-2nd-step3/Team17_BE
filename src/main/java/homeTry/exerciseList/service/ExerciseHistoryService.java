@@ -71,7 +71,8 @@ public class ExerciseHistoryService {
 
     // 운동 시간 합
     private Duration sumExerciseTime(List<ExerciseHistory> exercises) {
-        return exercises.stream()
+        return exercises
+            .stream()
             .map(ExerciseHistory::getExerciseHistoryTime)
             .reduce(Duration.ZERO, Duration::plus);
     }
@@ -86,7 +87,8 @@ public class ExerciseHistoryService {
         List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
             memberId, startOfDay, endOfDay);
 
-        return exerciseHistories.stream()
+        return exerciseHistories
+            .stream()
             .map(ExerciseResponse::from)
             .toList();
     }

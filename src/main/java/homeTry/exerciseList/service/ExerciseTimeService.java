@@ -66,7 +66,8 @@ public class ExerciseTimeService {
             memberId, startOfDay, endOfDay);
 
         // 운동 시간 총 합
-        return exerciseTimes.stream()
+        return exerciseTimes
+            .stream()
             .map(ExerciseTime::getExerciseTime)
             .reduce(Duration.ZERO, Duration::plus);
     }
@@ -80,7 +81,8 @@ public class ExerciseTimeService {
         List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
             memberId, startOfDay, endOfDay);
 
-        return exerciseTimes.stream()
+        return exerciseTimes
+            .stream()
             .map(ExerciseResponse::from)
             .toList();
     }
