@@ -9,17 +9,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class KakaoAuthService {
 
-    private final KakaoTokenService kakaoTokenService;
+    private final KakaoClientService kakaoClientService;
     private final MemberService memberService;
 
-    public KakaoAuthService(KakaoTokenService kakaoTokenService, MemberService memberService) {
-        this.kakaoTokenService = kakaoTokenService;
+    public KakaoAuthService(KakaoClientService kakaoClientService, MemberService memberService) {
+        this.kakaoClientService = kakaoClientService;
         this.memberService = memberService;
     }
 
     public MemberDTO loginOrRegister(String code) {
-        String accessToken = kakaoTokenService.getAccessToken(code);
-        MemberDTO memberDTO = kakaoTokenService.getMemberInfo(accessToken);
+        String accessToken = kakaoClientService.getAccessToken(code);
+        MemberDTO memberDTO = kakaoClientService.getMemberInfo(accessToken);
 
         try {
             Long id = memberService.login(memberDTO); // -> LoginFailedException을 던질 수 있음
