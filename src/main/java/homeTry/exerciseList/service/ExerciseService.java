@@ -1,6 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseInProgressException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseNotStartedException;
@@ -44,6 +45,12 @@ public class ExerciseService {
 
         if (!exercise.getMember().getId().equals(memberDTO.id())) {
             throw new NoExercisePermissionException();
+        }
+
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
+        if (currentExerciseTime != null && currentExerciseTime.isActive()) {
+            throw new ExerciseInProgressException();
         }
 
         exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정

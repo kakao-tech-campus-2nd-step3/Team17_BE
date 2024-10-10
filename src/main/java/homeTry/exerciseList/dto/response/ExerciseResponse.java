@@ -8,7 +8,7 @@ import java.time.Duration;
 public record ExerciseResponse(
     Long exerciseId,
     String exerciseName,
-    Duration exerciseTime,
+    String exerciseTime,
     boolean isActive
 ) {
 
@@ -17,7 +17,7 @@ public record ExerciseResponse(
         return new ExerciseResponse(
             exercise.getExerciseId(),
             exercise.getExerciseName(),
-            exerciseTime,
+            exerciseTime.toString(),
             isActive
         );
     }

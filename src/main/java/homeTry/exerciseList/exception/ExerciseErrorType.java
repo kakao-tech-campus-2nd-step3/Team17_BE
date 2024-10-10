@@ -20,6 +20,9 @@ public enum ExerciseErrorType implements ErrorType {
     // 삭제한 운동을 시작하려고 할 때 - 400
     EXERCISE_DEPRECATED_EXCEPTION("Exercise400_005", HttpStatus.BAD_REQUEST,
         "이 운동은 삭제된 운동으로, 운동을 시작할 수 없습니다."),
+    // 운동이 실행 중일 때, 운동을 삭제하려는 경우 - 400
+    EXERCISE_IN_PROGRESS_EXCEPTION("Exercise400_006", HttpStatus.BAD_REQUEST,
+        "운동이 실행 중이므로 삭제할 수 없습니다."),
     // 운동에 대한 권한이 없을 때 - 403
     EXERCISE_NO_PERMISSION_EXCEPTION("Exercise403_001", HttpStatus.FORBIDDEN,
         "이 운동에 대한 실행 권한이 없습니다.");
