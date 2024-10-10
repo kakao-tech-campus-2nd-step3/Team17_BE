@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.List;
 
 import homeTry.diary.dto.DiaryDto;
-import homeTry.exerciseList.dto.ExerciseResponse;
+import homeTry.exerciseList.dto.response.ExerciseResponse;
 
 public record MainPageResponse(
         Duration totalTime,
