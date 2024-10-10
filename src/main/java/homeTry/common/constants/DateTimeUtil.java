@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class DateTimeUtil {
+public final class DateTimeUtil {
+
+    private DateTimeUtil() {}
 
     private static final LocalTime START_OF_DAY_TIME = LocalTime.of(3, 0, 0);
     private static final LocalTime END_OF_DAY_TIME = LocalTime.of(2, 59, 59);
