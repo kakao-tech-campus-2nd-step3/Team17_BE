@@ -93,5 +93,4 @@ public class TeamController {
         teamService.withDrawTeam(memberDTO, teamId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
