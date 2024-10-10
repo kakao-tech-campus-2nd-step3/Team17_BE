@@ -1,5 +1,6 @@
 package homeTry.exerciseList.model.entity;
 
+import homeTry.common.entity.BaseEntity;
 import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.member.model.entity.Member;
 import jakarta.persistence.AttributeOverride;
@@ -13,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Exercise {
+public class Exercise extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
