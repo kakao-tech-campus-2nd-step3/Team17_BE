@@ -188,7 +188,11 @@ public class TeamService {
                 .findFirst()
                 .orElseThrow(() -> new MyRankingNotFoundException());
 
-        Page<RankingDTO> page = new PageImpl<>(rankingList, pageable, pageable.getPageSize()); // 랭킹 페이지 생성
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), rankingList.size());
+        List<RankingDTO> PagedRankingList = rankingList.subList(start, end); //페이징 처리를 위해 리스트 슬라이싱
+
+        Page<RankingDTO> page = new PageImpl<>(rankingList, pageable, rankingList.size()); // 랭킹 페이지 생성
 
         return new RankingResponse(myRanking.ranking(), myRanking.name(), myRanking.totalExerciseTime(), page);
     }
@@ -240,7 +244,15 @@ public class TeamService {
                 .toList();
     }
 
+    //멤버가 팀에 가입
+    public void joinTeam(MemberDTO memberDTO, Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException());
 
+        Member member = memberService.getMemberEntity(memberDTO.id());
+
+        teamMemberService.addTeamMember(team, member); // 팀에 가입
+    }
 }
 
 

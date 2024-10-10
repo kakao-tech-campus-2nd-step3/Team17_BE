@@ -1,6 +1,7 @@
 package homeTry.team.service;
 
 import homeTry.member.model.entity.Member;
+import homeTry.team.exception.AlreadyJoinedTeamException;
 import homeTry.team.exception.TeamMemberNotFoundException;
 import homeTry.team.model.entity.Team;
 import homeTry.team.model.entity.TeamMember;
@@ -20,6 +21,11 @@ public class TeamMemberService {
 
     //TeamMember 엔티티 추가 (멤버가 팀 가입시 사용)
     public void addTeamMember(Team team, Member member) {
+        teamMemberRepository.findByTeamAndMember(team, member) // 이미 가입되어 있는경우 예외 던짐
+                .ifPresent(teamMember -> {
+                    throw new AlreadyJoinedTeamException();
+                });
+
         teamMemberRepository.save(new TeamMember(member, team));
     }
 

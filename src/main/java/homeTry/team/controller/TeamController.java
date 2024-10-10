@@ -70,10 +70,19 @@ public class TeamController {
     public ResponseEntity<RankingResponse> getTeamRanking(
             @LoginMember MemberDTO memberDTO,
             @PathVariable("teamId") Long teamId,
-            @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.DESC) Pageable pageable,
             @ModelAttribute DateDTO dateDTO) {
         RankingResponse rankingPage = teamService.getTeamRanking(memberDTO, teamId, pageable, dateDTO);
         return ResponseEntity.ok(rankingPage);
+    }
+
+    // 팀에 가입
+    @PostMapping("/join/{teamId}")
+    public ResponseEntity<Void> joinTeam(
+            @LoginMember MemberDTO memberDTO,
+            @PathVariable("teamId") Long teamId) {
+        teamService.joinTeam(memberDTO, teamId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
