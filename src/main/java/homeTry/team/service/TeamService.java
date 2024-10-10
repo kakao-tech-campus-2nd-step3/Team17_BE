@@ -253,6 +253,16 @@ public class TeamService {
 
         teamMemberService.addTeamMember(team, member); // 팀에 가입
     }
+
+    //멤버가 팀에서 탈퇴
+    public void withDrawTeam(MemberDTO memberDTO, Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException());
+
+        Member member = memberService.getMemberEntity(memberDTO.id());
+
+        teamMemberService.deleteTeamMember(team, member);
+    }
 }
 
 

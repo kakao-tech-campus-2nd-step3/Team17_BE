@@ -85,4 +85,13 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    //팀에서 탈퇴
+    @DeleteMapping("/withdraw/{teamId}")
+    public ResponseEntity<Void> withdrawTeam(
+            @LoginMember MemberDTO memberDTO,
+            @PathVariable("teamId") Long teamId) {
+        teamService.withDrawTeam(memberDTO, teamId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
