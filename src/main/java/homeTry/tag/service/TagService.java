@@ -27,27 +27,29 @@ public class TagService {
     @Transactional(readOnly = true)
     public List<TagDTO> getAllTagList() {
         List<Tag> tagList = tagRepository.findAll();
-        return tagList.stream()
-            .map(TagDTO::of)
-            .toList();
+        return tagList
+                .stream()
+                .map(TagDTO::of)
+                .toList();
     }
 
     //팀이 가지고 있는 tag를 찾아서 tagDTO로 반환
     @Transactional(readOnly = true)
     public List<TagDTO> getTagsForTeam(Team team) {
         List<TeamTag> teamTagList = teamTagService.getTeamTagsByTeam(team);
-        return teamTagList.stream()
-            .map(teamTag -> TagDTO.of(teamTag.getTag()))
-            .toList();
+        return teamTagList
+                .stream()
+                .map(teamTag -> TagDTO.of(teamTag.getTag()))
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<Tag> getTagEntityList(List<Long> tagIdList) {
         return tagIdList
-            .stream()
-            .map(tagId -> tagRepository.findById(tagId)
-                .orElseThrow(() -> new TagNotFoundException()))
-            .toList();
+                .stream()
+                .map(tagId -> tagRepository.findById(tagId)
+                        .orElseThrow(() -> new TagNotFoundException()))
+                .toList();
     }
 
 }

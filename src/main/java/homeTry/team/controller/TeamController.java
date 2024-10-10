@@ -28,7 +28,7 @@ public class TeamController {
     //팀 생성 api
     @PostMapping
     public ResponseEntity<Void> addTeam(@LoginMember MemberDTO memberDTO,
-        @Valid @RequestBody RequestTeamDTO requestTeamDTO) {
+                                        @Valid @RequestBody RequestTeamDTO requestTeamDTO) {
         teamService.addTeam(memberDTO, requestTeamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -36,7 +36,7 @@ public class TeamController {
     //팀 삭제 api
     @DeleteMapping("/{teamId}")
     public ResponseEntity<Void> deleteTeam(@LoginMember MemberDTO memberDTO,
-        @PathVariable("teamId") Long teamID) {
+                                           @PathVariable("teamId") Long teamID) {
         teamService.deleteTeam(memberDTO, teamID);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -44,14 +44,13 @@ public class TeamController {
     //모든 팀 조회 api (페이징 적용)
     @GetMapping
     public ResponseEntity<Page<ResponseTeam>> getTotalTeamList(
-        @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ResponseTeam> totalTeamPage = teamService.getTotalTeamPage(pageable);
         return ResponseEntity.ok(totalTeamPage);
     }
 
     //팀 생성 페이지에 필요한 정보 조회 api
-    @GetMapping
-    @RequestMapping("/form")
+    @GetMapping("/form")
     public ResponseEntity<ResponseNewTeamFrom> getNewTeamForm() {
         ResponseNewTeamFrom responseNewTeamFrom = teamService.getNewTeamForm();
         return ResponseEntity.ok(responseNewTeamFrom);
@@ -60,10 +59,30 @@ public class TeamController {
     //태그를 통한 일부팀 조회 api (페이징 적용)
     @GetMapping("/tagged")
     public ResponseEntity<Page<ResponseTeam>> getTaggedTeamList(
-        @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-        @RequestParam(name = "tagIdList") List<Long> tagIdList) {
+            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(name = "tagIdList") List<Long> tagIdList) {
         Page<ResponseTeam> taggedTeamPage = teamService.getTaggedTeamList(pageable, tagIdList);
         return ResponseEntity.ok(taggedTeamPage);
+    }
+
+    //팀 내 랭킹을 조회하는 api (페이징 적용)
+    @GetMapping("/{teamId}/ranking")
+    public ResponseEntity<RankingResponse> getTeamRanking(
+            @LoginMember MemberDTO memberDTO,
+            @PathVariable("teamId") Long teamId,
+            @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.DESC) Pageable pageable,
+            @ModelAttribute DateDTO dateDTO) {
+        RankingResponse rankingPage = teamService.getTeamRanking(memberDTO, teamId, pageable, dateDTO);
+        return ResponseEntity.ok(rankingPage);
+    }
+
+    // 팀에 가입
+    @PostMapping("/join/{teamId}")
+    public ResponseEntity<Void> joinTeam(
+            @LoginMember MemberDTO memberDTO,
+            @PathVariable("teamId") Long teamId) {
+        teamService.joinTeam(memberDTO, teamId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
