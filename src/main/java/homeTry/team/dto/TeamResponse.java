@@ -6,7 +6,7 @@ import homeTry.team.model.vo.Password;
 
 import java.util.List;
 
-public record ResponseTeam(
+public record TeamResponse(
         Long id,
         String teamName,
         String leaderNickname,
@@ -18,12 +18,12 @@ public record ResponseTeam(
 ) {
 
 
-    public static ResponseTeam of(Team team, List<TagDTO> tagList) {
+    public static TeamResponse of(Team team, List<TagDTO> tagList) {
         String password = team.getPassword()
                 .map(Password::getValue)
                 .orElse(null);
 
-        return new ResponseTeam(
+        return new TeamResponse(
                 team.getId(),
                 team.getTeamName().value(),
                 team.getLeader().getNickname(),

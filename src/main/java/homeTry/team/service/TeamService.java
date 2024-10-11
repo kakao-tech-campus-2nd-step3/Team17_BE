@@ -131,47 +131,53 @@ public class TeamService {
 
     //전체 팀 조회 (페이징 적용)
     @Transactional(readOnly = true)
-    public Page<ResponseTeam> getTotalTeamPage(Pageable pageable) {
-        Page<Team> teamListPage = teamRepository.findAll(pageable);
-        List<ResponseTeam> responseTeamList = teamListPage.getContent()
-                .stream()
-                .map(this::convertToResponseTeam)
-                .toList();
+    public Page<TeamResponse> getTotalTeamPage(MemberDTO memberDTO, Pageable pageable) {
+        Member member = memberService.getMemberEntity(memberDTO.id());
 
-        return new PageImpl<>(responseTeamList, pageable, teamListPage.getTotalElements());
+        Page<Team> teamListPage = teamRepository.findTeamExcludingMember(member, pageable);
+
+        //TeamResponse 로 변환
+        List<TeamResponse> teamResponseList = getTeamResponseList(teamListPage.getContent());
+
+        return new PageImpl<>(teamResponseList, pageable, teamListPage.getTotalElements());
     }
 
-    //개별 팀에 대해서 응답을 위한 ResponseTeam으로 변환
-    private ResponseTeam convertToResponseTeam(Team team) {
+    //팀 리스트를 TeamResponse 리스트로 변환
+    private List<TeamResponse> getTeamResponseList(List<Team> teamList) {
+        return teamList
+                .stream()
+                .map(this::convertToTeamResponse)
+                .toList();
+    }
+
+    //개별 팀에 대해서 응답을 위한 TeamResponse 로 변환
+    private TeamResponse convertToTeamResponse(Team team) {
         List<TagDTO> tagList = tagService.getTagsForTeam(team);
-        return ResponseTeam.of(team, tagList);
+        return TeamResponse.of(team, tagList);
 
     }
 
     //새로운 팀 생성에 필요한 정보 조회
     @Transactional(readOnly = true)
-    public ResponseNewTeamFrom getNewTeamForm() {
+    public NewTeamFromResponse getNewTeamForm() {
         List<TagDTO> tagDTOList = tagService.getAllTagList();
-        return new ResponseNewTeamFrom(tagDTOList);
+        return new NewTeamFromResponse(tagDTOList);
     }
 
     //태그 처리 된 팀 리스트 조회 기능(페이징 적용)
     @Transactional(readOnly = true)
-    public Page<ResponseTeam> getTaggedTeamList(Pageable pageable, List<Long> tagIdList) {
+    public Page<TeamResponse> getTaggedTeamList(Pageable pageable, MemberDTO memberDTO, List<Long> tagIdList) {
+        Member member = memberService.getMemberEntity(memberDTO.id());
+
         List<Tag> tagList = tagService.getTagEntityList(tagIdList);
 
         long tagListSize = tagList.size();
 
-        //태그 처리가 된 팀을 받음
-        Page<Team> taggedTeamListPage = teamTagService.getTaggedTeamTagList(tagList, tagListSize,
-                pageable);
+        Page<Team> teamListPage = teamRepository.findTaggedTeamExcludingMember(tagList, tagListSize, member, pageable);
 
-        List<ResponseTeam> responseTeamList = taggedTeamListPage.getContent()
-                .stream()
-                .map(this::convertToResponseTeam)
-                .toList();
+        List<TeamResponse> teamResponseList = getTeamResponseList(teamListPage.getContent());
 
-        return new PageImpl<>(responseTeamList, pageable, taggedTeamListPage.getTotalElements());
+        return new PageImpl<>(teamResponseList, pageable, teamListPage.getTotalElements());
     }
 
     public RankingResponse getTeamRanking(MemberDTO memberDTO, Long teamId, Pageable pageable, DateDTO dateDTO) {
@@ -253,7 +259,7 @@ public class TeamService {
 
         teamMemberService.addTeamMember(team, member); // 팀에 가입
     }
-  
+
     //멤버가 팀에서 탈퇴
     public void withDrawTeam(MemberDTO memberDTO, Long teamId) {
         Team team = teamRepository.findById(teamId)

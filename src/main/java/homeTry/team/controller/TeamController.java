@@ -43,25 +43,27 @@ public class TeamController {
 
     //모든 팀 조회 api (페이징 적용)
     @GetMapping
-    public ResponseEntity<Page<ResponseTeam>> getTotalTeamList(
-            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<ResponseTeam> totalTeamPage = teamService.getTotalTeamPage(pageable);
+    public ResponseEntity<Page<TeamResponse>> getTotalTeamList(
+            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @LoginMember MemberDTO memberDTO) {
+        Page<TeamResponse> totalTeamPage = teamService.getTotalTeamPage(memberDTO, pageable);
         return ResponseEntity.ok(totalTeamPage);
     }
 
     //팀 생성 페이지에 필요한 정보 조회 api
     @GetMapping("/form")
-    public ResponseEntity<ResponseNewTeamFrom> getNewTeamForm() {
-        ResponseNewTeamFrom responseNewTeamFrom = teamService.getNewTeamForm();
-        return ResponseEntity.ok(responseNewTeamFrom);
+    public ResponseEntity<NewTeamFromResponse> getNewTeamForm() {
+        NewTeamFromResponse newTeamFromResponse = teamService.getNewTeamForm();
+        return ResponseEntity.ok(newTeamFromResponse);
     }
 
     //태그를 통한 일부팀 조회 api (페이징 적용)
     @GetMapping("/tagged")
-    public ResponseEntity<Page<ResponseTeam>> getTaggedTeamList(
+    public ResponseEntity<Page<TeamResponse>> getTaggedTeamList(
             @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(name = "tagIdList") List<Long> tagIdList) {
-        Page<ResponseTeam> taggedTeamPage = teamService.getTaggedTeamList(pageable, tagIdList);
+            @RequestParam(name = "tagIdList") List<Long> tagIdList,
+            @LoginMember MemberDTO memberDTO) {
+        Page<TeamResponse> taggedTeamPage = teamService.getTaggedTeamList(pageable, memberDTO, tagIdList);
         return ResponseEntity.ok(taggedTeamPage);
     }
 
