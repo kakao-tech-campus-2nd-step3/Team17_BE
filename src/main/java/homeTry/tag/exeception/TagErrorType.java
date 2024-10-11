@@ -1,6 +1,6 @@
 package homeTry.tag.exeception;
 
-import homeTry.exception.ErrorType;
+import homeTry.common.exception.ErrorType;
 import org.springframework.http.HttpStatus;
 
 public enum TagErrorType implements ErrorType {

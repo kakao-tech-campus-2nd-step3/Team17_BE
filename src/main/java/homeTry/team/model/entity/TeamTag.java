@@ -5,19 +5,21 @@ import jakarta.persistence.*;
 
 @Entity
 public class TeamTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    Team team;
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    Tag tag;
+    private Tag tag;
 
-    protected TeamTag () {}
+    protected TeamTag() {
+    }
 
     public TeamTag(Tag tag, Team team) {
         this.tag = tag;

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Long countByEmail(Email email);
+
+    boolean existsByEmail(Email email);
 
     Optional<Member> findByEmail(Email email);
 }

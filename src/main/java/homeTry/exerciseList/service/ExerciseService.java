@@ -1,6 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
+import homeTry.exerciseList.exception.badRequestException.ExerciseInProgressException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseNotStartedException;
@@ -8,7 +9,7 @@ import homeTry.exerciseList.exception.badRequestException.NoExercisePermissionEx
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
 import homeTry.exerciseList.model.entity.Exercise;
-import homeTry.exerciseList.dto.ExerciseRequest;
+import homeTry.exerciseList.dto.request.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.service.MemberService;
@@ -39,10 +40,17 @@ public class ExerciseService {
 
     @Transactional
     public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
 
         if (!exercise.getMember().getId().equals(memberDTO.id())) {
             throw new NoExercisePermissionException();
+        }
+
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
+        if (currentExerciseTime != null && currentExerciseTime.isActive()) {
+            throw new ExerciseInProgressException();
         }
 
         exercise.markAsDeprecated(); // isDeprecated 값을 true로 설정
@@ -50,7 +58,8 @@ public class ExerciseService {
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
 
         // 삭제한 운동을 시작하려는 경우
         if (exercise.isDeprecated()) {
@@ -58,13 +67,15 @@ public class ExerciseService {
         }
 
         // 실행 중인 운동이 있는지
-        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(memberDTO.id());
+        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(
+            memberDTO.id());
         if (activeExerciseCount > 0) {
             throw new ExerciseAlreadyStartedException();
         }
 
         // 현재 운동의 상태 확인
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
 
         // 처음 운동을 시작한다면, 새로 생성
         if (currentExerciseTime == null) {
@@ -77,8 +88,11 @@ public class ExerciseService {
 
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseByIdAndMember(exerciseId, memberDTO);
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(exercise.getExerciseId());
+        Exercise exercise = getExerciseById(exerciseId);
+        validateMemberPermission(exercise, memberDTO);
+
+        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
+            exercise.getExerciseId());
 
         if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
@@ -90,9 +104,16 @@ public class ExerciseService {
         currentExerciseTime.stopExercise();
     }
 
-    private Exercise getExerciseByIdAndMember(Long exerciseId, MemberDTO memberDTO) {
-        return exerciseRepository.findByIdAndMemberId(exerciseId, memberDTO.id())
+    private Exercise getExerciseById(Long exerciseId) {
+        return exerciseRepository.findById(exerciseId)
             .orElseThrow(ExerciseNotFoundException::new);
+    }
+
+    // 해당 운동이 해당 회원의 것인지 검증
+    private void validateMemberPermission(Exercise exercise, MemberDTO memberDTO) {
+        if (!exercise.getMember().getId().equals(memberDTO.id())) {
+            throw new NoExercisePermissionException();
+        }
     }
 
     @Transactional(readOnly = true)
