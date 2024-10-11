@@ -1,9 +1,9 @@
 package homeTry.member.controller;
 
-import homeTry.annotation.LoginMember;
-import homeTry.member.dto.ChangeNicknameDTO;
+import homeTry.common.annotation.LoginMember;
+import homeTry.member.dto.request.ChangeNicknameRequest;
 import homeTry.member.dto.MemberDTO;
-import homeTry.member.dto.MyPageDTO;
+import homeTry.member.dto.response.MyPageResponse;
 import homeTry.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,17 +21,19 @@ public class MemberController {
     private final MemberService memberService;
 
     @Autowired
-    public MemberController(MemberService memberService) { this.memberService = memberService; }
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @GetMapping("/profile")
-    public ResponseEntity<MyPageDTO> getMemberInfo(@LoginMember MemberDTO memberDTO) {
+    public ResponseEntity<MyPageResponse> getMemberInfo(@LoginMember MemberDTO memberDTO) {
         return ResponseEntity.ok(memberService.getMemberInfo(memberDTO));
     }
 
     @PutMapping("/profile")
     public ResponseEntity<Void> changeNickname(@LoginMember MemberDTO memberDTO,
-            @RequestBody ChangeNicknameDTO changeNicknameDTO) {
-        memberService.changeNickname(memberDTO.id(), changeNicknameDTO);
+        @RequestBody ChangeNicknameRequest changeNicknameRequest) {
+        memberService.changeNickname(memberDTO.id(), changeNicknameRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

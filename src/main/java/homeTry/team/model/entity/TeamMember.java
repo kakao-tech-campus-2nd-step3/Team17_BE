@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class TeamMember {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +18,8 @@ public class TeamMember {
     @JoinColumn
     private Member member;
 
-    protected TeamMember () {}
+    protected TeamMember() {
+    }
 
     public TeamMember(Member member, Team team) {
         this.member = member;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import homeTry.annotation.LoginMember;
+import homeTry.common.annotation.LoginMember;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.service.DiaryService;
 import homeTry.member.dto.MemberDTO;
@@ -26,9 +26,8 @@ public class DiaryController {
 
     @PostMapping
     public ResponseEntity<Void> createDiary(
-            @RequestBody DiaryRequest diaryRequest,
-            @LoginMember MemberDTO memberDTO
-    ) {
+        @RequestBody DiaryRequest diaryRequest,
+        @LoginMember MemberDTO memberDTO) {
 
         diaryService.createDiary(diaryRequest, memberDTO.id());
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -36,9 +35,8 @@ public class DiaryController {
 
     @DeleteMapping("/{diaryId}")
     public ResponseEntity<Void> deleteDiary(
-            @PathVariable Long diaryId,
-            @LoginMember MemberDTO memberDto
-    ) {
+        @PathVariable Long diaryId,
+        @LoginMember MemberDTO memberDto) {
 
         diaryService.deleteDiary(diaryId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

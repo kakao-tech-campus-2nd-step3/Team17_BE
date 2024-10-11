@@ -1,6 +1,6 @@
 package homeTry.exerciseList.exception.badRequestException;
 
-import homeTry.exception.BadRequestException;
+import homeTry.common.exception.BadRequestException;
 import homeTry.exerciseList.exception.ExerciseErrorType;
 
 public class DailyExerciseTimeLimitExceededException extends BadRequestException {

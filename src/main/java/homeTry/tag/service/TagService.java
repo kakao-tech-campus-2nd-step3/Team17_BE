@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 public class TagService {
+
     private final TagRepository tagRepository;
     private final TeamTagService teamTagService;
 
@@ -24,9 +25,10 @@ public class TagService {
 
     //모든 태그 반환
     @Transactional(readOnly = true)
-    public List<TagDTO> getAllTagList () {
+    public List<TagDTO> getAllTagList() {
         List<Tag> tagList = tagRepository.findAll();
-        return tagList.stream()
+        return tagList
+                .stream()
                 .map(TagDTO::of)
                 .toList();
     }
@@ -35,17 +37,18 @@ public class TagService {
     @Transactional(readOnly = true)
     public List<TagDTO> getTagsForTeam(Team team) {
         List<TeamTag> teamTagList = teamTagService.getTeamTagsByTeam(team);
-        return teamTagList.stream()
+        return teamTagList
+                .stream()
                 .map(teamTag -> TagDTO.of(teamTag.getTag()))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Tag> getTagEntityList(List<Long> tagIdList){
+    public List<Tag> getTagEntityList(List<Long> tagIdList) {
         return tagIdList
                 .stream()
-                .map(tagId-> tagRepository.findById(tagId)
-                        .orElseThrow(()-> new TagNotFoundException()))
+                .map(tagId -> tagRepository.findById(tagId)
+                        .orElseThrow(() -> new TagNotFoundException()))
                 .toList();
     }
 
