@@ -1,4 +1,4 @@
-package homeTry.team.dto;
+package homeTry.team.dto.request;
 
 import homeTry.tag.dto.TagDTO;
 import jakarta.validation.Valid;
