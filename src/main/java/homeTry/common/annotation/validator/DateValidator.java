@@ -9,11 +9,11 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public class DateValidator implements ConstraintValidator<DateValid, DateDTO> {
-    private final int[] monthsWith30Days = {4, 6, 9, 11};
     private static final int FEBRUARY = 2;
     private static final int MAX_DAYS_IN_FEBRUARY_LEAP_YEAR = 29;
     private static final int MAX_DAYS_IN_FEBRUARY_NON_LEAP_YEAR = 28;
     private static final int MAX_DAYS_IN_30_DAY_MONTH = 30;
+    private final int[] monthsWith30Days = {4, 6, 9, 11};
 
     @Override
     public boolean isValid(DateDTO value, ConstraintValidatorContext context) {

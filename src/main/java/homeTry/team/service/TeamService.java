@@ -8,7 +8,8 @@ import homeTry.member.service.MemberService;
 import homeTry.tag.dto.TagDTO;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.service.TagService;
-import homeTry.team.dto.*;
+import homeTry.team.dto.DateDTO;
+import homeTry.team.dto.RankingDTO;
 import homeTry.team.dto.request.TeamCreateRequest;
 import homeTry.team.dto.response.NewTeamFromResponse;
 import homeTry.team.dto.response.RankingResponse;
@@ -37,6 +38,8 @@ import java.util.List;
 
 public class TeamService {
 
+    private static final int DEFAULT_PARTICIPANTS = 1;
+    private static final int DEFAULT_RANKING = -1;
     private final TeamRepository teamRepository;
     private final MemberService memberService;
     private final TagService tagService;
@@ -44,8 +47,6 @@ public class TeamService {
     private final TeamMemberService teamMemberService;
     private final ExerciseHistoryService exerciseHistoryService;
     private final ExerciseTimeService exerciseTimeService;
-    private static final int DEFAULT_PARTICIPANTS = 1;
-    private static final int DEFAULT_RANKING = -1;
 
     public TeamService(TeamRepository teamRepository,
                        MemberService memberService,

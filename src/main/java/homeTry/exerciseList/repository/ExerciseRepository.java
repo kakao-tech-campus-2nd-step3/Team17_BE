@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     @Query("SELECT COUNT(et) FROM ExerciseTime et " +
-        "JOIN et.exercise e " +
-        "WHERE e.member.id = :memberId AND et.isActive = true")
+            "JOIN et.exercise e " +
+            "WHERE e.member.id = :memberId AND et.isActive = true")
     long countActiveExercisesByMemberId(@Param("memberId") Long memberId);
 
 }
