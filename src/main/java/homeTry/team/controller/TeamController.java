@@ -3,6 +3,9 @@ package homeTry.team.controller;
 import homeTry.common.annotation.LoginMember;
 import homeTry.member.dto.MemberDTO;
 import homeTry.team.dto.*;
+import homeTry.team.dto.response.NewTeamFromResponse;
+import homeTry.team.dto.response.RankingResponse;
+import homeTry.team.dto.response.TeamResponse;
 import homeTry.team.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,8 +31,8 @@ public class TeamController {
     //팀 생성 api
     @PostMapping
     public ResponseEntity<Void> addTeam(@LoginMember MemberDTO memberDTO,
-                                        @Valid @RequestBody RequestTeamDTO requestTeamDTO) {
-        teamService.addTeam(memberDTO, requestTeamDTO);
+                                        @Valid @RequestBody TeamCreateRequest teamCreateRequest) {
+        teamService.addTeam(memberDTO, teamCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
