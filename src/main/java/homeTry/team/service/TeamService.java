@@ -9,6 +9,9 @@ import homeTry.tag.dto.TagDTO;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.service.TagService;
 import homeTry.team.dto.*;
+import homeTry.team.dto.response.NewTeamFromResponse;
+import homeTry.team.dto.response.RankingResponse;
+import homeTry.team.dto.response.TeamResponse;
 import homeTry.team.exception.MyRankingNotFoundException;
 import homeTry.team.exception.NotTeamLeaderException;
 import homeTry.team.exception.TeamNameAlreadyExistsException;
@@ -61,32 +64,32 @@ public class TeamService {
 
     //팀 추가 기능
     @Transactional
-    public void addTeam(MemberDTO memberDTO, RequestTeamDTO requestTeamDTO) {
+    public void addTeam(MemberDTO memberDTO, TeamCreateRequest teamCreateRequest) {
         Member leader = memberService.getMemberEntity(memberDTO.id());
 
-        validateTeamName(requestTeamDTO); // 팀 이름 유효성 검사 수행
+        validateTeamName(teamCreateRequest); // 팀 이름 유효성 검사 수행
 
-        Team team = teamRepository.save(createTeam(requestTeamDTO, leader)); //팀 저장
+        Team team = teamRepository.save(createTeam(teamCreateRequest, leader)); //팀 저장
 
         teamMemberService.addTeamMember(team, leader); //리더를 TeamMember 엔티티에 추가
 
-        addTagsToTeam(requestTeamDTO.tagIdList(), team); //팀에 태그 정보 추가
+        addTagsToTeam(teamCreateRequest.tagIdList(), team); //팀에 태그 정보 추가
     }
 
-    private Team createTeam(RequestTeamDTO requestTeamDTO, Member leader) {
+    private Team createTeam(TeamCreateRequest teamCreateRequest, Member leader) {
         return new Team(
-                requestTeamDTO.teamName(),
-                requestTeamDTO.teamDescription(),
+                teamCreateRequest.teamName(),
+                teamCreateRequest.teamDescription(),
                 leader,
-                requestTeamDTO.maxParticipants(),
+                teamCreateRequest.maxParticipants(),
                 DEFAULT_PARTICIPANTS,
-                requestTeamDTO.password()
+                teamCreateRequest.password()
         );
     }
 
     //동일한 이름을 가지고 있는지 체크
-    private void validateTeamName(RequestTeamDTO requestTeamDTO) {
-        teamRepository.findByTeamName(new Name(requestTeamDTO.teamName()))
+    private void validateTeamName(TeamCreateRequest teamCreateRequest) {
+        teamRepository.findByTeamName(new Name(teamCreateRequest.teamName()))
                 .ifPresent(team -> {
                     throw new TeamNameAlreadyExistsException();
                 });
