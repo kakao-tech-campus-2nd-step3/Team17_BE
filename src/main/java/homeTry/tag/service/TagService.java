@@ -36,7 +36,7 @@ public class TagService {
     //팀이 가지고 있는 tag를 찾아서 tagDTO로 반환
     @Transactional(readOnly = true)
     public List<TagDTO> getTagsOfTeam(Team team) {
-        List<TeamTag> teamTagList = teamTagService.getTeamTagsByTeam(team);
+        List<TeamTag> teamTagList = teamTagService.getTeamTagsOfTeam(team);
         return teamTagList
                 .stream()
                 .map(teamTag -> TagDTO.of(teamTag.getTag()))
