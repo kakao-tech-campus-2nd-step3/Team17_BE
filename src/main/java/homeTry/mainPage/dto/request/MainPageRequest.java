@@ -1,9 +1,9 @@
 package homeTry.mainPage.dto.request;
 
+import homeTry.mainPage.exception.BadRequestException.InvalidDateException;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
-
-import homeTry.mainPage.exception.BadRequestException.InvalidDateException;
 
 public record MainPageRequest(
         int year,

@@ -8,4 +8,5 @@ public record KakaoAuthConfig(
         String redirectUri,
         String tokenUrl,
         String userInfoUrl
-) { }
+) {
+}

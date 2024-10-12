@@ -1,5 +1,6 @@
-package homeTry.team.dto;
+package homeTry.team.dto.response;
 
+import homeTry.team.dto.RankingDTO;
 import org.springframework.data.domain.Page;
 
 import java.time.Duration;

@@ -3,15 +3,7 @@ package homeTry.exerciseList.model.entity;
 import homeTry.common.entity.BaseEntity;
 import homeTry.exerciseList.model.vo.ExerciseName;
 import homeTry.member.model.entity.Member;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Exercise extends BaseEntity {

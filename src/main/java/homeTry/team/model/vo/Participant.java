@@ -2,8 +2,6 @@ package homeTry.team.model.vo;
 
 import jakarta.persistence.Embeddable;
 
-import java.util.Objects;
-
 @Embeddable
 public record Participant(long value) {
 
