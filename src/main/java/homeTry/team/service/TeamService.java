@@ -183,6 +183,7 @@ public class TeamService {
         return new PageImpl<>(teamResponseList, pageable, teamListPage.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     public RankingResponse getTeamRanking(MemberDTO memberDTO, Long teamId, Pageable pageable, DateDTO dateDTO) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new TeamNotFoundException());
@@ -254,6 +255,7 @@ public class TeamService {
     }
 
     //멤버가 팀에 가입
+    @Transactional
     public void joinTeam(MemberDTO memberDTO, Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new TeamNotFoundException());
@@ -264,6 +266,7 @@ public class TeamService {
     }
 
     //멤버가 팀에서 탈퇴
+    @Transactional
     public void withDrawTeam(MemberDTO memberDTO, Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new TeamNotFoundException());
