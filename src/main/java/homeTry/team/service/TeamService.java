@@ -102,7 +102,7 @@ public class TeamService {
                 .map(TagDTO::tagId)
                 .toList();
 
-        List<Tag> tagList = tagService.getTagEntityList(tagIdList);
+        List<Tag> tagList = tagService.getTagList(tagIdList);
 
         teamTagService.addTeamTags(tagList, team);
     }
@@ -155,7 +155,7 @@ public class TeamService {
 
     //개별 팀에 대해서 응답을 위한 TeamResponse 로 변환
     private TeamResponse convertToTeamResponse(Team team) {
-        List<TagDTO> tagList = tagService.getTagsForTeam(team);
+        List<TagDTO> tagList = tagService.getTagsOfTeam(team);
         return TeamResponse.of(team, tagList);
 
     }
@@ -172,7 +172,7 @@ public class TeamService {
     public Page<TeamResponse> getTaggedTeamList(Pageable pageable, MemberDTO memberDTO, List<Long> tagIdList) {
         Member member = memberService.getMemberEntity(memberDTO.id());
 
-        List<Tag> tagList = tagService.getTagEntityList(tagIdList);
+        List<Tag> tagList = tagService.getTagList(tagIdList);
 
         long tagListSize = tagList.size();
 
@@ -183,6 +183,7 @@ public class TeamService {
         return new PageImpl<>(teamResponseList, pageable, teamListPage.getTotalElements());
     }
 
+    //팀 랭킹 조회 기능(페이징 적용)
     @Transactional(readOnly = true)
     public RankingResponse getTeamRanking(MemberDTO memberDTO, Long teamId, Pageable pageable, DateDTO dateDTO) {
         Team team = teamRepository.findById(teamId)
@@ -232,7 +233,7 @@ public class TeamService {
                 .toList();
     }
 
-    //멤버들의 오늘 totalExerciseTime을 조회
+    //멤버들의 오늘 totalExerciseTime 을 조회
     private List<RankingDTO> getTotalExerciseTimeListOfToday(List<Member> memberList) {
         return memberList
                 .stream()
@@ -243,7 +244,7 @@ public class TeamService {
                 .toList();
     }
 
-    //멤버들의 과거 특정 날에 대한 totalExerciseTime을 조회
+    //멤버들의 과거 특정 날에 대한 totalExerciseTime 을 조회
     private List<RankingDTO> getTotalExerciseTimeListOfHistory(List<Member> memberList, LocalDate date) {
         return memberList
                 .stream()
