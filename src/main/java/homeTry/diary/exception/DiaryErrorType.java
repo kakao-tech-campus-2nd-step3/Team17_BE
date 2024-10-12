@@ -1,8 +1,7 @@
 package homeTry.diary.exception;
 
-import org.springframework.http.HttpStatus;
-
 import homeTry.common.exception.ErrorType;
+import org.springframework.http.HttpStatus;
 
 
 public enum DiaryErrorType implements ErrorType {

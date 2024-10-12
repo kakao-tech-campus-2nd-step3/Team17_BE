@@ -8,4 +8,5 @@ import org.springframework.context.annotation.PropertySource;
 @EnableConfigurationProperties(KakaoAuthConfig.class)  // KakaoAuthConfig를 빈으로 등록
 @PropertySource({"classpath:application-kakao-login.properties",
         "classpath:application-secret.properties"})
-public class KakaoAuthConfigRegistrar { }
+public class KakaoAuthConfigRegistrar {
+}

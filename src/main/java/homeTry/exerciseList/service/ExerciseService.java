@@ -1,21 +1,17 @@
 package homeTry.exerciseList.service;
 
-import homeTry.exerciseList.exception.badRequestException.ExerciseDeprecatedException;
-import homeTry.exerciseList.exception.badRequestException.ExerciseInProgressException;
-import homeTry.exerciseList.exception.badRequestException.ExerciseNotFoundException;
-import homeTry.exerciseList.exception.badRequestException.ExerciseAlreadyStartedException;
-import homeTry.exerciseList.exception.badRequestException.ExerciseNotStartedException;
-import homeTry.exerciseList.exception.badRequestException.NoExercisePermissionException;
+import homeTry.exerciseList.dto.request.ExerciseRequest;
+import homeTry.exerciseList.exception.badRequestException.*;
+import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseRepository;
-import homeTry.exerciseList.model.entity.Exercise;
-import homeTry.exerciseList.dto.request.ExerciseRequest;
 import homeTry.member.dto.MemberDTO;
 import homeTry.member.model.entity.Member;
 import homeTry.member.service.MemberService;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ExerciseService {
@@ -25,7 +21,7 @@ public class ExerciseService {
     private final MemberService memberService;
 
     public ExerciseService(ExerciseRepository exerciseRepository,
-        ExerciseTimeService exerciseTimeService, MemberService memberService) {
+                           ExerciseTimeService exerciseTimeService, MemberService memberService) {
         this.exerciseRepository = exerciseRepository;
         this.exerciseTimeService = exerciseTimeService;
         this.memberService = memberService;
@@ -48,7 +44,7 @@ public class ExerciseService {
         }
 
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-            exercise.getExerciseId());
+                exercise.getExerciseId());
         if (currentExerciseTime != null && currentExerciseTime.isActive()) {
             throw new ExerciseInProgressException();
         }
@@ -68,14 +64,14 @@ public class ExerciseService {
 
         // 실행 중인 운동이 있는지
         long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(
-            memberDTO.id());
+                memberDTO.id());
         if (activeExerciseCount > 0) {
             throw new ExerciseAlreadyStartedException();
         }
 
         // 현재 운동의 상태 확인
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-            exercise.getExerciseId());
+                exercise.getExerciseId());
 
         // 처음 운동을 시작한다면, 새로 생성
         if (currentExerciseTime == null) {
@@ -92,7 +88,7 @@ public class ExerciseService {
         validateMemberPermission(exercise, memberDTO);
 
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-            exercise.getExerciseId());
+                exercise.getExerciseId());
 
         if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
             throw new ExerciseNotStartedException();
@@ -106,7 +102,7 @@ public class ExerciseService {
 
     private Exercise getExerciseById(Long exerciseId) {
         return exerciseRepository.findById(exerciseId)
-            .orElseThrow(ExerciseNotFoundException::new);
+                .orElseThrow(ExerciseNotFoundException::new);
     }
 
     // 해당 운동이 해당 회원의 것인지 검증

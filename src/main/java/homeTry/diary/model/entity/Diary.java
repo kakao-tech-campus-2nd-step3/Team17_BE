@@ -1,9 +1,9 @@
 package homeTry.diary.model.entity;
 
-import jakarta.persistence.*;
 import homeTry.common.entity.BaseEntity;
 import homeTry.diary.model.vo.Memo;
 import homeTry.member.model.entity.Member;
+import jakarta.persistence.*;
 
 @Entity
 public class Diary extends BaseEntity {

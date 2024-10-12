@@ -5,7 +5,6 @@ import homeTry.team.model.entity.Team;
 import homeTry.team.model.entity.TeamTag;
 import homeTry.team.repository.TeamTagRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,8 +25,7 @@ public class TeamTagService {
     }
 
     //팀과 연관된 teamTag를 반환
-    @Transactional(readOnly = true)
-    public List<TeamTag> getTeamTagsByTeam(Team team) {
+    public List<TeamTag> getTeamTagsOfTeam(Team team) {
         return teamTagRepository.findByTeam(team);
     }
 

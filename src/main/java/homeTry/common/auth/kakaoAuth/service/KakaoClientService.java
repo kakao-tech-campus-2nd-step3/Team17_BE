@@ -17,8 +17,8 @@ import java.util.Objects;
 @Service
 public class KakaoClientService {
 
-    private final KakaoApiClient kakaoApiClient;
     private static final Logger logger = LoggerFactory.getLogger(KakaoClientService.class);
+    private final KakaoApiClient kakaoApiClient;
 
     public KakaoClientService(KakaoApiClient kakaoApiClient) {
         this.kakaoApiClient = kakaoApiClient;

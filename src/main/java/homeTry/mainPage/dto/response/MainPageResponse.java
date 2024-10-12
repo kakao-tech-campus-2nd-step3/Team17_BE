@@ -1,10 +1,10 @@
 package homeTry.mainPage.dto.response;
 
-import java.time.Duration;
-import java.util.List;
-
 import homeTry.diary.dto.DiaryDto;
 import homeTry.exerciseList.dto.response.ExerciseResponse;
+
+import java.time.Duration;
+import java.util.List;
 
 public record MainPageResponse(
         Duration totalTime,

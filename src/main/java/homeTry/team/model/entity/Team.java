@@ -1,7 +1,10 @@
 package homeTry.team.model.entity;
 
 import homeTry.member.model.entity.Member;
-import homeTry.team.model.vo.*;
+import homeTry.team.model.vo.Description;
+import homeTry.team.model.vo.Name;
+import homeTry.team.model.vo.Participant;
+import homeTry.team.model.vo.Password;
 import jakarta.persistence.*;
 
 import java.util.Optional;
