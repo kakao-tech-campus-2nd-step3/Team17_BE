@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoErrorResponse(
-    String error,
+        String error,
 
-    String errorDescription,
+        String errorDescription,
 
-    @JsonProperty("error_code")
-    String KakaoErrorCode
+        @JsonProperty("error_code")
+        String KakaoErrorCode
 ) {
 
 }

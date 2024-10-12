@@ -1,15 +1,14 @@
 package homeTry.mainPage.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-
 import homeTry.diary.service.DiaryService;
 import homeTry.exerciseList.service.ExerciseHistoryService;
 import homeTry.exerciseList.service.ExerciseTimeService;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 public class MainPageService {
@@ -19,8 +18,8 @@ public class MainPageService {
     private final ExerciseHistoryService exerciseHistoryService;
 
     public MainPageService(DiaryService diaryService,
-            ExerciseTimeService exerciseTimeService,
-            ExerciseHistoryService exerciseHistoryService) {
+                           ExerciseTimeService exerciseTimeService,
+                           ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
         this.exerciseHistoryService = exerciseHistoryService;

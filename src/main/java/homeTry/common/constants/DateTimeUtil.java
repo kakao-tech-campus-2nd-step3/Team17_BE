@@ -6,10 +6,11 @@ import java.time.LocalTime;
 
 public final class DateTimeUtil {
 
-    private DateTimeUtil() {}
-
     private static final LocalTime START_OF_DAY_TIME = LocalTime.of(3, 0, 0);
     private static final LocalTime END_OF_DAY_TIME = LocalTime.of(2, 59, 59);
+
+    private DateTimeUtil() {
+    }
 
     // 하루의 시작과 끝
     public static LocalDateTime getStartOfDay(LocalDate date) {

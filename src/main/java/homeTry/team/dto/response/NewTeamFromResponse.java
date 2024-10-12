@@ -1,4 +1,4 @@
-package homeTry.team.dto;
+package homeTry.team.dto.response;
 
 import homeTry.tag.dto.TagDTO;
 

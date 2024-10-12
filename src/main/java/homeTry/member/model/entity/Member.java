@@ -1,69 +1,62 @@
-    package homeTry.member.model.entity;
+package homeTry.member.model.entity;
 
-    import homeTry.common.entity.BaseEntity;
-    import homeTry.member.model.vo.Email;
-    import homeTry.member.model.vo.Nickname;
-    import jakarta.persistence.AttributeOverride;
-    import jakarta.persistence.Column;
-    import jakarta.persistence.Embedded;
-    import jakarta.persistence.Entity;
-    import jakarta.persistence.EntityListeners;
-    import jakarta.persistence.GeneratedValue;
-    import jakarta.persistence.GenerationType;
-    import jakarta.persistence.Id;
-    import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import homeTry.common.entity.BaseEntity;
+import homeTry.member.model.vo.Email;
+import homeTry.member.model.vo.Nickname;
+import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-    @Entity
-    @EntityListeners(AuditingEntityListener.class)
-    public class Member extends BaseEntity {
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+public class Member extends BaseEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "member_id")
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
+    private Long id;
 
-        @Embedded
-        @AttributeOverride(name = "value", column = @Column(name = "email", nullable = false))
-        private Email email;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "email", nullable = false))
+    private Email email;
 
-        @Embedded
-        @AttributeOverride(name = "value", column = @Column(name = "nickname", nullable = false))
-        private Nickname nickname;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "nickname", nullable = false))
+    private Nickname nickname;
 
-        @Column(nullable = true)
-        private String kakaoAccessToken;
+    @Column(nullable = true)
+    private String kakaoAccessToken;
 
-        protected Member() {
-        }
-
-        public Member(String email, String nickname) {
-            this.nickname = new Nickname(nickname);
-            this.email = new Email(email);
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public String getEmail() {
-            return email.value();
-        }
-
-        public String getNickname() {
-            return nickname.value();
-        }
-
-        public String getKakaoAccessToken() {
-            return kakaoAccessToken;
-        }
-
-        public void setKakaoAccessToken(String kakaoAccessToken) {
-            this.kakaoAccessToken = kakaoAccessToken;
-        }
-
-        public void changeNickname(Nickname nickname) {
-            this.nickname = nickname;
-        }
-
-
+    protected Member() {
     }
+
+    public Member(String email, String nickname) {
+        this.nickname = new Nickname(nickname);
+        this.email = new Email(email);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email.value();
+    }
+
+    public String getNickname() {
+        return nickname.value();
+    }
+
+    public String getKakaoAccessToken() {
+        return kakaoAccessToken;
+    }
+
+    public void setKakaoAccessToken(String kakaoAccessToken) {
+        this.kakaoAccessToken = kakaoAccessToken;
+    }
+
+    public void changeNickname(Nickname nickname) {
+        this.nickname = nickname;
+    }
+
+
+}

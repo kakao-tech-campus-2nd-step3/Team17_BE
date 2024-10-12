@@ -2,8 +2,8 @@ package homeTry.member.service;
 
 
 import homeTry.exerciseList.service.ExerciseHistoryService;
-import homeTry.member.dto.request.ChangeNicknameRequest;
 import homeTry.member.dto.MemberDTO;
+import homeTry.member.dto.request.ChangeNicknameRequest;
 import homeTry.member.dto.response.MyPageResponse;
 import homeTry.member.exception.badRequestException.LoginFailedException;
 import homeTry.member.exception.badRequestException.MemberNotFoundException;
@@ -12,9 +12,10 @@ import homeTry.member.model.entity.Member;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
 import homeTry.member.repository.MemberRepository;
-import java.time.Duration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 
 @Service
 public class MemberService {
@@ -23,7 +24,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberService(ExerciseHistoryService exerciseHistoryService,
-        MemberRepository memberRepository) {
+                         MemberRepository memberRepository) {
         this.exerciseHistoryService = exerciseHistoryService;
         this.memberRepository = memberRepository;
     }

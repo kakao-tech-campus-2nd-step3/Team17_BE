@@ -6,12 +6,13 @@ import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseHistory;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseHistoryRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExerciseHistoryService {
@@ -38,7 +39,7 @@ public class ExerciseHistoryService {
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
         List<ExerciseHistory> exercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-            memberId, startOfDay, endOfDay);
+                memberId, startOfDay, endOfDay);
 
         return sumExerciseTime(exercises);
     }
@@ -51,7 +52,7 @@ public class ExerciseHistoryService {
         LocalDateTime endOfWeekWith3AM = DateTimeUtil.getEndOfWeek(LocalDate.now());
 
         List<ExerciseHistory> weeklyExercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-            memberId, startOfWeekWith3AM, endOfWeekWith3AM);
+                memberId, startOfWeekWith3AM, endOfWeekWith3AM);
 
         return sumExerciseTime(weeklyExercises);
     }
@@ -64,7 +65,7 @@ public class ExerciseHistoryService {
         LocalDateTime endOfMonthWith3AM = DateTimeUtil.getEndOfMonth(LocalDate.now());
 
         List<ExerciseHistory> monthlyExercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-            memberId, startOfMonthWith3AM, endOfMonthWith3AM);
+                memberId, startOfMonthWith3AM, endOfMonthWith3AM);
 
         return sumExerciseTime(monthlyExercises);
     }
@@ -72,9 +73,9 @@ public class ExerciseHistoryService {
     // 운동 시간 합
     private Duration sumExerciseTime(List<ExerciseHistory> exercises) {
         return exercises
-            .stream()
-            .map(ExerciseHistory::getExerciseHistoryTime)
-            .reduce(Duration.ZERO, Duration::plus);
+                .stream()
+                .map(ExerciseHistory::getExerciseHistoryTime)
+                .reduce(Duration.ZERO, Duration::plus);
     }
 
     // 메인페이지 조회 시 사용
@@ -85,11 +86,11 @@ public class ExerciseHistoryService {
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
         List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-            memberId, startOfDay, endOfDay);
+                memberId, startOfDay, endOfDay);
 
         return exerciseHistories
-            .stream()
-            .map(ExerciseResponse::from)
-            .toList();
+                .stream()
+                .map(ExerciseResponse::from)
+                .toList();
     }
 }

@@ -18,7 +18,7 @@ public record ExerciseName(String value) {
         // 운동 이름은 최대 20자 까지
         if (exerciseName.length() > 20) {
             throw new IllegalArgumentException(
-                String.format("운동 이름은 최대 20자까지 가능합니다. 현재 글자 수: %d자", exerciseName.length()));
+                    String.format("운동 이름은 최대 20자까지 가능합니다. 현재 글자 수: %d자", exerciseName.length()));
         }
 
     }
