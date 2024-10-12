@@ -65,9 +65,9 @@ public class TeamService {
     //팀 추가 기능
     @Transactional
     public void addTeam(MemberDTO memberDTO, TeamCreateRequest teamCreateRequest) {
-        Member leader = memberService.getMemberEntity(memberDTO.id());
-
         validateTeamName(teamCreateRequest); // 팀 이름 유효성 검사 수행
+
+        Member leader = memberService.getMemberEntity(memberDTO.id());
 
         Team team = teamRepository.save(createTeam(teamCreateRequest, leader)); //팀 저장
 
