@@ -1,13 +1,14 @@
 package homeTry.team.dto;
 
+import homeTry.common.annotation.DateValid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 import java.time.LocalDate;
 
+@DateValid
 public record DateDTO(
         @Min(value = 2024, message = "년도의 최소값은 2024 입니다 ")
-        // TODO : @CurrnetYear : 현재 년독 최대값이므로 이에 대해 커스텀 유효성 어노테이션 정의 필요
         int year,
 
         @Min(value = 1, message = "월은 1월부터 시작입니다")
@@ -15,7 +16,7 @@ public record DateDTO(
         int month,
 
         @Min(value = 1, message = "일은 1일부터 시작입니다")
-        // TODO : @Maxday : 각 월에 맞는 최대 일수를 검사하는 커스텀 어노테이션 정의 필요
+        @Max(value = 31, message = "일은 31일을 넘어갈 수 없습니다")
         int day
 ) {
     public LocalDate toLocalDate() {

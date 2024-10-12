@@ -77,7 +77,7 @@ public class TeamController {
             @LoginMember MemberDTO memberDTO,
             @PathVariable("teamId") Long teamId,
             @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.DESC) Pageable pageable,
-            @ModelAttribute DateDTO dateDTO) {
+            @Valid @ModelAttribute DateDTO dateDTO) {
         RankingResponse rankingPage = teamService.getTeamRanking(memberDTO, teamId, pageable, dateDTO);
         return ResponseEntity.ok(rankingPage);
     }
