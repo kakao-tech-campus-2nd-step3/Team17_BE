@@ -1,17 +1,13 @@
 package homeTry.exerciseList.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import homeTry.common.entity.BaseEntity;
+import jakarta.persistence.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
-public class ExerciseTime {
+public class ExerciseTime extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

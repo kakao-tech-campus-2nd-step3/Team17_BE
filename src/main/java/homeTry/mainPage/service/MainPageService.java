@@ -1,15 +1,14 @@
 package homeTry.mainPage.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-
 import homeTry.diary.service.DiaryService;
 import homeTry.exerciseList.service.ExerciseHistoryService;
 import homeTry.exerciseList.service.ExerciseTimeService;
 import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 public class MainPageService {
@@ -18,36 +17,45 @@ public class MainPageService {
     private final ExerciseTimeService exerciseTimeService;
     private final ExerciseHistoryService exerciseHistoryService;
 
-    public MainPageService(DiaryService diaryService, 
-                            ExerciseTimeService exerciseTimeService, 
-                            ExerciseHistoryService exerciseHistoryService) {
+    public MainPageService(DiaryService diaryService,
+                           ExerciseTimeService exerciseTimeService,
+                           ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
         this.exerciseHistoryService = exerciseHistoryService;
     }
-    
+
     @Transactional(readOnly = true)
     public MainPageResponse getMainPage(MainPageRequest mainPageRequest, Long memberId) {
 
-        LocalDate date = LocalDate.of(mainPageRequest.year(), mainPageRequest.month(), mainPageRequest.day());
+        LocalDate date = mainPageRequest.toDate();
 
-        if(isToday(date)) {
+        if (isToday(date)) {
+            return getTodayMainPageResponse(memberId);
+        }
 
-            return new MainPageResponse(
-                exerciseTimeService.getExerciseTimesForToday(memberId), 
-                exerciseTimeService.getExerciseResponsesForToday(memberId),
-                diaryService.getDiaryByDate(date, memberId));
+        return getHistoricalMainPageResponse(memberId, date);
 
-        } 
-
-        return new MainPageResponse(
-            exerciseHistoryService.getExerciseHistoriesForDay(memberId, date), 
-            exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
-            diaryService.getDiaryByDate(date, memberId));
-    
     }
 
-    private boolean isToday(LocalDate day){
-        return day.equals(LocalDate.now());
+    private MainPageResponse getTodayMainPageResponse(Long memberId) {
+
+        return new MainPageResponse(
+                exerciseTimeService.getExerciseTimesForToday(memberId),
+                exerciseTimeService.getExerciseResponsesForToday(memberId),
+                diaryService.getDiaryByDate(LocalDate.now(), memberId));
+
+    }
+
+    private MainPageResponse getHistoricalMainPageResponse(Long memberId, LocalDate date) {
+
+        return new MainPageResponse(
+                exerciseHistoryService.getExerciseHistoriesForDay(memberId, date),
+                exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
+                diaryService.getDiaryByDate(date, memberId));
+    }
+
+    private boolean isToday(LocalDate date) {
+        return date.equals(LocalDate.now());
     }
 }

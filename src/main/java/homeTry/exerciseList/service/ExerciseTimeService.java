@@ -1,17 +1,18 @@
 package homeTry.exerciseList.service;
 
-import homeTry.constants.DateTimeUtil;
-import homeTry.exerciseList.dto.ExerciseResponse;
+import homeTry.common.constants.DateTimeUtil;
+import homeTry.exerciseList.dto.response.ExerciseResponse;
 import homeTry.exerciseList.exception.badRequestException.DailyExerciseTimeLimitExceededException;
 import homeTry.exerciseList.exception.badRequestException.ExerciseTimeLimitExceededException;
 import homeTry.exerciseList.model.entity.ExerciseTime;
 import homeTry.exerciseList.repository.ExerciseTimeRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExerciseTimeService {
@@ -35,7 +36,7 @@ public class ExerciseTimeService {
     @Transactional(readOnly = true)
     public ExerciseTime getExerciseTime(Long exerciseId) {
         return exerciseTimeRepository.findByExerciseId(exerciseId)
-            .orElse(null);
+                .orElse(null);
     }
 
     public void validateExerciseDurationLimits(ExerciseTime exerciseTime) {
@@ -63,12 +64,13 @@ public class ExerciseTimeService {
 
         // 해당 멤버의 당일 운동 시간 목록 조회
         List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
-            memberId, startOfDay, endOfDay);
+                memberId, startOfDay, endOfDay);
 
         // 운동 시간 총 합
-        return exerciseTimes.stream()
-            .map(ExerciseTime::getExerciseTime)
-            .reduce(Duration.ZERO, Duration::plus);
+        return exerciseTimes
+                .stream()
+                .map(ExerciseTime::getExerciseTime)
+                .reduce(Duration.ZERO, Duration::plus);
     }
 
     // 메인 페이지 운동 리스트 반환
@@ -78,11 +80,12 @@ public class ExerciseTimeService {
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(LocalDate.now());
 
         List<ExerciseTime> exerciseTimes = exerciseTimeRepository.findByExerciseMemberIdAndStartTimeBetween(
-            memberId, startOfDay, endOfDay);
+                memberId, startOfDay, endOfDay);
 
-        return exerciseTimes.stream()
-            .map(ExerciseResponse::from)
-            .toList();
+        return exerciseTimes
+                .stream()
+                .map(ExerciseResponse::from)
+                .toList();
     }
 
 }

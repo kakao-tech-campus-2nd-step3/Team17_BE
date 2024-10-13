@@ -11,6 +11,7 @@ public record TagDTO(
         String tagName,
         String tagAttribute
 ) {
+
     public static TagDTO of(Tag tag) {
         return new TagDTO(
                 tag.getId(),

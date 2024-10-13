@@ -1,9 +1,10 @@
 package homeTry.tag.exeception;
 
-import homeTry.exception.BadRequestException;
+import homeTry.common.exception.BadRequestException;
 
 public class TagNotFoundException extends BadRequestException {
-    public TagNotFoundException(){
+
+    public TagNotFoundException() {
         super(TagErrorType.TAG_NOT_FOUND_EXCEPTION);
     }
 }

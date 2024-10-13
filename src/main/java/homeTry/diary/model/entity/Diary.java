@@ -1,37 +1,27 @@
 package homeTry.diary.model.entity;
 
-
-import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import homeTry.common.entity.BaseEntity;
 import homeTry.diary.model.vo.Memo;
 import homeTry.member.model.entity.Member;
+import jakarta.persistence.*;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Diary {
+public class Diary extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "memo", nullable = false))
-    private Memo memo; 
+    private Memo memo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
-    protected Diary() {}
+    protected Diary() {
+    }
 
     public Diary(String memo, Member member) {
         this.memo = new Memo(memo);
@@ -40,10 +30,6 @@ public class Diary {
 
     public Long getId() {
         return id;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createdAt;
     }
 
     public Memo getMemo() {

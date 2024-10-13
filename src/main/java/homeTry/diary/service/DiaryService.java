@@ -1,20 +1,18 @@
 package homeTry.diary.service;
 
-import java.time.LocalDateTime;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import homeTry.common.constants.DateTimeUtil;
 import homeTry.diary.dto.DiaryDto;
-import java.util.List;
-
-import java.time.LocalDate;
-
-import homeTry.member.service.MemberService;
 import homeTry.diary.dto.request.DiaryRequest;
 import homeTry.diary.exception.BadRequestException.DiaryNotFoundException;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
+import homeTry.member.service.MemberService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class DiaryService {
@@ -30,15 +28,15 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public List<DiaryDto> getDiaryByDate(LocalDate date, Long memberId) {
 
-        //time 상수 추가시 추가 리팩토링 예정
-        LocalDateTime startOfDay = LocalDate.now().atTime(3, 0, 0);
-        LocalDateTime endOfDay = LocalDate.now().plusDays(1).atTime(2, 59, 59);
+        LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
+        LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
-        List<Diary> diaries = diaryRepository.findByDateRangeAndMember(startOfDay, endOfDay, memberService.getMemberEntity(memberId));
+        List<Diary> diaries = diaryRepository.findByCreatedAtBetweenAndMember(startOfDay, endOfDay,
+                memberService.getMemberEntity(memberId));
 
         return diaries
                 .stream()
-                .map(DiaryDto::convertToDiaryDto)
+                .map(DiaryDto::from)
                 .toList();
 
     }
@@ -55,9 +53,9 @@ public class DiaryService {
     public void deleteDiary(Long diaryId) {
 
         Diary diary = diaryRepository.findById(diaryId)
-            .orElseThrow(() -> new DiaryNotFoundException());
-        
+                .orElseThrow(() -> new DiaryNotFoundException());
+
         diaryRepository.delete(diary);
-        
+
     }
 }

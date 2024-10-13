@@ -1,15 +1,15 @@
 package homeTry.diary.dto;
 
-import java.time.LocalDateTime;
-
 import homeTry.diary.model.entity.Diary;
 
+import java.time.LocalDateTime;
+
 public record DiaryDto(
-    Long id,
-    LocalDateTime createdAt,
-    String memo
-) {
-    public static DiaryDto convertToDiaryDto(Diary diary) {
-        return new DiaryDto(diary.getId(), diary.getCreateAt(), diary.getMemo().value());
+        Long id,
+        LocalDateTime createdAt,
+        String memo) {
+
+    public static DiaryDto from(Diary diary) {
+        return new DiaryDto(diary.getId(), diary.getCreatedAt(), diary.getMemo().value());
     }
 }
