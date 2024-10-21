@@ -21,7 +21,6 @@ public record MainPageRequest(
         this(LocalDate.now().getYear(),
                 LocalDate.now().getMonthValue(),
                 LocalDate.now().getDayOfMonth());
-
     }
 
     public LocalDate toDate() {

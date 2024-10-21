@@ -18,8 +18,8 @@ public class MainPageService {
     private final ExerciseHistoryService exerciseHistoryService;
 
     public MainPageService(DiaryService diaryService,
-                           ExerciseTimeService exerciseTimeService,
-                           ExerciseHistoryService exerciseHistoryService) {
+            ExerciseTimeService exerciseTimeService,
+            ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
         this.exerciseHistoryService = exerciseHistoryService;
