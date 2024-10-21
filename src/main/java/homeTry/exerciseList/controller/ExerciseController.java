@@ -4,6 +4,7 @@ import homeTry.common.annotation.LoginMember;
 import homeTry.exerciseList.dto.request.ExerciseRequest;
 import homeTry.exerciseList.service.ExerciseService;
 import homeTry.member.dto.MemberDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createExercise(@RequestBody ExerciseRequest request,
+    public ResponseEntity<Void> createExercise(@Valid @RequestBody ExerciseRequest request,
                                                @LoginMember MemberDTO memberDTO) {
 
         exerciseService.createExercise(request, memberDTO);  // 운동 생성
