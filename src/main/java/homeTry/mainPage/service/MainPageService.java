@@ -18,8 +18,8 @@ public class MainPageService {
     private final ExerciseHistoryService exerciseHistoryService;
 
     public MainPageService(DiaryService diaryService,
-                           ExerciseTimeService exerciseTimeService,
-                           ExerciseHistoryService exerciseHistoryService) {
+            ExerciseTimeService exerciseTimeService,
+            ExerciseHistoryService exerciseHistoryService) {
         this.diaryService = diaryService;
         this.exerciseTimeService = exerciseTimeService;
         this.exerciseHistoryService = exerciseHistoryService;
@@ -30,7 +30,7 @@ public class MainPageService {
 
         LocalDate date = mainPageRequest.toDate();
 
-        if (isToday(date)) {
+        if (mainPageRequest.isToday(date)) {
             return getTodayMainPageResponse(memberId);
         }
 
@@ -53,9 +53,5 @@ public class MainPageService {
                 exerciseHistoryService.getExerciseHistoriesForDay(memberId, date),
                 exerciseHistoryService.getExerciseResponsesForDay(memberId, date),
                 diaryService.getDiaryByDate(date, memberId));
-    }
-
-    private boolean isToday(LocalDate date) {
-        return date.equals(LocalDate.now());
     }
 }
