@@ -24,13 +24,11 @@ public record MainPageRequest(
 
     }
 
-    public MainPageRequest(int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-    }
-
     public LocalDate toDate() {
         return LocalDate.of(year, month, day);
+    }
+
+    public boolean isToday(LocalDate date) {
+        return date.equals(LocalDate.now());
     }
 }
