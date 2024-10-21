@@ -1,24 +1,13 @@
 package homeTry.diary.model.vo;
 
-import homeTry.diary.exception.BadRequestException.MemoBlankException;
-import homeTry.diary.exception.BadRequestException.MemoTooLongException;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Embeddable
-public record Memo(String value) {
+public record Memo(
+        @NotBlank(message = "메모는 공백일 수 없습니다.") 
+        @Size(min = 1, max = 500, message = "메모는 최소 1글자, 최대 500글자입니다.") 
+        String value) {
 
-    private static final int MAX_LENGTH = 500;
-
-    public Memo {
-        validateMemo(value);
-    }
-
-    private static void validateMemo(String value) {
-        if (value == null || value.isBlank()) {
-            throw new MemoBlankException();
-        }
-        if (value.length() > MAX_LENGTH) {
-            throw new MemoTooLongException();
-        }
-    }
 }
