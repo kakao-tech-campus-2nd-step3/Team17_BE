@@ -11,7 +11,7 @@ public record ProductResponse(
     String storeName
 ) {
 
-    public static ProductResponse fromProduct(Product product) {
+    public static ProductResponse from(Product product) {
         return new ProductResponse(
             product.getId(),
             product.getImageUrl(),

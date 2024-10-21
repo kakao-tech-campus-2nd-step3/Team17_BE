@@ -41,7 +41,7 @@ public class ProductService {
 
         return products
             .stream()
-            .map(ProductResponse::fromProduct)
+            .map(ProductResponse::from)
             .toList();
 
     }
