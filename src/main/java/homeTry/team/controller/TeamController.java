@@ -1,22 +1,25 @@
 package homeTry.team.controller;
 
+import homeTry.common.annotation.DateValid;
 import homeTry.common.annotation.LoginMember;
 import homeTry.member.dto.MemberDTO;
-import homeTry.team.dto.DateDTO;
 import homeTry.team.dto.request.TeamCreateRequest;
+import homeTry.team.dto.request.CheckingPasswordRequest;
 import homeTry.team.dto.response.NewTeamFromResponse;
 import homeTry.team.dto.response.RankingResponse;
 import homeTry.team.dto.response.TeamResponse;
 import homeTry.team.service.TeamService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,11 +50,11 @@ public class TeamController {
 
     //모든 팀 조회 api (페이징 적용)
     @GetMapping
-    public ResponseEntity<Page<TeamResponse>> getTotalTeamList(
+    public ResponseEntity<Slice<TeamResponse>> getTotalTeamList(
             @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @LoginMember MemberDTO memberDTO) {
-        Page<TeamResponse> totalTeamPage = teamService.getTotalTeamPage(memberDTO, pageable);
-        return ResponseEntity.ok(totalTeamPage);
+        Slice<TeamResponse> totalTeamSlice = teamService.getTotalTeamSlice(memberDTO, pageable);
+        return ResponseEntity.ok(totalTeamSlice);
     }
 
     //팀 생성 페이지에 필요한 정보 조회 api
@@ -63,12 +66,12 @@ public class TeamController {
 
     //태그를 통한 일부팀 조회 api (페이징 적용)
     @GetMapping("/tagged")
-    public ResponseEntity<Page<TeamResponse>> getTaggedTeamList(
+    public ResponseEntity<Slice<TeamResponse>> getTaggedTeamList(
             @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(name = "tagIdList") List<Long> tagIdList,
             @LoginMember MemberDTO memberDTO) {
-        Page<TeamResponse> taggedTeamPage = teamService.getTaggedTeamList(pageable, memberDTO, tagIdList);
-        return ResponseEntity.ok(taggedTeamPage);
+        Slice<TeamResponse> taggedTeamSlice = teamService.getTaggedTeamList(pageable, memberDTO, tagIdList);
+        return ResponseEntity.ok(taggedTeamSlice);
     }
 
     //팀 내 랭킹을 조회하는 api (페이징 적용)
@@ -77,9 +80,9 @@ public class TeamController {
             @LoginMember MemberDTO memberDTO,
             @PathVariable("teamId") Long teamId,
             @PageableDefault(size = 8, sort = "totalExerciseTime", direction = Sort.Direction.DESC) Pageable pageable,
-            @Valid @ModelAttribute DateDTO dateDTO) {
-        RankingResponse rankingPage = teamService.getTeamRanking(memberDTO, teamId, pageable, dateDTO);
-        return ResponseEntity.ok(rankingPage);
+            @RequestParam(name = "date") @DateValid @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
+        RankingResponse rankingSlice = teamService.getTeamRanking(memberDTO, teamId, pageable, date);
+        return ResponseEntity.ok(rankingSlice);
     }
 
     // 팀에 가입
@@ -99,4 +102,16 @@ public class TeamController {
         teamService.withDrawTeam(memberDTO, teamId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+
+    //비밀번호 일치 검사 api
+    @PostMapping("/checking/{teamId}")
+    public ResponseEntity<Void> verifyPassword(
+            @PathVariable("teamId") Long teamId,
+            @RequestBody @Valid CheckingPasswordRequest checkingPasswordRequest) {
+        teamService.checkPassword(teamId, checkingPasswordRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
 }

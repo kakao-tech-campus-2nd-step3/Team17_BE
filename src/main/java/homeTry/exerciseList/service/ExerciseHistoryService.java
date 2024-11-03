@@ -34,7 +34,7 @@ public class ExerciseHistoryService {
 
     // 특정 날에 대한 운동 전체 시간 반환
     @Transactional(readOnly = true)
-    public Duration getExerciseHistoriesForDay(Long memberId, LocalDate date) {
+    public Long getExerciseHistoriesForDay(Long memberId, LocalDate date) {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
@@ -46,7 +46,7 @@ public class ExerciseHistoryService {
 
     // 이번 주의 운동 전체 시간 반환 - 마이페이지 조회 시 사용
     @Transactional(readOnly = true)
-    public Duration getWeeklyTotalExercise(Long memberId) {
+    public Long getWeeklyTotalExercise(Long memberId) {
         // 이번 주의 시작과 끝 계산 (새벽 3시 기준), 하루 시작: 새벽 3시, 하루 끝: 다음날 새벽 2시 59분 59초
         LocalDateTime startOfWeekWith3AM = DateTimeUtil.getStartOfWeek(LocalDate.now());
         LocalDateTime endOfWeekWith3AM = DateTimeUtil.getEndOfWeek(LocalDate.now());
@@ -59,7 +59,7 @@ public class ExerciseHistoryService {
 
     // 이번 달의 운동 전체 시간 반환 - 마이페이지 조회 시 사용
     @Transactional(readOnly = true)
-    public Duration getMonthlyTotalExercise(Long memberId) {
+    public Long getMonthlyTotalExercise(Long memberId) {
         // 이번 달의 시작과 끝 계산
         LocalDateTime startOfMonthWith3AM = DateTimeUtil.getStartOfMonth(LocalDate.now());
         LocalDateTime endOfMonthWith3AM = DateTimeUtil.getEndOfMonth(LocalDate.now());
@@ -71,11 +71,12 @@ public class ExerciseHistoryService {
     }
 
     // 운동 시간 합
-    private Duration sumExerciseTime(List<ExerciseHistory> exercises) {
+    private Long sumExerciseTime(List<ExerciseHistory> exercises) {
         return exercises
                 .stream()
                 .map(ExerciseHistory::getExerciseHistoryTime)
-                .reduce(Duration.ZERO, Duration::plus);
+                .reduce(Duration.ZERO, Duration::plus)
+                .toMillis();
     }
 
     // 메인페이지 조회 시 사용

@@ -66,12 +66,20 @@ public class MemberService {
         member.changeNickname(new Nickname(changeNicknameRequest.name()));
     }
 
+    @Transactional
+    public void incrementAttendanceDate(Long id){
+        Member member = getMemberEntity(id);
+        member.incrementAttendanceDate();
+    }
+
     @Transactional(readOnly = true)
     public MyPageResponse getMemberInfo(MemberDTO memberDTO) {
         Long id = memberDTO.id();
-        Duration weeklyTotal = exerciseHistoryService.getWeeklyTotalExercise(id);
-        Duration monthlyTotal = exerciseHistoryService.getMonthlyTotalExercise(id);
 
-        return new MyPageResponse(memberDTO.nickname(), memberDTO.email(), weeklyTotal, monthlyTotal);
+        Long weeklyTotal = exerciseHistoryService.getWeeklyTotalExercise(id);
+        Long monthlyTotal = exerciseHistoryService.getMonthlyTotalExercise(id);
+
+        return new MyPageResponse(memberDTO.nickname(), memberDTO.email(),
+                getMemberEntity(id).getExerciseAttendanceDate(), weeklyTotal, monthlyTotal);
     }
 }

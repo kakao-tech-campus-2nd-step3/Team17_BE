@@ -1,6 +1,7 @@
 package homeTry.product.dto.response;
 
 import homeTry.product.model.entity.Product;
+import homeTry.tag.productTag.dto.ProductTagDto;
 
 public record ProductResponse(
     Long productId,
@@ -8,17 +9,19 @@ public record ProductResponse(
     String productUrl,
     String name,
     Long price,
-    String storeName
+    String storeName,
+    ProductTagDto tag
 ) {
 
-    public static ProductResponse from(Product product) {
+    public static ProductResponse from(Product product, ProductTagDto productTag) {
         return new ProductResponse(
             product.getId(),
             product.getImageUrl(),
             product.getProductUrl(),
             product.getName(),
             product.getPrice(),
-            product.getStoreName()
+            product.getStoreName(),
+            productTag
         );
     }
 

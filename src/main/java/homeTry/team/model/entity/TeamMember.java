@@ -1,10 +1,11 @@
 package homeTry.team.model.entity;
 
+import homeTry.common.entity.BaseEntity;
 import homeTry.member.model.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
-public class TeamMember {
+public class TeamMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

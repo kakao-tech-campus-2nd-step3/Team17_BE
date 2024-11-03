@@ -1,5 +1,6 @@
 package homeTry.team.model.entity;
 
+import homeTry.common.entity.BaseEntity;
 import homeTry.member.model.entity.Member;
 import homeTry.team.model.vo.Description;
 import homeTry.team.model.vo.Name;
@@ -10,7 +11,7 @@ import jakarta.persistence.*;
 import java.util.Optional;
 
 @Entity
-public class Team {
+public class Team extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

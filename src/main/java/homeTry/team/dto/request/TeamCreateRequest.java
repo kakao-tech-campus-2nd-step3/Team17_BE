@@ -1,6 +1,6 @@
 package homeTry.team.dto.request;
 
-import homeTry.tag.dto.TagDTO;
+import homeTry.tag.teamTag.dto.TeamTagDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -24,7 +24,7 @@ public record TeamCreateRequest(
 
         @NotEmpty
         @Valid //리스트 내부의 tagIdDTO에 대한 유효성 검사를 위한 @Valid 어노테이션 추가
-        List<TagDTO> tagIdList
+        List<TeamTagDTO> tagIdList
 ) {
 
 }

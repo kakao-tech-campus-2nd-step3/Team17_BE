@@ -3,7 +3,15 @@ package homeTry.member.model.entity;
 import homeTry.common.entity.BaseEntity;
 import homeTry.member.model.vo.Email;
 import homeTry.member.model.vo.Nickname;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -26,12 +34,21 @@ public class Member extends BaseEntity {
     @Column(nullable = true)
     private String kakaoAccessToken;
 
+    @Column(nullable = false)
+    private Integer exerciseAttendanceDate;
+
     protected Member() {
     }
 
     public Member(String email, String nickname) {
         this.nickname = new Nickname(nickname);
         this.email = new Email(email);
+    }
+
+    @PrePersist // jpa가 DB에 insert 하기 직전에 실행되는 메서드
+    public void prePersist() { // null 일때 default 값으로 0을 해줌
+        this.exerciseAttendanceDate =
+                (this.exerciseAttendanceDate == null) ? 0 : this.exerciseAttendanceDate;
     }
 
     public Long getId() {
@@ -50,6 +67,10 @@ public class Member extends BaseEntity {
         return kakaoAccessToken;
     }
 
+    public Integer getExerciseAttendanceDate() {
+        return exerciseAttendanceDate;
+    }
+
     public void setKakaoAccessToken(String kakaoAccessToken) {
         this.kakaoAccessToken = kakaoAccessToken;
     }
@@ -58,5 +79,8 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void incrementAttendanceDate() {
+        this.exerciseAttendanceDate++;
+    }
 
 }

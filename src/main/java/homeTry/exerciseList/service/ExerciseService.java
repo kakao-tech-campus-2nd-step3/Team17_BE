@@ -31,7 +31,10 @@ public class ExerciseService {
     public void createExercise(ExerciseRequest request, MemberDTO memberDTO) {
         Member foundMember = memberService.getMemberEntity(memberDTO.id());
         Exercise exercise = new Exercise(request.exerciseName(), foundMember);
+        ExerciseTime currentExerciseTime = new ExerciseTime(exercise);
+
         exerciseRepository.save(exercise);
+        exerciseTimeService.saveExerciseTime(currentExerciseTime);
     }
 
     @Transactional
@@ -72,11 +75,6 @@ public class ExerciseService {
         // 현재 운동의 상태 확인
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
                 exercise.getExerciseId());
-
-        // 처음 운동을 시작한다면, 새로 생성
-        if (currentExerciseTime == null) {
-            currentExerciseTime = new ExerciseTime(exercise);
-        }
 
         currentExerciseTime.startExercise();
         exerciseTimeService.saveExerciseTime(currentExerciseTime);

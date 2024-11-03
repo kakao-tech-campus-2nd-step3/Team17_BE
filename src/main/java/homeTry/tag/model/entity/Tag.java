@@ -1,10 +1,10 @@
 package homeTry.tag.model.entity;
 
-import homeTry.team.model.vo.Name;
+import homeTry.tag.model.vo.TagName;
 import jakarta.persistence.*;
 
-@Entity
-public class Tag {
+@MappedSuperclass
+public abstract class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,29 +12,16 @@ public class Tag {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "tag_name", nullable = false, length = 15))
-    private Name tagName;
-
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "tag_attribute", nullable = false))
-    private Name tagAttribute;
+    private TagName tagName;
 
     protected Tag() {
     }
 
-    public Tag(Name tagName, Name tagAttribute) {
+    public Tag(TagName tagName) {
         this.tagName = tagName;
-        this.tagAttribute = tagAttribute;
     }
 
-    public Tag(String tagName, String tagAttribute) {
-        this(new Name(tagName), new Name(tagAttribute));
-    }
-
-    public Name getTagAttribute() {
-        return tagAttribute;
-    }
-
-    public Name getTagName() {
+    public TagName getTagName() {
         return tagName;
     }
 
@@ -43,10 +30,6 @@ public class Tag {
     }
 
     public void updateTagName(String tagName) {
-        this.tagName = new Name(tagName);
-    }
-
-    public void updateAttribute(String tagAttribute) {
-        this.tagAttribute = new Name(tagAttribute);
+        this.tagName = new TagName(tagName);
     }
 }

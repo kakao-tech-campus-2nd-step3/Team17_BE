@@ -3,7 +3,6 @@ package homeTry.mainPage.service;
 import homeTry.diary.service.DiaryService;
 import homeTry.exerciseList.service.ExerciseHistoryService;
 import homeTry.exerciseList.service.ExerciseTimeService;
-import homeTry.mainPage.dto.request.MainPageRequest;
 import homeTry.mainPage.dto.response.MainPageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +25,9 @@ public class MainPageService {
     }
 
     @Transactional(readOnly = true)
-    public MainPageResponse getMainPage(MainPageRequest mainPageRequest, Long memberId) {
+    public MainPageResponse getMainPage(LocalDate date, Long memberId) {
 
-        LocalDate date = mainPageRequest.toDate();
-
-        if (mainPageRequest.isToday(date)) {
+        if (LocalDate.now().isEqual(date)) {
             return getTodayMainPageResponse(memberId);
         }
 

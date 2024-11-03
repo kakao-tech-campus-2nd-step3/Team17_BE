@@ -6,21 +6,35 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final String CONSTRAINT_VIOLATION_ERROR_CODE = "Field400_001";
-    private static final String ILLEGAL_ARGUMENT_ERROR_CODE = "Field400_002";
 
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        ErrorType errorType = CommonErrorType.HANDLER_METHOD_VALIDATION_EXCEPTION;
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                errorType.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -43,9 +57,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
         ErrorType errorType = CommonErrorType.MISSING_PATH_VARIABLE_EXCEPTION;
+        String message = String.format("%s (누락된 PathVariable: %s)", errorType.getMessage(), ex.getVariableName());
         ErrorResponse errorResponse = new ErrorResponse(
                 errorType.getErrorCode(),
-                errorType.getMessage()
+                message
         );
         return new ResponseEntity<>(errorResponse, errorType.getHttpStatus());
     }
@@ -57,9 +72,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
         ErrorType errorType = CommonErrorType.MISSING_REQUEST_PARAM_EXCEPTION;
+        String message = String.format("%s (누락된 RequestParameter: %s)", errorType.getMessage(), ex.getParameterName());
         ErrorResponse errorResponse = new ErrorResponse(
                 errorType.getErrorCode(),
-                errorType.getMessage()
+                message
+        );
+        return new ResponseEntity<>(errorResponse, errorType.getHttpStatus());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        ErrorType errorType = CommonErrorType.HTTP_REQUEST_METHOD_NOT_SUPPORT_EXCEPTION;
+        String message = String.format("%s (Not allwed Method: %s)", errorType.getMessage(), ex.getMethod());
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                message
         );
         return new ResponseEntity<>(errorResponse, errorType.getHttpStatus());
     }
@@ -85,22 +116,43 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException ex) {
         ErrorType errorType = CommonErrorType.NO_SUCH_ARGUMENT_EXCEPTION;
-        ErrorResponse errorResponse = new ErrorResponse(errorType.getErrorCode(), errorType.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                errorType.getMessage()
+        );
         return new ResponseEntity<>(errorResponse, errorType.getHttpStatus());
     }
 
-
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ILLEGAL_ARGUMENT_ERROR_CODE, e.getMessage());
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorType errorType = CommonErrorType.ILLEGAL_ARGUMENT_EXCEPTION;
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                errorType.getMessage()
+        );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(ConstraintViolationException e) {
-        ErrorResponse errorResponse = new ErrorResponse(CONSTRAINT_VIOLATION_ERROR_CODE, e.getMessage());
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(ConstraintViolationException ex) {
+        ErrorType errorType = CommonErrorType.CONSTRAINT_VIOLATION_EXCEPTION;
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                errorType.getMessage()
+        );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        ErrorType errorType = CommonErrorType.METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION;
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorType.getErrorCode(),
+                errorType.getMessage()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

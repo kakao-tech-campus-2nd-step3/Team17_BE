@@ -1,12 +1,19 @@
 package homeTry.exerciseList.model.entity;
 
+import homeTry.common.constants.DateTimeUtil;
+import homeTry.common.converter.DurationToLongConverter;
 import homeTry.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+    name = "exercise_time", indexes = {
+    @Index(name = "idx_exercise_time_exercise_active", columnList = "exercise_id, isActive")
+}) // 복합 인덱싱 사용
 public class ExerciseTime extends BaseEntity {
 
     @Id
@@ -17,6 +24,7 @@ public class ExerciseTime extends BaseEntity {
     private LocalDateTime startTime;
 
     @Column(nullable = false)
+    @Convert(converter = DurationToLongConverter.class)
     private Duration exerciseTime = Duration.ZERO;
 
     @Column(nullable = false)
@@ -31,8 +39,7 @@ public class ExerciseTime extends BaseEntity {
 
     public ExerciseTime(Exercise exercise) {
         this.exercise = exercise;
-        this.startTime = LocalDateTime.now();
-        isActive = true;
+        this.startTime = DateTimeUtil.getStartOfDay(LocalDate.now());
     }
 
     public void startExercise() {

@@ -2,48 +2,67 @@ package homeTry.product.service;
 
 import homeTry.member.dto.MemberDTO;
 import homeTry.product.dto.response.ProductResponse;
+import homeTry.product.exception.badRequestException.InvalidMemberException;
+import homeTry.product.exception.badRequestException.ProductNotFoundException;
 import homeTry.product.model.entity.Product;
 import homeTry.product.repository.ProductRepository;
-import homeTry.product.repository.ProductTagMappingRepository;
-import java.util.List;
+import homeTry.tag.productTag.dto.ProductTagDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductTagMappingRepository productTagMappingRepository;
+    private final ProductTagMappingService productTagMappingService;
 
     public ProductService(ProductRepository productRepository,
-        ProductTagMappingRepository productTagMappingRepository) {
+        ProductTagMappingService productTagMappingService) {
         this.productRepository = productRepository;
-        this.productTagMappingRepository = productTagMappingRepository;
+        this.productTagMappingService = productTagMappingService;
     }
 
-    public List<ProductResponse> getProducts(List<Long> tagIds, MemberDTO memberDTO) {
+    @Transactional(readOnly = true)
+    public Slice<ProductResponse> getProducts(List<Long> tagIds, MemberDTO memberDTO,
+        Pageable pageable) {
 
-        // TODO : 커스텀 예외 추가
         if (memberDTO == null) {
-            throw new IllegalArgumentException("유효하지 않은 회원입니다.");
+            throw new InvalidMemberException();
         }
 
-        List<Product> products;
+        // tag O -> 해당 태그에 맞는 상품들을 1. 조회수 내림차순 2. 가격 오름차순으로 정렬
+        // tag X -> 전체 상품을 1. 조회수 내림차순 2. 가격 오름차순으로 정렬
+        Slice<Product> products = (tagIds != null && !tagIds.isEmpty())
+            ? getProductsByTagIds(tagIds, pageable)
+            : productRepository.findAllByOrderByViewCountDescPriceAsc(pageable);
 
-        // TODO : if-else 분리
-        // tag O -> 해당 태그에 맞는 상품들을 가격순으로 정렬
-        // tag X -> 전체 상품을 가격순으로 정렬
-        if (tagIds != null && !tagIds.isEmpty()) {
-            List<Long> productIds = productTagMappingRepository.findProductIdsByTagIds(tagIds);
-            products = productRepository.findByIdInOrderByPriceAsc(productIds);
-        } else {
-            products = productRepository.findAllByOrderByPriceAsc();
+        return products.map(product -> {
+            ProductTagDto tagDto = productTagMappingService.getTagForProduct(product.getId());
+            return ProductResponse.from(product, tagDto);
+        });
+    }
+
+    private Slice<Product> getProductsByTagIds(List<Long> tagIds, Pageable pageable) {
+        List<Long> productIds = productTagMappingService.getProductIdsByTagIds(tagIds);
+        return productRepository.findByIdInOrderByViewCountDescPriceAsc(productIds, pageable);
+    }
+
+    // 특정 상품 선택 시 해당 상품 URL 반환
+    @Transactional
+    public String incrementViewCountAndGetUrl(Long productId, MemberDTO memberDTO) {
+        if (memberDTO == null) {
+            throw new InvalidMemberException();
         }
 
-        return products
-            .stream()
-            .map(ProductResponse::from)
-            .toList();
+        Product product = productRepository.findById(productId)
+            .orElseThrow(ProductNotFoundException::new);
 
+        product.incrementViewCount(); // 조회수 증가
+        return product.getProductUrl(); // 상품 URL 반환
     }
 
 }

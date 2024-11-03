@@ -1,11 +1,11 @@
 package homeTry.team.dto.response;
 
-import homeTry.tag.dto.TagDTO;
+import homeTry.tag.teamTag.dto.TeamTagDTO;
 
 import java.util.List;
 
 public record NewTeamFromResponse(
-        List<TagDTO> tagList
+        List<TeamTagDTO> tagList
 ) {
 
 }

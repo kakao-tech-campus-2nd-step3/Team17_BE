@@ -58,7 +58,7 @@ public class ExerciseTimeService {
 
     // 당일의 운동 시간 반환
     @Transactional(readOnly = true)
-    public Duration getExerciseTimesForToday(Long memberId) {
+    public Long getExerciseTimesForToday(Long memberId) {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(LocalDate.now());
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(LocalDate.now());
 
@@ -70,7 +70,8 @@ public class ExerciseTimeService {
         return exerciseTimes
                 .stream()
                 .map(ExerciseTime::getExerciseTime)
-                .reduce(Duration.ZERO, Duration::plus);
+                .reduce(Duration.ZERO, Duration::plus)
+                .toMillis();
     }
 
     // 메인 페이지 운동 리스트 반환

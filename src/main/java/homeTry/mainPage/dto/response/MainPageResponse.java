@@ -2,13 +2,13 @@ package homeTry.mainPage.dto.response;
 
 import homeTry.diary.dto.DiaryDto;
 import homeTry.exerciseList.dto.response.ExerciseResponse;
+import org.springframework.data.domain.Slice;
 
-import java.time.Duration;
 import java.util.List;
 
 public record MainPageResponse(
-        Duration totalTime,
+        Long totalTime,
         List<ExerciseResponse> exerciseList,
-        List<DiaryDto> diaries) {
+        Slice<DiaryDto> diaries) {
 
 }
