@@ -4,8 +4,9 @@ import homeTry.common.auth.exception.badRequestException.InvalidAuthCodeExceptio
 import homeTry.common.auth.exception.internalServerException.HomeTryServerException;
 import homeTry.common.auth.exception.internalServerException.KakaoAuthServerException;
 import homeTry.common.auth.kakaoAuth.client.KakaoApiClient;
+import homeTry.common.auth.kakaoAuth.dto.KakaoMemberInfoDTO;
+import homeTry.common.auth.kakaoAuth.dto.KakaoMemberWithdrawDTO;
 import homeTry.common.auth.kakaoAuth.dto.response.KakaoErrorResponse;
-import homeTry.member.dto.MemberDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,21 @@ public class KakaoClientService {
         throw new HomeTryServerException();
     }
 
-    public MemberDTO getMemberInfo(String kakaoAccessToken) {
+    public KakaoMemberInfoDTO getMemberInfo(String kakaoAccessToken) {
         try {
             var userInfo = kakaoApiClient.getMemberInfo(kakaoAccessToken);
             var kakaoAccount = userInfo.kakaoAccount();
-            var profile = kakaoAccount.profile();
-            return new MemberDTO(0L, kakaoAccount.email(), profile.nickname());
+            return new KakaoMemberInfoDTO(userInfo.id(), kakaoAccount.email());
         } catch (HttpClientErrorException e) {
             handleClientError(e);
         } catch (HttpServerErrorException e) {
             handleServerError(e);
         }
         throw new HomeTryServerException();
+    }
+
+    public void unlinkKakao(KakaoMemberWithdrawDTO kakaoMemberWithdrawDTO) {
+        kakaoApiClient.unlinkKakao(kakaoMemberWithdrawDTO);
     }
 
     private void handleClientError(HttpClientErrorException e) {

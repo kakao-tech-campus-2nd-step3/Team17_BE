@@ -1,6 +1,7 @@
 package homeTry.exerciseList.service;
 
 import homeTry.exerciseList.dto.request.ExerciseRequest;
+import homeTry.exerciseList.event.ExerciseEventPublisher;
 import homeTry.exerciseList.exception.badRequestException.*;
 import homeTry.exerciseList.model.entity.Exercise;
 import homeTry.exerciseList.model.entity.ExerciseTime;
@@ -17,37 +18,38 @@ import java.util.List;
 public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseEventPublisher exerciseEventPublisher;
     private final ExerciseTimeService exerciseTimeService;
+    private final ExerciseHistoryService exerciseHistoryService;
     private final MemberService memberService;
 
     public ExerciseService(ExerciseRepository exerciseRepository,
-                           ExerciseTimeService exerciseTimeService, MemberService memberService) {
+        ExerciseEventPublisher exerciseEventPublisher,
+        ExerciseTimeService exerciseTimeService, ExerciseHistoryService exerciseHistoryService,
+        MemberService memberService) {
         this.exerciseRepository = exerciseRepository;
+        this.exerciseEventPublisher = exerciseEventPublisher;
         this.exerciseTimeService = exerciseTimeService;
+        this.exerciseHistoryService = exerciseHistoryService;
         this.memberService = memberService;
     }
 
     @Transactional
     public void createExercise(ExerciseRequest request, MemberDTO memberDTO) {
         Member foundMember = memberService.getMemberEntity(memberDTO.id());
-        Exercise exercise = new Exercise(request.exerciseName(), foundMember);
-        ExerciseTime currentExerciseTime = new ExerciseTime(exercise);
 
+        Exercise exercise = new Exercise(request.exerciseName(), foundMember);
         exerciseRepository.save(exercise);
-        exerciseTimeService.saveExerciseTime(currentExerciseTime);
+
+        exerciseEventPublisher.publishCreationEvent(exercise);
     }
 
     @Transactional
     public void deleteExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseById(exerciseId);
-        validateMemberPermission(exercise, memberDTO);
-
-        if (!exercise.getMember().getId().equals(memberDTO.id())) {
-            throw new NoExercisePermissionException();
-        }
+        Exercise exercise = findExerciseWithPermissionCheck(exerciseId, memberDTO);
 
         ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-                exercise.getExerciseId());
+            exercise.getExerciseId());
         if (currentExerciseTime != null && currentExerciseTime.isActive()) {
             throw new ExerciseInProgressException();
         }
@@ -57,62 +59,54 @@ public class ExerciseService {
 
     @Transactional
     public void startExercise(Long exerciseId, MemberDTO memberDTO) {
-        Exercise exercise = getExerciseById(exerciseId);
-        validateMemberPermission(exercise, memberDTO);
+        Exercise exercise = findExerciseWithPermissionCheck(exerciseId, memberDTO);
 
         // 삭제한 운동을 시작하려는 경우
         if (exercise.isDeprecated()) {
             throw new ExerciseDeprecatedException();
         }
 
-        // 실행 중인 운동이 있는지
-        long activeExerciseCount = exerciseRepository.countActiveExercisesByMemberId(
-                memberDTO.id());
-        if (activeExerciseCount > 0) {
-            throw new ExerciseAlreadyStartedException();
-        }
-
-        // 현재 운동의 상태 확인
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-                exercise.getExerciseId());
-
-        currentExerciseTime.startExercise();
-        exerciseTimeService.saveExerciseTime(currentExerciseTime);
+        exerciseTimeService.startExerciseTime(exercise);
     }
 
     @Transactional
     public void stopExercise(Long exerciseId, MemberDTO memberDTO) {
+        Exercise exercise = findExerciseWithPermissionCheck(exerciseId, memberDTO);
+        exerciseTimeService.stopExerciseTime(exercise);
+    }
+
+    private Exercise findExerciseWithPermissionCheck(Long exerciseId, MemberDTO memberDTO) {
         Exercise exercise = getExerciseById(exerciseId);
-        validateMemberPermission(exercise, memberDTO);
 
-        ExerciseTime currentExerciseTime = exerciseTimeService.getExerciseTime(
-                exercise.getExerciseId());
-
-        if (currentExerciseTime == null || !currentExerciseTime.isActive()) {
-            throw new ExerciseNotStartedException();
+        // 해당 운동이 해당 회원의 것인지 검증
+        if (!exercise.getMember().getId().equals(memberDTO.id())) {
+            throw new NoExercisePermissionException();
         }
 
-        // 하루 최대 12시간, 한 번에 저장되는 최대 시간 8시간을 넘었는지 확인
-        exerciseTimeService.validateExerciseDurationLimits(currentExerciseTime);
-
-        currentExerciseTime.stopExercise();
+        return exercise;
     }
 
     private Exercise getExerciseById(Long exerciseId) {
         return exerciseRepository.findById(exerciseId)
-                .orElseThrow(ExerciseNotFoundException::new);
-    }
-
-    // 해당 운동이 해당 회원의 것인지 검증
-    private void validateMemberPermission(Exercise exercise, MemberDTO memberDTO) {
-        if (!exercise.getMember().getId().equals(memberDTO.id())) {
-            throw new NoExercisePermissionException();
-        }
+            .orElseThrow(ExerciseNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public List<Exercise> findAllExercises() {
-        return exerciseRepository.findAll();
+    public List<Exercise> findAllNonDeprecatedExercises() {
+        return exerciseRepository.findByIsDeprecatedFalse();
+    }
+
+    @Transactional
+    public void deleteAllExercisesByMemberId(Long memberId) {
+        // 관련된 ExerciseTime, ExerciseHistory 삭제
+        List<Exercise> exercises = exerciseRepository.findByMemberId(memberId);
+        for (Exercise exercise : exercises) {
+            exerciseTimeService.deleteExerciseTimesByExerciseId(exercise.getExerciseId());
+            exerciseHistoryService.deleteExerciseHistoriesByExerciseId(exercise.getExerciseId());
+        }
+
+        // Exercise 삭제
+        exerciseRepository.deleteByMemberId(memberId);
     }
 
 }

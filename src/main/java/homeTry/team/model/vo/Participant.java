@@ -14,4 +14,8 @@ public record Participant(long value) {
             throw new IllegalArgumentException("participant 수는 0 이하일 수 없습니다.");
         }
     }
+
+    public boolean isSameValue(Participant maxParticipants) {
+        return this.value() == maxParticipants.value();
+    }
 }

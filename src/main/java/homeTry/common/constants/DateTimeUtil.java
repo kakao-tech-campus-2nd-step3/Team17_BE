@@ -21,6 +21,27 @@ public final class DateTimeUtil {
         return date.plusDays(1).atTime(END_OF_DAY_TIME);
     }
 
+    // 현재 시간 조정
+    public static LocalDate getAdjustedCurrentDate() {
+        LocalDate currentDate = LocalDate.now();
+
+        // 3시 이전이면 date를 전날로 수정
+        if (LocalTime.now().isBefore(LocalTime.of(3, 0, 0))) {
+            currentDate = currentDate.minusDays(1);
+        }
+
+        return currentDate;
+    }
+
+    public static LocalDateTime[] getAdjustedDateRange() {
+        LocalDate currentDate = getAdjustedCurrentDate();
+
+        LocalDateTime startOfDay = getStartOfDay(currentDate);
+        LocalDateTime endOfDay = getEndOfDay(currentDate);
+
+        return new LocalDateTime[]{startOfDay, endOfDay};
+    }
+
     // 주의 시작과 끝
     public static LocalDateTime getStartOfWeek(LocalDate date) {
         LocalDate startOfWeek = date.minusDays(date.getDayOfWeek().getValue() - 1);

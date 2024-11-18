@@ -26,20 +26,20 @@ public class ExerciseHistoryService {
     // 운동 저장
     @Transactional
     public void saveExerciseHistory(Exercise exercise, ExerciseTime exerciseTime) {
-        if (!exerciseTime.getExerciseTime().isZero()) {
-            ExerciseHistory history = new ExerciseHistory(exercise, exerciseTime.getExerciseTime());
-            exerciseHistoryRepository.save(history);
-        }
+        ExerciseHistory history = new ExerciseHistory(exercise, exerciseTime.getExerciseTime(),
+            exerciseTime.getStartTime());
+        exerciseHistoryRepository.save(history);
     }
 
+    // 메인페이지, 팀 랭킹
     // 특정 날에 대한 운동 전체 시간 반환
     @Transactional(readOnly = true)
     public Long getExerciseHistoriesForDay(Long memberId, LocalDate date) {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
-        List<ExerciseHistory> exercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-                memberId, startOfDay, endOfDay);
+        List<ExerciseHistory> exercises = exerciseHistoryRepository.findExerciseHistoriesForMemberOnDate(
+            memberId, startOfDay, endOfDay);
 
         return sumExerciseTime(exercises);
     }
@@ -48,11 +48,12 @@ public class ExerciseHistoryService {
     @Transactional(readOnly = true)
     public Long getWeeklyTotalExercise(Long memberId) {
         // 이번 주의 시작과 끝 계산 (새벽 3시 기준), 하루 시작: 새벽 3시, 하루 끝: 다음날 새벽 2시 59분 59초
-        LocalDateTime startOfWeekWith3AM = DateTimeUtil.getStartOfWeek(LocalDate.now());
-        LocalDateTime endOfWeekWith3AM = DateTimeUtil.getEndOfWeek(LocalDate.now());
+        LocalDate adjustedToday = DateTimeUtil.getAdjustedCurrentDate();
+        LocalDateTime startOfWeekWith3AM = DateTimeUtil.getStartOfWeek(adjustedToday);
+        LocalDateTime endOfWeekWith3AM = DateTimeUtil.getEndOfWeek(adjustedToday);
 
-        List<ExerciseHistory> weeklyExercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-                memberId, startOfWeekWith3AM, endOfWeekWith3AM);
+        List<ExerciseHistory> weeklyExercises = exerciseHistoryRepository.findExerciseHistoriesForMemberOnDate(
+            memberId, startOfWeekWith3AM, endOfWeekWith3AM);
 
         return sumExerciseTime(weeklyExercises);
     }
@@ -61,11 +62,12 @@ public class ExerciseHistoryService {
     @Transactional(readOnly = true)
     public Long getMonthlyTotalExercise(Long memberId) {
         // 이번 달의 시작과 끝 계산
-        LocalDateTime startOfMonthWith3AM = DateTimeUtil.getStartOfMonth(LocalDate.now());
-        LocalDateTime endOfMonthWith3AM = DateTimeUtil.getEndOfMonth(LocalDate.now());
+        LocalDate adjustedToday = DateTimeUtil.getAdjustedCurrentDate();
+        LocalDateTime startOfMonthWith3AM = DateTimeUtil.getStartOfMonth(adjustedToday);
+        LocalDateTime endOfMonthWith3AM = DateTimeUtil.getEndOfMonth(adjustedToday);
 
-        List<ExerciseHistory> monthlyExercises = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-                memberId, startOfMonthWith3AM, endOfMonthWith3AM);
+        List<ExerciseHistory> monthlyExercises = exerciseHistoryRepository.findExerciseHistoriesForMemberOnDate(
+            memberId, startOfMonthWith3AM, endOfMonthWith3AM);
 
         return sumExerciseTime(monthlyExercises);
     }
@@ -73,10 +75,10 @@ public class ExerciseHistoryService {
     // 운동 시간 합
     private Long sumExerciseTime(List<ExerciseHistory> exercises) {
         return exercises
-                .stream()
-                .map(ExerciseHistory::getExerciseHistoryTime)
-                .reduce(Duration.ZERO, Duration::plus)
-                .toMillis();
+            .stream()
+            .map(ExerciseHistory::getExerciseHistoryTime)
+            .reduce(Duration.ZERO, Duration::plus)
+            .toMillis();
     }
 
     // 메인페이지 조회 시 사용
@@ -86,12 +88,18 @@ public class ExerciseHistoryService {
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
-        List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findByExerciseMemberIdAndCreatedAtBetween(
-                memberId, startOfDay, endOfDay);
+        List<ExerciseHistory> exerciseHistories = exerciseHistoryRepository.findExerciseHistoriesForMemberOnDate(
+            memberId, startOfDay, endOfDay);
 
         return exerciseHistories
-                .stream()
-                .map(ExerciseResponse::from)
-                .toList();
+            .stream()
+            .map(ExerciseResponse::from)
+            .toList();
     }
+
+    @Transactional
+    public void deleteExerciseHistoriesByExerciseId(Long exerciseId) {
+        exerciseHistoryRepository.deleteByExerciseId(exerciseId);
+    }
+
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Main Page</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin/adminMainPage.css">
+  <script src="/js/main.js" defer></script>
+  <script src="/js/admin/adminMainMage.js" defer></script>
+</head>
+<body>
+<h1>관리자 메인 페이지</h1>
+
+<div class="centered-transparent-button-container">
+  <div class="centered-buttons">
+    <a th:href="${kakaoAuthUrl}">
+      <img src="/image/kakao_login_medium_narrow.png" alt="카카오로 로그인 하기" id="kakaoLogin">
+    </a>
+    <!-- 토큰이 있을 때 활성화될 버튼 -->
+    <button id="adminPageButton" onclick="getRequestWithToken('/admin')" style="display: none;">
+      관리자 권한 페이지로 이동
+    </button>
+  </div>
+
+</div>
+
+</body>

@@ -1,8 +1,12 @@
 package homeTry.chatting.interceptor;
 
+import homeTry.chatting.exception.badRequestException.InactivatedMemberWithValidTokenException;
 import homeTry.chatting.exception.badRequestException.InvalidChattingTokenException;
-import homeTry.common.auth.JwtAuth;
+import homeTry.chatting.exception.badRequestException.NoSuchMemberInDbWithValidTokenException;
+import homeTry.common.auth.jwt.JwtAuth;
 import homeTry.member.dto.MemberDTO;
+import homeTry.member.exception.badRequestException.InactivatedMemberException;
+import homeTry.member.exception.badRequestException.MemberNotFoundException;
 import homeTry.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StompInterceptor implements ChannelInterceptor {
+
     private final JwtAuth jwtAuth;
     private final MemberService memberService;
 
@@ -29,23 +34,27 @@ public class StompInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         handleConnectCommand(accessor);
-        //todo: 추후 다른 케이스 추가하기
+        //추후 다른 케이스 있다면 추가하기
 
         return message;
     }
 
     private void handleConnectCommand(StompHeaderAccessor accessor) {
         if (accessor.getCommand() == StompCommand.CONNECT) {
-            String token = String.valueOf(accessor.getNativeHeader("Authorization").getFirst());
-            if (token == null || !token.startsWith("Bearer "))
+            MemberDTO memberDTO;
+
+            try {
+                String token = String.valueOf(accessor.getNativeHeader("Authorization").getFirst())
+                        .substring(7); // Expect after B e a r e r _
+
+                memberDTO = memberService.getMember(jwtAuth.extractId(token));
+            } catch (MemberNotFoundException e) {
+                throw new NoSuchMemberInDbWithValidTokenException();
+            } catch (InactivatedMemberException e) {
+                throw new InactivatedMemberWithValidTokenException();
+            } catch (Exception e) {
                 throw new InvalidChattingTokenException();
-
-            token = token.substring(7);
-
-            if (!jwtAuth.validateToken(token))
-                throw new InvalidChattingTokenException();
-
-            MemberDTO memberDTO = memberService.getMember(jwtAuth.extractId(token));
+            }
 
             //세션에 저장
             accessor.getSessionAttributes().put("member", memberDTO);

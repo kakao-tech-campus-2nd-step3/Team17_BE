@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <title>Team Tag List</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="/css/tag/teamTags.css">
+  <script src="/js/main.js" defer></script>
+  <script src="/js/tag/teamTagDelete.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <h1>Team Tag List</h1>
+  <div id="addPreviousImgDiv">
+    <img src="/image/previous.png" alt="Back To Main" onclick="getRequestWithToken('/admin/page')">
+    <img src="/image/add.png" alt="Add New Product Tag" onclick="getRequestWithToken('/admin/page/tag/team/add')">
+  </div>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tag Attribute</th>
+      <th>Tag Name</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tag : ${teamTags}">
+      <td th:text="${tag.tagId}">1</td>
+      <td th:text="${tag.teamTagAttribute}">Tag Attribute</td>
+      <td th:text="${tag.teamTagName}">Tag Name</td>
+      <td>
+        <img src="/image/remove.png" alt="Delete" th:onclick="|teamTagDeleteRequestWithToken(${tag.tagId})|" style="width: 50px; height: 50px;">
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

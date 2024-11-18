@@ -6,7 +6,8 @@ import homeTry.common.exception.ErrorType;
 
 public enum ProductTagErrorType implements ErrorType{
 
-    PRODUCT_TAG_NOT_FOUND_EXCEPTION("PRODUCTTAG404_001", HttpStatus.NOT_FOUND, "존재하지 않는 상품태그입니다.");
+    PRODUCT_TAG_NOT_FOUND_EXCEPTION("PRODUCTTAG404_001", HttpStatus.NOT_FOUND, "존재하지 않는 상품태그입니다."),
+    PRODUCT_TAG_ALREADY_EXISTS_EXCEPTION("PRODUCTTAG409_001", HttpStatus.CONFLICT, "이미 동일한 이름의 상품 태그가 존재합니다.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;

@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+
+body {
+    font-family: "Jua", sans-serif;
+    background-color: #f2f2f6; /* FE 서버 배경색 */
+    margin: 0;
+    padding: 20px;
+}
+
+div {
+    background: white;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff; /* 흰색 배경 */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: rgb(134, 161, 233); /* FE 버튼 색깔 */
+    text-align: center;
+    font-size: 48px;
+}
+
+button {
+    background: linear-gradient(rgb(185, 204, 255) 0%, rgb(143, 173, 255) 100%); /* 파스텔 블루 버튼 배경 */
+    color: white; /* 버튼 텍스트 색상 */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3; /* 버튼 호버 시 색상 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 2px solid #c8d7ff; /* 테이블 경계선 색상 */
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #e2eaff; /* 테이블 헤더 배경색 */
+    color: #87a2e9; /* 헤더 텍스트 색상 */
+}
+
+tr:nth-child(even) {
+    background-color: #e2eaff; /* 짝수 행 배경색 */
+}
+
+tr:nth-child(odd) {
+    background-color: transparent; /* 홀수 행 배경색 */
+}
+
+tr:hover {
+    background-color: #e7f3ff; /* 행 호버 시 색상 */
+}
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    flex-direction: column;
+    gap: 30px;
+}

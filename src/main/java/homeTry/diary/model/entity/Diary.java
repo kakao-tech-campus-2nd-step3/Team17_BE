@@ -6,6 +6,10 @@ import homeTry.member.model.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_member_created_at", columnList = "member_id, created_at")
+    }
+)
 public class Diary extends BaseEntity {
 
     @Id
@@ -17,7 +21,7 @@ public class Diary extends BaseEntity {
     private Memo memo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    @JoinColumn
     private Member member;
 
     protected Diary() {

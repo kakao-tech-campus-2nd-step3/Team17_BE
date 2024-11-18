@@ -1,6 +1,8 @@
 package homeTry.common.auth.kakaoAuth.service;
 
+import homeTry.common.auth.kakaoAuth.dto.KakaoMemberInfoDTO;
 import homeTry.member.dto.MemberDTO;
+import homeTry.member.exception.badRequestException.InactivatedMemberException;
 import homeTry.member.exception.badRequestException.LoginFailedException;
 import homeTry.member.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -19,20 +21,20 @@ public class KakaoAuthService {
 
     public MemberDTO loginOrRegister(String code) {
         String accessToken = kakaoClientService.getAccessToken(code);
-        MemberDTO memberDTO = kakaoClientService.getMemberInfo(accessToken);
+        KakaoMemberInfoDTO kakaoMemberInfoDTO = kakaoClientService.getMemberInfo(accessToken);
 
         try {
-            Long id = memberService.login(memberDTO); // -> LoginFailedException을 던질 수 있음
-            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.nickname());
 
-            memberService.setMemeberAccessToken(id, accessToken);
-            return memberDTOWithId;
-        } catch (LoginFailedException e) { //유저를 못 찾으면 회원가입
-            Long id = memberService.register(memberDTO);
-            MemberDTO memberDTOWithId = new MemberDTO(id, memberDTO.email(), memberDTO.nickname());
+            // -> LoginFailedException, InactivatedMemberException 을 던질 수 있음
+            MemberDTO memberDTOWithActualId = memberService.login(kakaoMemberInfoDTO);
 
-            memberService.setMemeberAccessToken(id, accessToken);
-            return memberDTOWithId;
+            memberService.setMemberAccessToken(memberDTOWithActualId.id(), accessToken);
+            return memberDTOWithActualId;
+        } catch (LoginFailedException | InactivatedMemberException e) { // 유저를 못 찾거나 탈퇴한 유저라면 회원가입
+            MemberDTO memberDTOWithActualId =  memberService.register(kakaoMemberInfoDTO);
+
+            memberService.setMemberAccessToken(memberDTOWithActualId.id(), accessToken);
+            return memberDTOWithActualId;
         }
     }
 }

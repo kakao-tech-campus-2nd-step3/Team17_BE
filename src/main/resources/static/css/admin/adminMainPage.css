@@ -1,0 +1,33 @@
+button#adminPageButton {
+  font-family: "Jua", sans-serif;
+  font-size: 21px;
+  width: 270px;
+  height: 90px;
+  text-shadow: rgba(0, 0, 0, 0.25) 0px 2px 4px;
+  border-radius: 16px;
+  box-shadow: #a9c7ff 2px 2px 10px 6px;
+}
+
+.centered-transparent-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  flex-direction: column;
+  border-radius: 30px;
+  background: transparent;
+}
+
+
+.centered-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 30px;
+  background: white;
+  height: 200px;
+  width: 500px;
+  box-shadow: 0 0 10px 10px #f2f2f6 inset;
+  border: 10px;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <script src="/js/main.js" defer></script>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Admin Dashboard</h1>
+</header>
+
+<main>
+    <section>
+
+        <div class="centered-container">
+        <!-- /admin/product로 이동하는 버튼 -->
+            <button onclick="getRequestWithToken('/admin/page/product')">상품 관리하기</button>
+
+            <!-- /admin/tag/product로 이동하는 버튼 -->
+            <button onclick="getRequestWithToken('/admin/page/tag/product')">상품 태그 관리하기</button>
+
+            <!-- /admin/tag/team로 이동하는 버튼 -->
+            <button onclick="getRequestWithToken('/admin/page/tag/team')">팀 태그 관리하기</button>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -2,6 +2,7 @@ package homeTry.chatting.exception.handler;
 
 import homeTry.chatting.exception.ChattingErrorType;
 import homeTry.common.exception.BadRequestException;
+import homeTry.common.exception.CommonErrorType;
 import homeTry.common.exception.dto.response.ErrorResponse;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,6 +73,16 @@ public class ChattingExceptionHandler {
         sleepAndDisconnectClient(accessor.getSessionId());
 
         return new ErrorResponse(e.getErrorType().getErrorCode(), e.getErrorType().getMessage());
+    }
+
+    @MessageExceptionHandler(IllegalArgumentException.class)
+    @SendToUser(ERROR_DESTINATION)
+    public ErrorResponse handleException(IllegalArgumentException e,
+            SimpMessageHeaderAccessor accessor) {
+
+        sleepAndDisconnectClient(accessor.getSessionId());
+
+        return new ErrorResponse(CommonErrorType.ILLEGAL_ARGUMENT_EXCEPTION.getErrorCode(), e.getMessage());
     }
 
     @MessageExceptionHandler(Exception.class)

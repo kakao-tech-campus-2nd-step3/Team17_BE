@@ -19,17 +19,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @Query("SELECT DISTINCT t " +
             "FROM Team t " +
-            "WHERE t NOT IN (SELECT tm.team " +
-            "                FROM TeamMember tm " +
-            "                WHERE tm.member = :member)"
-    )
-    Slice<Team> findTeamExcludingMember(@Param("member") Member member, Pageable pageable);
-
-    @Query("SELECT DISTINCT t " +
-            "FROM Team t " +
             "WHERE t.id NOT IN (SELECT tm.team.id " +
-            "                   FROM TeamMember tm " +
-            "                   WHERE tm.member = :member) " +
+            "                   FROM TeamMemberMapping tm " +
+            "                   WHERE tm.member = :member" +
+            "                   AND tm.isDeprecated = false) " +
             "AND t IN (SELECT tt.team " +
             "          FROM TeamTagMapping tt " +
             "          WHERE tt.teamTag IN :tagList " +
@@ -37,4 +30,38 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "          HAVING COUNT(DISTINCT tt.teamTag) = :tagListSize)"
     )
     Slice<Team> findTaggedTeamExcludingMember(@Param("tagList") List<TeamTag> tagList, @Param("tagListSize") long tagListSize, @Param("member") Member member, Pageable pageable);
+
+    @Query("SELECT DISTINCT t " +
+            "FROM Team t " +
+            "WHERE t.id NOT IN (SELECT tm.team.id " +
+            "                   FROM TeamMemberMapping tm " +
+            "                   WHERE tm.member = :member" +
+            "                   AND tm.isDeprecated = false) " +
+            "AND t IN (SELECT tt.team " +
+            "          FROM TeamTagMapping tt " +
+            "          WHERE tt.teamTag IN :tagList " +
+            "          GROUP BY tt.team " +
+            "          HAVING COUNT(DISTINCT tt.teamTag) = :tagListSize)" +
+            "AND t.teamName.value LIKE CONCAT ('%', :teamName, '%') "
+    )
+    Slice<Team> findByTeamNameAndTagListExcludingMember(@Param("tagList") List<TeamTag> tagList, @Param("tagListSize") long tagListSize, @Param("member") Member member, Pageable pageable, @Param("teamName") String teamName);
+
+    @Query("SELECT DISTINCT t " +
+            "FROM Team t " +
+            "WHERE t.id NOT IN (SELECT tm.team.id " +
+            "                   FROM TeamMemberMapping tm " +
+            "                   WHERE tm.member = :member" +
+            "                   AND tm.isDeprecated = false) " +
+            "AND t.teamName.value LIKE CONCAT ('%', :teamName, '%') "
+    )
+    Slice<Team> findByTeamNameExcludingMember(@Param("teamName") String teamName, @Param("member") Member member, Pageable pageable);
+
+    @Query("SELECT DISTINCT t " +
+            "FROM Team t " +
+            "WHERE t.id NOT IN (SELECT tm.team.id " +
+            "                   FROM TeamMemberMapping tm " +
+            "                   WHERE tm.member = :member" +
+            "                   AND tm.isDeprecated = false) "
+    )
+    Slice<Team> findTeamExcludingMember(@Param("member") Member member, Pageable pageable);
 }

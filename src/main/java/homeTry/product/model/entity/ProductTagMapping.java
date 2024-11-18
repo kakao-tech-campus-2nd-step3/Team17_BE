@@ -1,7 +1,9 @@
 package homeTry.product.model.entity;
 
+import homeTry.common.entity.SoftDeletableEntity;
 import homeTry.tag.productTag.model.entity.ProductTag;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,23 +15,21 @@ import jakarta.persistence.Table;
 @Entity
 @Table(
     indexes = {
-        @Index(name = "idx_product_id", columnList = "product_id"),
-        @Index(name = "idx_product_tag_id", columnList = "product_tag_id"),
         @Index(name = "idx_product_tag_product_id", columnList = "product_tag_id, product_id")
     }
 )
-public class ProductTagMapping {
+public class ProductTagMapping extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "product_tag_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private ProductTag productTag;
 
 
@@ -54,4 +54,7 @@ public class ProductTagMapping {
         return productTag;
     }
 
+    public void updateProductTag(ProductTag productTag) {
+        this.productTag = productTag;
+    }
 }

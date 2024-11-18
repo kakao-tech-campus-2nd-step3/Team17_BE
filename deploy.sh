@@ -1,4 +1,8 @@
 #!/bin/bash
+# Gradle build
+cd /home/ubuntu/Team17_BE || exit
+./gradlew bootJar
+
 BUILD_PATH=$(ls /home/ubuntu/Team17_BE/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_PATH)
 
@@ -17,4 +21,4 @@ cp $BUILD_PATH $DEPLOY_PATH
 cd $DEPLOY_PATH
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-nohup java -jar $DEPLOY_JAR > /home/ubuntu/deploy/deploy.log 2>&1 &
+nohup java -jar -Dspring.profiles.active=prod $DEPLOY_JAR > /home/ubuntu/deploy/deploy.log 2>&1 &

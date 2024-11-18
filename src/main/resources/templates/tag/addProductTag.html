@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Add Product Tag</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/tag/addProductTag.css">
+    <script src="/js/main.js" defer></script>
+    <script src="/js/tag/productTagAdd.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Add New Product Tag</h1>
+    <img src="/image/previous.png" onclick="getRequestWithToken('/admin/page/tag/product')" alt="뒤로 가기">
+    <div id="addNewProductTagDiv">
+        <div id=inputDiv>
+            <label for="productTagName">Tag Name:</label>
+            <input type="text" id="productTagName" name="productTagName" required>
+        </div>
+        <div id="saveImgDiv">
+            <label id="saveImgLabel" for="saveImg">저장하기</label>
+            <img src="/image/save.png" id="saveImg" onclick="productTagAddRequestWithToken()" alt="태그 저장">
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

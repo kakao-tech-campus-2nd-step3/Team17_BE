@@ -1,0 +1,12 @@
+img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+}
+
+div#addPreviousImgDiv {
+  display: flex;
+  justify-content: space-between;
+  background: transparent;
+}

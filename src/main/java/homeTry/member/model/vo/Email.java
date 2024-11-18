@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 
 @Embeddable
 public record Email(String value) {
+
+    public static final String DELETED_EMAIL_VALUE = "deleted@email.com";
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
     );

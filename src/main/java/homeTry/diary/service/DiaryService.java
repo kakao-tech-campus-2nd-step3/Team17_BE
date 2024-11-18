@@ -3,14 +3,12 @@ package homeTry.diary.service;
 import homeTry.common.constants.DateTimeUtil;
 import homeTry.diary.dto.DiaryDto;
 import homeTry.diary.dto.request.DiaryRequest;
-import homeTry.diary.exception.BadRequestException.DiaryNotFoundException;
+import homeTry.diary.exception.badRequestException.DiaryNotFoundException;
 import homeTry.diary.model.entity.Diary;
 import homeTry.diary.repository.DiaryRepository;
 import homeTry.member.service.MemberService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +27,12 @@ public class DiaryService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<DiaryDto> getDiaryByDate(LocalDate date, Long memberId) {
+    public Slice<DiaryDto> getDiaryByDate(LocalDate date, Long memberId, Pageable pageable) {
 
         LocalDateTime startOfDay = DateTimeUtil.getStartOfDay(date);
         LocalDateTime endOfDay = DateTimeUtil.getEndOfDay(date);
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdAt").descending());
-
-        Slice<Diary> diaries = diaryRepository.findByCreatedAtBetweenAndMemberOrderByCreatedAtDesc(
+        Slice<Diary> diaries = diaryRepository.findByCreatedAtBetweenAndMember(
                 startOfDay, endOfDay, memberService.getMemberEntity(memberId), pageable);
 
         return diaries.map(DiaryDto::from);
@@ -59,5 +55,10 @@ public class DiaryService {
 
         diaryRepository.delete(diary);
 
+    }
+
+    @Transactional
+    public void deleteByMember(Long memberId) {
+        diaryRepository.deleteByMember(memberService.getMemberEntity(memberId));
     }
 }

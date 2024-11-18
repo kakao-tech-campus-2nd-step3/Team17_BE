@@ -1,0 +1,25 @@
+div#addNewProductTagDiv {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: white 0 0 10px 10px;
+}
+
+div#saveImgDiv {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+}
+
+label#saveImgLabel {
+  margin-right: 20px;
+}
+
+img#previousImg{
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+}

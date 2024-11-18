@@ -7,6 +7,7 @@ public record KakaoAuthConfig(
         String restApiKey,
         String redirectUri,
         String tokenUrl,
-        String userInfoUrl
+        String userInfoUrl,
+        String unlinkUrl
 ) {
 }

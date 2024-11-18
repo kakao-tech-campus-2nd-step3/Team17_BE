@@ -17,13 +17,13 @@ public record TeamResponse(
 ) {
 
 
-    public static TeamResponse of(Team team, List<TeamTagDTO> tagList) {
+    public static TeamResponse of(Team team, List<TeamTagDTO> tagList, String leaderNickname) {
         boolean hasPassword = team.getPassword().isPresent();
 
         return new TeamResponse(
                 team.getId(),
                 team.getTeamName().value(),
-                team.getLeader().getNickname(),
+                leaderNickname,
                 team.getTeamDescription().value(),
                 team.getMaxParticipants().value(),
                 team.getCurrentParticipants().value(),

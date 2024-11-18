@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Product List</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/product/productList.css}">
+  <script src="/js/product/productList.js" defer></script>
+  <script src="/js/main.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+</head>
+<body>
+<h1>Product List</h1>
+<div id="addPreviousImgDiv">
+  <img src="/image/previous.png" onclick="getRequestWithToken('/admin/page')" alt="뒤로가기">
+  <img src="/image/add.png" onclick="getRequestWithToken('/admin/page/product/add')" alt="상품 추가하기">
+</div>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Store Name</th>
+    <th>Tag</th>
+    <th>View Count</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="product : ${products}">
+    <td th:text="${product.productId}"></td>
+    <td th:text="${product.name}"></td>
+    <td th:text="${product.price}"></td>
+    <td th:text="${product.storeName}"></td>
+    <td th:text="${product.tag.productTagName}"></td>
+    <td th:text="${product.viewCount}"></td>
+    <td>
+      <div id="tdImgDiv">
+        <img src="/image/edit.png" th:onclick="'getRequestWithToken(\'/admin/page/product/edit/' + ${product.productId} + '\')'" alt="수정하기">
+        <img src="/image/remove.png" th:onclick="'productDeleteRequestWithToken(\'/admin/page/product/' + ${product.productId} + '\')'" alt="삭제하기">
+      </div>
+
+    </td>
+
+  </tr>
+  </tbody>
+</table>
+<div th:if="${products.totalPages > 1}">
+    <span th:each="pageNumber : ${#numbers.sequence(0, products.totalPages - 1)}">
+        <a href="#" th:onclick="'getRequestWithToken(\'/admin/page/product?page=' + ${pageNumber} + '\')'"
+           th:text="${pageNumber + 1}" class="pagination-link"></a>
+    </span>
+</div>
+</body>
+</html>

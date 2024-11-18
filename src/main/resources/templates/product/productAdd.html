@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Product</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/product/productAdd.css}">
+  <script src="/js/product/productAdd.js" defer></script>
+</head>
+<body>
+<h1>Add New Product</h1>
+<img id="previousImg" src="/image/previous.png" onclick="getRequestWithToken('/admin/page/product')" alt="뒤로가기">
+<div id="addNewProductDiv">
+  <div id="inputDiv">
+    <div>
+      <label for="imageUrl">Image URL:</label>
+      <input type="text" id="imageUrl" th:field="*{productRequest.imageUrl}" required>
+    </div>
+    <div>
+      <label for="productUrl">Product URL:</label>
+      <input type="text" id="productUrl" th:field="*{productRequest.productUrl}" required>
+    </div>
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" th:field="*{productRequest.name}" required>
+    </div>
+    <div>
+      <label for="price">Price:</label>
+      <input type="number" id="price" th:field="*{productRequest.price}" required>
+    </div>
+    <div>
+      <label for="storeName">Store Name:</label>
+      <input type="text" id="storeName" th:field="*{productRequest.storeName}" required>
+    </div>
+    <div>
+      <label for="tagId">Tag:</label>
+      <select id="tagId" th:field="*{productRequest.tagId}" required>
+        <option th:each="tag : ${tags}" th:value="${tag.tagId}"
+                th:text="${tag.productTagName}"></option>
+      </select>
+    </div>
+  </div>
+  <div id="saveImgDiv">
+    <label id="saveImgLabel" for="saveImg">저장하기</label>
+    <img src="/image/save.png" alt="Add Product" id="saveImg"
+         onclick="productAddRequestWithToken()">
+  </div>
+</div>
+
+</body>
+</html>

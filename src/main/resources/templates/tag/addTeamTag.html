@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>Add Team Tag</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="/css/tag/addTeamTag.css">
+  <script src="/js/main.js" defer></script>
+  <script src="/js/tag/teamTagAdd.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <h1>Add New Team Tag</h1>
+  <img id="previousImg" src="/image/previous.png" alt="Back To List"
+       onclick="getRequestWithToken('/admin/page/tag/team')">
+
+  <div id="addNewTeamTagDiv">
+    <div id="inputDiv">
+      <label for="teamTagName">Tag Name:</label>
+      <input type="text" id="teamTagName" name="teamTagName" required>
+      <label for="teamTagAttribute">Tag Attribute:</label>
+      <input type="text" id="teamTagAttribute" name="teamTagAttribute" required>
+    </div>
+    <div id="saveImgDiv">
+      <label id="saveImgLabel" for="saveImg">저장하기</label>
+      <img src="/image/save.png" alt="Save Tag" id="saveImg" onclick="teamTagAddRequestWithToken()">
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

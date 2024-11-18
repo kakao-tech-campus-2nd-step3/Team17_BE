@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 권한 페이지</title>
+
+  <script src='/js/main.js' defer></script>
+  <script src='/js/admin/adminAuthority.js' defer></script>
+
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin/adminAuthority.css">
+</head>
+<body>
+<div id="role" th:data-role="${role}"></div>
+<div>
+
+  <div id="adminPromote">
+    <h2>관리자 권한 페이지</h2>
+    <span id="adminPromoteSpan">관리자가 되시려면 관리자 권한 신청을 하셔야 합니다.</span>
+    <button onclick="getRequestWithToken('/admin/promote')">관리자 권한 신청하기</button>
+  </div>
+
+  <div id="adminPage" style="display: none;">
+    <h5>관리자 인증을 성공하셨습니다. 아래 버튼을 눌러주세요</h5>
+    <button onclick="getRequestWithToken('/admin/page')">
+      관리자 페이지로 가기
+    </button>
+  </div>
+
+</div>
+</body>
+</html>

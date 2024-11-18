@@ -11,9 +11,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    name = "exercise_time", indexes = {
-    @Index(name = "idx_exercise_time_exercise_active", columnList = "exercise_id, isActive")
-}) // 복합 인덱싱 사용
+    name = "exercise_time",
+    indexes = {
+        @Index(name = "idx_exercise_time_exercise_start_time", columnList = "exercise_id, start_time")
+    }
+)
 public class ExerciseTime extends BaseEntity {
 
     @Id
@@ -39,7 +41,10 @@ public class ExerciseTime extends BaseEntity {
 
     public ExerciseTime(Exercise exercise) {
         this.exercise = exercise;
-        this.startTime = DateTimeUtil.getStartOfDay(LocalDate.now());
+
+        // 하루 초기화 시간인 새벽 3시를 기준으로 이전이면 날짜를 하루 빼서 시작 시간 설정
+        LocalDate adjustedDate = DateTimeUtil.getAdjustedCurrentDate();
+        this.startTime = DateTimeUtil.getStartOfDay(adjustedDate);
     }
 
     public void startExercise() {
@@ -61,9 +66,16 @@ public class ExerciseTime extends BaseEntity {
         }
     }
 
-    public void resetExerciseTime() {
+    public void resetDailyExercise() {
         this.exerciseTime = Duration.ZERO;
         this.isActive = false;
+        this.startTime = DateTimeUtil.getStartOfDay(LocalDate.now());
+    }
+
+    public void limitExerciseTime(Duration maxAllowedDuration) {
+        if (this.exerciseTime.compareTo(maxAllowedDuration) > 0) {
+            this.exerciseTime = maxAllowedDuration;
+        }
     }
 
     public Long getId() {
@@ -86,4 +98,7 @@ public class ExerciseTime extends BaseEntity {
         return exercise;
     }
 
+    public void startExerciseAt(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 }

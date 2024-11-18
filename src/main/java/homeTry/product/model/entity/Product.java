@@ -1,6 +1,6 @@
 package homeTry.product.model.entity;
 
-import homeTry.common.entity.BaseEntity;
+import homeTry.common.entity.SoftDeletableEntity;
 import homeTry.product.model.vo.*;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -9,17 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(
-    indexes = {
-        @Index(name = "idx_view_count", columnList = "view_count"),
-        @Index(name = "idx_price", columnList = "price")
-    }
-)
-public class Product extends BaseEntity {
+public class Product extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +53,15 @@ public class Product extends BaseEntity {
         this.viewCount = 0L;
     }
 
+    // 상품 수정
+    public void update(String imageUrl, String productUrl, String name, Long price, String storeName) {
+        this.imageUrl = new ProductImageUrl(imageUrl);
+        this.productUrl = new ProductUrl(productUrl);
+        this.name = new ProductName(name);
+        this.price = new ProductPrice(price);
+        this.storeName = new StoreName(storeName);
+    }
+
     public Long getId() {
         return id;
     }
@@ -87,10 +88,6 @@ public class Product extends BaseEntity {
 
     public Long getViewCount() {
         return viewCount;
-    }
-
-    public void incrementViewCount() {
-        this.viewCount++;
     }
 
 }

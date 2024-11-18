@@ -3,10 +3,12 @@ package homeTry.tag.teamTag.model.entity;
 import homeTry.tag.model.entity.Tag;
 import homeTry.tag.model.vo.TagName;
 import homeTry.tag.teamTag.model.vo.TeamTagAttribute;
-import homeTry.team.model.vo.Name;
 import jakarta.persistence.*;
 
 @Entity
+@Table(
+        indexes = {@Index(name = "idx_team_tag_is_deprecated", columnList = "isDeprecated")}
+)
 public class TeamTag extends Tag {
 
     @Embedded

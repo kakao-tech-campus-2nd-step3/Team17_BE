@@ -2,6 +2,8 @@ package homeTry.member.model.vo;
 
 public record Nickname(String value) {
 
+    public static final String DELETED_NICKNAME_VALUE = "(알 수 없음)";
+
     public Nickname {
         validateNickname(value);
     }
